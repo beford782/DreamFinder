@@ -22,7 +22,7 @@ function doPost(e) {
 
     try {
       // Use client-built HTML if available, otherwise build server-side
-      var htmlBody = data.htmlBody || buildSimpleHtml(data, firstName);
+      var htmlBody = buildSimpleHtml(data, firstName);
 
       GmailApp.sendEmail(toEmail, subject, 'Please view in an HTML email client.', {
         htmlBody: htmlBody,
