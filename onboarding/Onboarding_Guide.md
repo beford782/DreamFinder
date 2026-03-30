@@ -15,7 +15,9 @@ To set up DreamFinder for your store, we need a few things from you.
 | Store branding info | Spreadsheet (Store Info tab) | Google Sheets or Excel file |
 | Your mattress lineup | Spreadsheet (Mattresses tab) | Google Sheets or Excel file |
 | Your accessories | Spreadsheet (Accessories tab) | Google Sheets or Excel file |
+| Your mattress brands | Spreadsheet (Brands tab) | Google Sheets or Excel file |
 | Store logo | PNG, transparent background | `logos/` folder in Google Drive |
+| Brand logos | PNG, one per brand | `logos/` folder in Google Drive |
 | Square app icons (192px + 512px) | PNG | `logos/` folder in Google Drive |
 | Mattress product images | PNG or JPG, one per mattress | `mattresses/` folder in Google Drive |
 | Accessory product images | PNG, JPG, or WebP | `accessories/` folder in Google Drive |
@@ -29,10 +31,11 @@ To set up DreamFinder for your store, we need a few things from you.
 You'll receive either a **Google Sheets link** or a downloadable **Excel file (.xlsx)**.
 Both have the same structure — use whichever you prefer.
 
-The spreadsheet has 5 tabs:
-- **Store Info** — Your store name, colors, and branding
+The spreadsheet has 6 tabs:
+- **Store Info** — Your store name, colors, branding, and footer text
 - **Mattresses** — One row per mattress in your lineup
 - **Accessories** — Bases, pillows, and protectors
+- **Brands** — The mattress brands you carry (shown in the app footer)
 - **Feature Keywords** — Reference list for the Mattresses tab
 - **Instructions** — Detailed help for every field
 
@@ -46,6 +49,7 @@ This is just one row of basic info:
 - **Badge** — A short label like "Local Favorite" or "Est. 1990"
 - **Location** — Your state or region (shown before GPS kicks in)
 - **Discount %** — The completion reward discount (default 5%)
+- **Footer Text** — The copyright/credit line at the bottom of the app (e.g., "Powered by DreamFinder · (c) 2026 Your Store Name")
 
 ### Step 3: Fill Out the Mattresses Tab
 
@@ -68,7 +72,14 @@ Add bases/foundations, pillows, and protectors. Key fields:
 - **Category** — Must be: `Foundations & Support`, `Pillows`, or `Protectors`
 - **Match Scores (0-5)** — Controls how strongly each accessory is recommended based on quiz answers. Leave blank if unsure — we can help fill these in.
 
-### Step 5: Upload Images to the Shared Google Drive Folder
+### Step 5: Fill Out the Brands Tab
+
+Add one row for each mattress brand you carry. These appear in the "Our Brands" section at the bottom of the app.
+
+- **Brand Name** — The display name (e.g., "Serta", "Sealy")
+- **Logo File Name** — Must match a file you upload to the `logos/` folder (e.g., `serta-logo.png`)
+
+### Step 6: Upload Images to the Shared Google Drive Folder
 
 You'll receive a shared folder with this structure:
 
@@ -78,6 +89,7 @@ DreamFinder - [Your Store Name]/
     store-logo.png
     store-icon-192.png
     store-icon-512.png
+    [brand]-logo.png  (one per brand, e.g. serta-logo.png)
   mattresses/
     [id].png  (one per mattress)
   accessories/
@@ -99,7 +111,9 @@ DreamFinder - [Your Store Name]/
 - [ ] Store Info tab filled out completely
 - [ ] All mattresses entered with ID, Name, Brand, Tier, Firmness, Feature Keywords, and Why: Default
 - [ ] All accessories entered with ID, Name, Category, Price, and Description
+- [ ] Brands tab filled out with brand names and logo file names
 - [ ] Store logo uploaded to `logos/`
+- [ ] Brand logos uploaded to `logos/` (one per brand)
 - [ ] Both PWA icons (192 + 512) uploaded to `logos/`
 - [ ] One image per mattress in `mattresses/`, file names matching IDs
 - [ ] One image per accessory in `accessories/`, file names matching IDs
