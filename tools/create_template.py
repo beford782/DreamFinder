@@ -63,6 +63,7 @@ headers = [
     "Default Discount %",
     "Email Sender Name",
     "Contact Email",
+    "Footer Text",
 ]
 for i, h in enumerate(headers, 1):
     ws.cell(row=1, column=i, value=h)
@@ -80,6 +81,7 @@ example = [
     5,
     "Bel Furniture Sleep Team",
     "sleep@belfurniture.com",
+    "Powered by DreamFinder · (c) 2026 Bel Furniture",
 ]
 for i, val in enumerate(example, 1):
     cell = ws.cell(row=2, column=i, value=val)
@@ -251,7 +253,34 @@ score_dv.add("I2:Q50")
 style_header_row(ws3, len(acc_headers))
 auto_width(ws3)
 
-# ── Tab 4: Feature Keywords Reference ─────────────────────────────────────
+# ── Tab 4: Brands (Footer) ───────────────────────────────────────────────
+ws_brands = wb.create_sheet("Brands")
+
+brand_headers = [
+    "Brand Name *",
+    "Logo File Name *\n(e.g. restonic-logo.png)",
+]
+for i, h in enumerate(brand_headers, 1):
+    ws_brands.cell(row=1, column=i, value=h)
+
+bel_brands = [
+    ["Restonic", "restonic-logo.png"],
+    ["Spring Air", "springair-logo.png"],
+    ["Bel-O-Pedic", "belopedic-logo.png"],
+]
+
+for row_idx, row_data in enumerate(bel_brands, 2):
+    for col_idx, val in enumerate(row_data, 1):
+        cell = ws_brands.cell(row=row_idx, column=col_idx, value=val)
+        cell.fill = EXAMPLE_FILL
+        cell.font = BODY_FONT
+        cell.border = THIN_BORDER
+        cell.alignment = WRAP
+
+style_header_row(ws_brands, len(brand_headers))
+auto_width(ws_brands)
+
+# ── Tab 5: Feature Keywords Reference ─────────────────────────────────────
 ws4 = wb.create_sheet("Feature Keywords")
 
 ws4.cell(row=1, column=1, value="Feature Keyword").font = HEADER_FONT
@@ -300,7 +329,7 @@ for row_idx, (kw, desc, quiz) in enumerate(keywords, 2):
 
 auto_width(ws4, max_width=50)
 
-# ── Tab 5: Instructions ───────────────────────────────────────────────────
+# ── Tab 6: Instructions ───────────────────────────────────────────────────
 ws5 = wb.create_sheet("Instructions")
 
 instructions = [
@@ -339,9 +368,14 @@ instructions = [
     ("• Match Scores (0-5) control how strongly this accessory is recommended based on quiz answers.", ""),
     ("  Leave blank or 0 if the score doesn't apply.", ""),
     ("", ""),
-    ("STEP 4: UPLOAD IMAGES TO THE SHARED DRIVE FOLDER", ""),
+    ("STEP 4: BRANDS TAB", ""),
+    ("Add one row per mattress brand you carry. These appear in the app footer.", ""),
+    ("• Brand Name — The display name (e.g., 'Serta', 'Sealy').", ""),
+    ("• Logo File Name — Must match a file in the logos/ folder (e.g., serta-logo.png).", ""),
+    ("", ""),
+    ("STEP 5: UPLOAD IMAGES TO THE SHARED DRIVE FOLDER", ""),
     ("Place your files in the shared Google Drive folder:", ""),
-    ("  logos/        — Your store logo + square PWA icons (192x192 and 512x512)", ""),
+    ("  logos/        — Your store logo, PWA icons (192x192 and 512x512), and brand logos", ""),
     ("  mattresses/   — One image per mattress, named to match the ID column (e.g., athena.png)", ""),
     ("  accessories/  — One image per accessory, named to match the ID column (e.g., base-bt3000.jpg)", ""),
     ("", ""),

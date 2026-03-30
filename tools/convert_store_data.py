@@ -57,6 +57,7 @@ def read_store_info(ws):
         "Default Discount %": "default_discount",
         "Email Sender Name": "email_sender",
         "Contact Email": "contact_email",
+        "Footer Text": "footer_text",
     }
 
     info = {}
@@ -64,6 +65,31 @@ def read_store_info(ws):
         if header in mapping and i < len(data_row):
             info[mapping[header]] = data_row[i] if data_row[i] is not None else ""
     return info
+
+
+def read_brands(ws, image_base_url):
+    """Read the Brands tab. Returns list of brand dicts."""
+    headers = [cell.value for cell in ws[1]]
+    clean_headers = []
+    for h in headers:
+        if h:
+            h = h.replace("*", "").strip().split("\n")[0].strip()
+        clean_headers.append(h)
+
+    brands = []
+    for row in ws.iter_rows(min_row=2, values_only=True):
+        if not row[0]:
+            continue
+        vals = dict(zip(clean_headers, row))
+        brand_name = str(vals.get("Brand Name", "")).strip()
+        logo_file = str(vals.get("Logo File Name", "") or "").strip()
+        if brand_name:
+            brands.append({
+                "name": brand_name,
+                "logoUrl": f"{image_base_url}/logos/{logo_file}" if logo_file else "",
+                "logoFile": logo_file,
+            })
+    return brands
 
 
 def read_mattresses(ws, image_base_url):
@@ -291,23 +317,68 @@ def generate_accessories_js(accessories):
     return "\n".join(lines)
 
 
-def generate_branding_replacements(info):
+def generate_footer_html(info, brands, image_base_url):
+    """Generate the footer HTML with store name and brand logos."""
+    footer_text = info.get("footer_text", f"Powered by DreamFinder")
+    store = info.get("store_name", "")
+
+    brand_tags = []
+    for b in brands:
+        logo_html = ""
+        if b.get("logoUrl"):
+            logo_html = f'<img src="{b["logoUrl"]}" alt="{b["name"]}" class="brand-logo" />'
+        else:
+            logo_html = f'<span class="brand-logo-placeholder"></span>'
+        brand_tags.append(
+            f'          <div class="brand-tag">\n'
+            f'            {logo_html}\n'
+            f'            <span class="brand-name">{b["name"]}</span>\n'
+            f'          </div>'
+        )
+
+    brands_joined = '\n          <span class="brand-sep"></span>\n'.join(brand_tags)
+
+    return f"""    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-left">
+        {footer_text}
+      </div>
+      <div class="brand-logos">
+        <span class="label">Our Brands</span>
+        <div class="brands">
+{brands_joined}
+        </div>
+      </div>
+      <div style="width:100%; text-align:center; padding-top:0.5rem; font-size:0.45rem; color:rgba(248,246,241,0.25); line-height:1.5;">
+        DreamFinder is a recommendation tool, not medical advice. Match scores are guidance only. Purchases subject to store policies.
+        <a href="#" onclick="event.preventDefault();document.getElementById('privacyOverlay').classList.add('visible');" style="color:rgba(212,168,75,0.4); text-decoration:underline; pointer-events: auto;">Privacy & Terms</a>
+      </div>
+    </footer>"""
+
+
+def generate_branding_replacements(info, brands):
     """Generate a list of text replacements needed in index.html."""
     store = info.get("store_name", "")
+    brand_list = ", ".join(b["name"] for b in brands) if brands else "(no brands specified)"
     return f"""
 BRANDING TEXT REPLACEMENTS
 ==========================
 Search & replace these strings in index.html:
 
-  "Bel Furniture"                          → "{store}"
-  "bel</span>"  (logo line 1)             → "{info.get('logo_line1', '')}</span>"
-  "furniture</span>" (logo line 2)        → "{info.get('logo_line2', '')}</span>"
-  "Proudly serving Texas families..."      → "{info.get('trust_signal', '')}"
-  "Made in Texas"                          → "{info.get('badge_text', '')}"
-  "Texas" (default location)               → "{info.get('default_location', '')}"
+  "Bel Furniture"                          -> "{store}"
+  "bel</span>"  (logo line 1)             -> "{info.get('logo_line1', '')}</span>"
+  "furniture</span>" (logo line 2)        -> "{info.get('logo_line2', '')}</span>"
+  "Proudly serving Texas families..."      -> "{info.get('trust_signal', '')}"
+  "Made in Texas"                          -> "{info.get('badge_text', '')}"
+  "Texas" (default location)               -> "{info.get('default_location', '')}"
+
+Footer:
+  - Replace footer text with: "{info.get('footer_text', '')}"
+  - Replace brand logos with: {brand_list}
+  - Brand logo images go in logos/ folder
 
 Also update:
-  - manifest.json: "DreamFinder — {store}"
+  - manifest.json: "DreamFinder -- {store}"
   - Code.gs: Replace "Bel Furniture" in email subject/sender/body
   - Google Apps Script: Deploy a new script instance for this store
 """
@@ -341,13 +412,19 @@ def main():
     accessories = read_accessories(wb["Accessories"], args.image_base_url)
     print(f"  Accessories: {len(accessories)}")
 
+    brands = []
+    if "Brands" in wb.sheetnames:
+        brands = read_brands(wb["Brands"], args.image_base_url)
+        print(f"  Brands: {len(brands)} ({', '.join(b['name'] for b in brands)})")
+
     # Generate outputs
     os.makedirs(args.output_dir, exist_ok=True)
 
     css_block = generate_css_block(store_info)
     mattresses_js = generate_mattresses_js(tiers)
     accessories_js = generate_accessories_js(accessories)
-    replacements = generate_branding_replacements(store_info)
+    footer_html = generate_footer_html(store_info, brands, args.image_base_url)
+    replacements = generate_branding_replacements(store_info, brands)
 
     # Write individual output files
     store_slug = store_info.get("store_name", "store").lower().replace(" ", "-")
@@ -371,6 +448,11 @@ def main():
     with open(repl_path, "w", encoding="utf-8") as f:
         f.write(replacements)
     print(f"  Replacements   -> {repl_path}")
+
+    footer_path = os.path.join(args.output_dir, f"{store_slug}_footer.html")
+    with open(footer_path, "w", encoding="utf-8") as f:
+        f.write(footer_html)
+    print(f"  Footer HTML    -> {footer_path}")
 
     # Optionally generate full HTML
     if args.output_html:
@@ -418,6 +500,10 @@ def main():
             store_info.get("trust_signal", "")
         )
         html = html.replace("Made in Texas", store_info.get("badge_text", ""))
+
+        # Replace footer
+        footer_pattern = r"    <!-- Footer -->.*?    </footer>"
+        html = re.sub(footer_pattern, footer_html, html, flags=re.DOTALL)
 
         # Replace image base URL
         html = html.replace(
