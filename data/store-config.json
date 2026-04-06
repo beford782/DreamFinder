@@ -1,0 +1,21 @@
+{
+  "storeName": "Bel Furniture",
+  "defaultDiscount": 5,
+  "colors": {
+    "storePrimary": "#8B1A1A",
+    "storePrimaryLight": "#a52525",
+    "storePrimaryGlow": "rgba(139, 26, 26, 0.15)"
+  },
+  "text": {
+    "pageTitle": "Bel Furniture × DreamFinder",
+    "metaDescription": "Find your perfect mattress with DreamFinder — a personalized sleep consultation powered by Bel Furniture. 8 quick questions, expert recommendations, and an exclusive discount.",
+    "ogTitle": "Bel Furniture × DreamFinder — Find Your Perfect Mattress",
+    "socialProof": "Recommended by your Bel Furniture sleep team",
+    "footer": "Powered by <strong>DreamFinder</strong> · © 2026 Bel Furniture",
+    "inStockText": "In Stock at Bel Furniture",
+    "emailHeader": "Bel Furniture × DreamFinder",
+    "emailSubtext": "Bring this email to your Bel Furniture store",
+    "emailPrivacy": "We'll send your results and may occasionally follow up with sleep tips and offers from Bel Furniture. Your info is never sold to third parties. Unsubscribe anytime.",
+    "privacyPolicy": "DreamFinder collects your name, email, and optional phone number to deliver your mattress recommendations. Your data is only used for this purpose and is never sold or shared with third parties. To have your information removed, contact your local Bel Furniture store."
+  }
+}

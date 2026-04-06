@@ -1,0 +1,398 @@
+{
+  "gold": [
+    {
+      "id": "g4",
+      "name": "Athena",
+      "brand": "Spring Air",
+      "subBrand": "Last Mattress",
+      "firmness": 6,
+      "tags": ["Hybrid", "Latex", "Hand-Tufted"],
+      "features": ["medium", "cooling", "support", "hybrid", "responsive", "latex", "hand-tufting", "lifetime-warranty"],
+      "imageUrl": "https://beford782.github.io/DreamFinder/images/mattresses/athena.png",
+      "reasons": {
+        "cooling": "Phase change technology - cool-to-the-touch fabrics that adjust to temperature",
+        "pressureRelief": "Talalay latex for natural and durable pressure-relieving comfot layer that confirms to your body. It is breathable,antimicrobial, and hypo-allegenic",
+        "motionIsolation": "Pocketed coils minimize partner disturbance",
+        "support": "Hand-tufted, and QUANTUM ENCASED COIL UNIT provides dynamically responsive, durable support with 1575 individually encased 17 gauge coils.",
+        "medium": "Perfect medium feel for most sleepers",
+        "durability": "Hand-tufted, lifetime warranty",
+        "default": "Ultra premium hand-tufted hybrid with multiple specialty foams and a lifetime warranty"
+      }
+    },
+    {
+      "id": "g5",
+      "name": "Zeus",
+      "brand": "Spring Air",
+      "subBrand": "Last Mattress",
+      "firmness": 10,
+      "tags": ["Hybrid", "Hand-Tufted"],
+      "features": ["firm", "cooling", "support", "hybrid", "responsive", "quality", "hand-tufting", "lifetime-warranty"],
+      "imageUrl": "https://beford782.github.io/DreamFinder/images/mattresses/zeus.png",
+      "reasons": {
+        "cooling": "Phase change technology - cool-to-the-touch fabrics that adjust to temperature",
+        "pressureRelief": "Talalay latex for natural and durable pressure-relieving comfot layer that confirms to your body. It is breathable,antimicrobial, and hypo-allegenic",
+        "motionIsolation": "Pocketed coils minimize partner disturbance",
+        "support": "Hand-tufted, and QUANTUM ENCASED COIL UNIT provides dynamically responsive, durable support with 1575 individually encased 17 gauge coils.",
+        "firm": "Extra firm for stomach sleepers and larger builds",
+        "durability": "Hand-tufted, lifetime warranty",
+        "default": "Ultra premium hand-tufted hybrid with multiple specialty foams and a lifetime warranty"
+      }
+    },
+    {
+      "id": "g6",
+      "name": "Aphrodite",
+      "brand": "Spring Air",
+      "subBrand": "Last Mattress",
+      "firmness": 3,
+      "tags": ["Hybrid", "Hand-Tufted"],
+      "features": ["plush", "cooling", "support", "hybrid", "responsive", "quality", "hand-tufting", "lifetime-warranty"],
+      "imageUrl": "https://beford782.github.io/DreamFinder/images/mattresses/aphrodite.png",
+      "reasons": {
+        "cooling": "Phase change technology - cool-to-the-touch fabrics that adjust to temperature",
+        "pressureRelief": "Talalay latex for natural and durable pressure-relieving comfot layer that confirms to your body. It is breathable,antimicrobial, and hypo-allegenic",
+        "motionIsolation": "Pocketed coils minimize partner disturbance",
+        "support": "Hand-tufted, and QUANTUM ENCASED COIL UNIT provides dynamically responsive, durable support with 1575 individually encased 17 gauge coils.",
+        "plush": "Cloud-like plush feel for side sleepers",
+        "durability": "Hand-tufted, lifetime warranty",
+        "default": "Ultra premium hand-tufted hybrid with multiple specialty foams and a lifetime warranty"
+      }
+    },
+    {
+      "id": "g1",
+      "name": "Caitlin",
+      "brand": "Spring Air",
+      "subBrand": "Copper",
+      "firmness": 2,
+      "tags": ["Hybrid", "Copper"],
+      "features": ["plush", "cooling", "pressure-relief", "hybrid", "motion-isolation", "copper", "anti-viral", "anti-bacterial", "anti-microbial", "anti-inflammatory"],
+      "imageUrl": "https://beford782.github.io/DreamFinder/images/mattresses/caitlin.png",
+      "reasons": {
+        "cooling": "NatuVerex copper infusion draws heat away",
+        "pressureRelief": "Copper Memory Foam and Hyper-Gel Foam",
+        "motionIsolation": "Pocketed coils minimize partner disturbance",
+        "support": "Five-zone, 948 coil-count pocketed coils minimize partner disturbance",
+        "plush": "Welcoming, soft plush feel for side sleepers",
+        "durability": "Premium foams and premium spring",
+        "default": "Copper-infused cooling with motion isolating foam for clean, cool, gentle sleep"
+      }
+    },
+    {
+      "id": "g2",
+      "name": "Celine",
+      "brand": "Spring Air",
+      "subBrand": "Copper",
+      "firmness": 5,
+      "tags": ["Hybrid", "Copper"],
+      "features": ["medium", "cooling", "pressure-relief", "hybrid", "motion-isolation", "copper", "anti-viral", "anti-bacterial", "anti-microbial", "anti-inflammatory"],
+      "imageUrl": "https://beford782.github.io/DreamFinder/images/mattresses/celine.png",
+      "reasons": {
+        "cooling": "NatuVerex copper infusion draws heat away",
+        "pressureRelief": "Copper Memory Foam and Hyper-Gel Foam",
+        "motionIsolation": "Pocketed coils minimize partner disturbance",
+        "support": "Five-zone, 948 coil-count pocketed coils minimize partner disturbance",
+        "medium": "Perfect medium feel for most sleepers",
+        "durability": "Premium foams and premium spring",
+        "default": "Copper-infused cooling with motion isolating foam for clean, cool, gentle sleep"
+      }
+    },
+    {
+      "id": "g3",
+      "name": "Camryn",
+      "brand": "Spring Air",
+      "subBrand": "Copper",
+      "firmness": 9,
+      "tags": ["Hybrid", "Copper"],
+      "features": ["firm", "cooling", "pressure-relief", "hybrid", "motion-isolation", "copper", "anti-viral", "anti-bacterial", "anti-microbial", "anti-inflammatory"],
+      "imageUrl": "https://beford782.github.io/DreamFinder/images/mattresses/camryn.png",
+      "reasons": {
+        "cooling": "NatuVerex copper infusion draws heat away",
+        "pressureRelief": "Copper Memory Foam and Hyper-Gel Foam",
+        "motionIsolation": "Pocketed coils minimize partner disturbance",
+        "support": "Five-zone, 948 coil-count pocketed coils minimize partner disturbance",
+        "firm": "Extra firm for stomach sleepers and larger builds",
+        "durability": "Premium foams and premium spring",
+        "default": "Copper-infused cooling with motion isolating foam for clean, cool, gentle sleep"
+      }
+    },
+    {
+      "id": "g7",
+      "name": "Maria",
+      "brand": "Spring Air",
+      "subBrand": "Fleur de Lis",
+      "firmness": 2,
+      "tags": ["Hybrid", "Latex", "Hand-Tufted", "Back Supporter"],
+      "features": ["plush", "cooling", "hand-tufting", "latex", "pressure-relief", "back-supporter-technology", "hybrid", "motion-isolation", "quality"],
+      "imageUrl": "https://beford782.github.io/DreamFinder/images/mattresses/maria.png",
+      "reasons": {
+        "cooling": "Cool, silk and wool damask cover helps regulate temperature",
+        "pressureRelief": "Full layers of Serene Foam and Cool-Gel Memory Foam",
+        "motionIsolation": "Pocketed coils minimize partner disturbance",
+        "support": "Hand-tufted, Back Supporter dual gauge spring - firmer center coils for lumbar support",
+        "plush": "Welcoming, soft plush feel for side sleepers",
+        "durability": "Hand-tufted",
+        "default": "Cool, hand-tufted, silk and wool damask cover, multiple specialty foams (Serene foam and Cool-gel memory foam), individually pocketed coils, reduced motion transfer"
+      }
+    },
+    {
+      "id": "g8",
+      "name": "Eleanor",
+      "brand": "Spring Air",
+      "subBrand": "Fleur de Lis",
+      "firmness": 5,
+      "tags": ["Hybrid", "Latex", "Hand-Tufted", "Back Supporter"],
+      "features": ["medium", "cooling", "hand-tufting", "latex", "pressure-relief", "back-supporter-technology", "hybrid", "motion-isolation", "quality"],
+      "imageUrl": "https://beford782.github.io/DreamFinder/images/mattresses/eleanor.png",
+      "reasons": {
+        "cooling": "Cool, silk and wool damask cover helps regulate temperature",
+        "pressureRelief": "Full layers of Serene Foam and Cool-Gel Memory Foam",
+        "motionIsolation": "Pocketed coils minimize partner disturbance",
+        "support": "Hand-tufted, Back Supporter dual gauge spring - firmer center coils for lumbar support",
+        "medium": "Perfect medium feel for most sleepers",
+        "durability": "Hand-tufted",
+        "default": "Cool, hand-tufted, silk and wool damask cover, multiple specialty foams (Serene foam and Cool-gel memory foam), individually pocketed coils, reduced motion transfer"
+      }
+    },
+    {
+      "id": "g9",
+      "name": "Genevieve",
+      "brand": "Spring Air",
+      "subBrand": "Fleur de Lis",
+      "firmness": 9,
+      "tags": ["Hybrid", "Latex", "Hand-Tufted", "Back Supporter"],
+      "features": ["firm", "cooling", "hand-tufting", "latex", "pressure-relief", "back-supporter-technology", "hybrid", "motion-isolation", "quality"],
+      "imageUrl": "https://beford782.github.io/DreamFinder/images/mattresses/genevieve.png",
+      "reasons": {
+        "cooling": "Cool, silk and wool damask cover helps regulate temperature",
+        "pressureRelief": "Full layers of Serene Foam and Cool-Gel Memory Foam",
+        "motionIsolation": "Pocketed coils minimize partner disturbance",
+        "support": "Hand-tufted, Back Supporter dual gauge spring - firmer center coils for lumbar support",
+        "firm": "Extra firm for stomach sleepers and larger builds",
+        "durability": "Hand-tufted",
+        "default": "Cool, hand-tufted, silk and wool damask cover, multiple specialty foams (Serene foam and Cool-gel memory foam), individually pocketed coils, reduced motion transfer"
+      }
+    }
+  ],
+  "silver": [
+    {
+      "id": "g10",
+      "name": "Hailey",
+      "brand": "Spring Air",
+      "subBrand": "Back Supporter Hybrid",
+      "firmness": 2,
+      "tags": ["Hybrid", "Back Supporter"],
+      "features": ["medium", "cooling", "serene-foam", "gel-memory-foam", "motion-isolation", "back-supporter-technology", "quality", "comfort", "hybrid"],
+      "imageUrl": "https://beford782.github.io/DreamFinder/images/mattresses/hailey.png",
+      "reasons": {
+        "cooling": "Maximum cooling phase-change cover",
+        "pressureRelief": "Hyper Soft Memory Foam + Serene Foam + Gel Memory Foam for exceptional pressure relief",
+        "motionIsolation": "Pocketed coils minimize partner disturbance",
+        "support": "Back Supporter dual gauge spring - firmer center coils for lumbar support",
+        "plush": "True cloud-like plush feel for side sleepers",
+        "default": "blends cooling comfort with targeted, motion-separating support including multiple layers of cool, pressure-relieving special foams"
+      }
+    },
+    {
+      "id": "g11",
+      "name": "Harper",
+      "brand": "Spring Air",
+      "subBrand": "Back Supporter Hybrid",
+      "firmness": 5,
+      "tags": ["Hybrid", "Back Supporter"],
+      "features": ["medium", "cooling", "serene-foam", "gel-memory-foam", "back-supporter-technology", "motion-isolation", "quality", "comfort", "foam-encasement", "hybrid"],
+      "imageUrl": "https://beford782.github.io/DreamFinder/images/mattresses/harper.png",
+      "reasons": {
+        "cooling": "Maximum cooling phase-change cover",
+        "pressureRelief": "Hyper Soft Memory Foam + Serene Foam + Gel Memory Foam for pressure relief",
+        "motionIsolation": "Pocketed coils minimize partner disturbance",
+        "support": "Back Supporter dual gauge spring - firmer center coils for lumbar support",
+        "medium": "Perfect medium feel for most sleepers",
+        "default": "blends cooling comfort with targeted, motion-separating support including multiple layers of cool, pressure-relieving special foams"
+      }
+    },
+    {
+      "id": "g12",
+      "name": "Helena",
+      "brand": "Spring Air",
+      "subBrand": "Back Supporter Hybrid",
+      "firmness": 8,
+      "tags": ["Hybrid", "Back Supporter"],
+      "features": ["medium", "cooling", "serene-foam", "gel-memory-foam", "motion-isolation", "back-supporter-technology", "quality", "comfort", "foam-encasement", "hybrid"],
+      "imageUrl": "https://beford782.github.io/DreamFinder/images/mattresses/helena.png",
+      "reasons": {
+        "cooling": "Maximum cooling phase-change cover",
+        "pressureRelief": "Hyper Soft Memory Foam + Serene Foam + Gel Memory Foam for pressure relief",
+        "motionIsolation": "Pocketed coils minimize partner disturbance",
+        "support": "Back Supporter dual gauge spring - firmer center coils for lumbar support",
+        "firm": "Extra firm for stomach sleepers and larger builds",
+        "default": "blends cooling comfort with targeted, motion-separating support including multiple layers of cool, pressure-relieving special foams"
+      }
+    },
+    {
+      "id": "g13",
+      "name": "Kylie",
+      "brand": "Spring Air",
+      "subBrand": "Back Supporter Hybrid",
+      "firmness": 2,
+      "tags": ["Hybrid", "Back Supporter"],
+      "features": ["plush", "cooling", "gel-memory-foam", "motion-isolation", "quality", "comfort", "hybrid", "foam-encasement"],
+      "imageUrl": "https://beford782.github.io/DreamFinder/images/mattresses/kylie.png",
+      "reasons": {
+        "cooling": "Phase Change Material cover actively cools the surface",
+        "pressureRelief": "1\" Gel Memory Foam reduces pressure + comfort foam layers",
+        "motionIsolation": "Pocketed coils minimize partner disturbance",
+        "support": "Back Supporter dual gauge spring - firmer center coils for lumbar support",
+        "plush": "Supportive yet soft, plush feel for side sleepers",
+        "default": "PCH ice cover, gel memory foam, pocketed coils for refreshing sleep"
+      }
+    },
+    {
+      "id": "g14",
+      "name": "Karla",
+      "brand": "Spring Air",
+      "subBrand": "Back Supporter Hybrid",
+      "firmness": 5,
+      "tags": ["Hybrid", "Back Supporter"],
+      "features": ["medium", "cooling", "gel-memory-foam", "motion-isolation", "quality", "comfort", "hybrid", "foam-encasement"],
+      "imageUrl": "https://beford782.github.io/DreamFinder/images/mattresses/karla.png",
+      "reasons": {
+        "cooling": "Phase Change Material cover actively cools the surface",
+        "pressureRelief": "1\" Gel Memory Foam reduces pressure + comfort foam layers",
+        "motionIsolation": "Pocketed coils minimize partner disturbance",
+        "support": "Back Supporter dual gauge spring - firmer center coils for lumbar support",
+        "medium": "Perfect medium feel for most sleepers",
+        "default": "PCH ice cover, gel memory foam, pocketed coils for refreshing sleep"
+      }
+    },
+    {
+      "id": "g15",
+      "name": "Kacey",
+      "brand": "Spring Air",
+      "subBrand": "Back Supporter Hybrid",
+      "firmness": 9,
+      "tags": ["Hybrid", "Back Supporter"],
+      "features": ["firm", "cooling", "gel-memory-foam", "motion-isolation", "quality", "comfort", "hybrid", "foam-encasement"],
+      "imageUrl": "https://beford782.github.io/DreamFinder/images/mattresses/kacey.png",
+      "reasons": {
+        "cooling": "Phase Change Material cover actively cools the surface",
+        "pressureRelief": "1\" Gel Memory Foam reduces pressure + comfort foam layers",
+        "motionIsolation": "Pocketed coils minimize partner disturbance",
+        "support": "Back Supporter dual gauge spring - firmer center coils for lumbar support",
+        "firm": "Extra firm for stomach sleepers and larger builds",
+        "default": "PCH ice cover, gel memory foam, pocketed coils for refreshing sleep"
+      }
+    }
+  ],
+  "bronze": [
+    {
+      "id": "g16",
+      "name": "Veronica",
+      "brand": "Restonic",
+      "subBrand": "ComfortCare Hybrid",
+      "firmness": 10,
+      "tags": ["Hybrid"],
+      "features": ["firm", "cooling", "gel-infused-foam", "motion-isolation", "quality", "comfort", "hybrid", "foam-encasement"],
+      "imageUrl": "https://beford782.github.io/DreamFinder/images/mattresses/veronica.png",
+      "reasons": {
+        "cooling": "Luxurious cooling cover wicks moisture and heat",
+        "pressureRelief": "Cool gel foam contours to body for pressure relief",
+        "motionIsolation": "Pocketed coils minimize partner disturbance",
+        "support": "Marvelous Middle gives 25% more center support",
+        "firm": "Extra firm feel for back and stomach sleepers",
+        "default": "Cool gel foam, zoned wrapped coils, targeted support and spinal alignment"
+      }
+    },
+    {
+      "id": "g17",
+      "name": "Mechelle",
+      "brand": "Restonic",
+      "subBrand": "ComfortCare Hybrid",
+      "firmness": 4,
+      "tags": ["Hybrid"],
+      "features": ["plush", "cooling", "gel-infused-foam", "motion-isolation", "quality", "comfort", "hybrid", "foam-encasement"],
+      "imageUrl": "https://beford782.github.io/DreamFinder/images/mattresses/mechelle.png",
+      "reasons": {
+        "cooling": "Luxurious cooling cover wicks moisture and heat",
+        "pressureRelief": "Cool gel foam contours to body for pressure relief",
+        "motionIsolation": "Pocketed coils minimize partner disturbance",
+        "support": "Marvelous Middle gives 25% more center support",
+        "medium": "Perfect medium-plush feel for most sleepers",
+        "default": "Cool gel foam, zoned wrapped coils, targeted support and spinal alignment"
+      }
+    },
+    {
+      "id": "g18",
+      "name": "Ariana",
+      "brand": "Bel-O-Pedic",
+      "subBrand": "",
+      "firmness": 4,
+      "tags": ["Hybrid"],
+      "features": ["plush cooling", "gel-infused-foam", "motion-isolation", "comfort", "hybrid", "foam-encasement"],
+      "imageUrl": "https://beford782.github.io/DreamFinder/images/mattresses/ariana.png",
+      "reasons": {
+        "cooling": "Luxurious cooling cover wicks moisture and heat"
+      }
+    },
+    {
+      "id": "g19",
+      "name": "Catalina",
+      "brand": "Bel-O-Pedic",
+      "subBrand": "",
+      "firmness": 9,
+      "tags": ["Hybrid"],
+      "features": ["firm", "cooling", "gel-infused-foam", "motion-isolation", "comfort", "hybrid", "foam-encasement"],
+      "imageUrl": "https://beford782.github.io/DreamFinder/images/mattresses/catalina.png",
+      "reasons": {
+        "cooling": "Luxurious cooling cover wicks moisture and heat"
+      }
+    },
+    {
+      "id": "g20",
+      "name": "Bella",
+      "brand": "Spring Air",
+      "subBrand": "Back Supporter",
+      "firmness": 3,
+      "tags": ["Innerspring", "Back Supporter"],
+      "features": ["plush", "comfort", "support", "innerspring", "foam-encasement"],
+      "imageUrl": "https://beford782.github.io/DreamFinder/images/mattresses/bella.png",
+      "reasons": {
+        "cooling": "Cool cover for temperature control",
+        "pressureRelief": "Cool Foam with Polygel for increased comfort and pressure relief",
+        "support": "Back Supporter dual gauge spring - firmer center coils for lumbar support",
+        "plush": "Firm feel for back and stomach sleepers",
+        "default": "Cool gel foam, innerspring, targeted support and spinal alignment"
+      }
+    },
+    {
+      "id": "g21",
+      "name": "Brandon",
+      "brand": "Spring Air",
+      "subBrand": "Back Supporter",
+      "firmness": 5,
+      "tags": ["Innerspring", "Back Supporter"],
+      "features": ["medium", "comfort", "support", "innerspring", "foam-encasement"],
+      "imageUrl": "https://beford782.github.io/DreamFinder/images/mattresses/brandon.png",
+      "reasons": {
+        "cooling": "Cool cover for temperature control",
+        "pressureRelief": "Cool Foam with Polygel for increased comfort and pressure relief",
+        "support": "Back Supporter dual gauge spring - firmer center coils for lumbar support",
+        "medium": "Perfect medium-plush feel for most sleepers",
+        "default": "Cool gel foam, innerspring, targeted support and spinal alignment"
+      }
+    },
+    {
+      "id": "g22",
+      "name": "Chloe",
+      "brand": "Spring Air",
+      "subBrand": "Back Supporter",
+      "firmness": 4,
+      "tags": ["Innerspring", "Back Supporter"],
+      "features": ["medium", "comfort", "support", "innerspring", "foam-encasement"],
+      "imageUrl": "https://beford782.github.io/DreamFinder/images/mattresses/chloe.png",
+      "reasons": {
+        "support": "Back Supporter dual gauge spring - firmer center coils for lumbar support",
+        "medium": "Perfect medium-plush feel for most sleepers",
+        "default": "support foam, innerspring, targeted support and spinal alignment"
+      }
+    }
+  ]
+}
