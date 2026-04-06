@@ -4473,13 +4473,14 @@
         ? 'Best match for ' + topPickReasons.slice(0, 2).join(' & ')
         : 'Highest overall match for your sleep profile';
 
-      // Find the TRUE top pick across all tiers
+      // Find the TRUE top pick — must be Restonic or Spring Air, gold or silver tier
       let globalTopPick = null;
       let globalTopScore = -1;
       let globalTopTier = 'gold';
-      ['gold', 'silver', 'bronze'].forEach(tier => {
+      ['gold', 'silver'].forEach(tier => {
         MATTRESSES[tier].forEach(m => {
-          if (scores[m.id] > globalTopScore) {
+          var b = (m.brand || '').toLowerCase();
+          if ((b === 'restonic' || b === 'spring air') && scores[m.id] > globalTopScore) {
             globalTopScore = scores[m.id];
             globalTopPick = m.id;
             globalTopTier = tier;
