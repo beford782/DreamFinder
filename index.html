@@ -3841,8 +3841,13 @@
           name: obj.name,
           brand: obj.brand || '',
           subBrand: obj.subBrand || '',
-          firmness: parseInt(obj.firmness, 10) || 5,
-          tags: obj.tags ? obj.tags.split('|').map(function(s) { return s.trim(); }).filter(Boolean) : [],
+          firmness: parseInt(obj.firmnessScore, 10) || 5,
+          firmnessLabel: obj.firmnessLabel || '',
+          price: obj.price || '',
+          tags: obj.quizTags ? obj.quizTags.split('|').map(function(s) { return s.trim(); }).filter(Boolean) : [],
+          displayBadges: obj.displayBadges ? obj.displayBadges.split('|').map(function(s) { return s.trim(); }).filter(Boolean) : [],
+          highlight: obj.highlight || '',
+          locallyMade: (obj['locally-made'] || '').toLowerCase() === 'yes',
           features: obj.features ? obj.features.split('|').map(function(s) { return s.trim(); }).filter(Boolean) : [],
           imageUrl: IMAGE_BASE + obj.name.toLowerCase().replace(/\s+/g, '-') + '.png',
           reasons: reasons
@@ -4537,7 +4542,7 @@
         window._drawerData = window._drawerData || {};
         top3.forEach(function(m){
           var pct=Math.round((scores[m.id]/maxScore)*100);
-          var ff=m.firmness<=3?'Plush':m.firmness<=5?'Medium':m.firmness<=7?'Firm':'Extra Firm';
+          var ff=m.firmnessLabel||(m.firmness<=3?'Plush':m.firmness<=5?'Medium':m.firmness<=7?'Firm':'Extra Firm');
           window._drawerData[m.id]={m:m,tier:tier,pct:pct,feats:buildFeats(m),firmFeel:ff};
         });
 
@@ -4546,7 +4551,7 @@
           const isTopPick = m.id === globalTopPick;
           const feats = buildFeats(m);
           const topChips = feats.slice(0, 3);
-          const firmFeel = m.firmness<=3?'Plush':m.firmness<=5?'Medium':m.firmness<=7?'Firm':'Extra Firm';
+          const firmFeel = m.firmnessLabel||(m.firmness<=3?'Plush':m.firmness<=5?'Medium':m.firmness<=7?'Firm':'Extra Firm');
           const chipHtml = topChips.map(f =>
             '<div class="card-feat-chip'+(f.matched?' chip-matched':'')+'">'+
             '<span class="card-feat-chip-icon">'+f.emoji+'</span>'+f.name+
