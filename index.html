@@ -4493,8 +4493,7 @@
       ['gold', 'silver', 'bronze'].forEach((tier, tierIndex) => {
         const sorted = [...MATTRESSES[tier]].sort((a, b) => scores[b.id] - scores[a.id]);
         const maxScore = Math.max(...sorted.map(m => scores[m.id]), 1);
-        const qualified = sorted.filter(m => Math.round((scores[m.id] / maxScore) * 100) >= 60);
-        const top3 = qualified.slice(0, 3);
+        const top3 = sorted.slice(0, 3);
 
         if (top3.length === 0) {
           document.getElementById(tier + 'Content').innerHTML = '<div class="no-matches">No strong matches in this tier.</div>';
