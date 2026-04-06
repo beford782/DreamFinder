@@ -3781,17 +3781,84 @@
       }
     ];
 
-    // ----- MATTRESS DATA & STORE CONFIG (loaded from external JSON) -----
+    // ----- MATTRESS DATA & STORE CONFIG (loaded from external CSV + JSON) -----
     let MATTRESSES = { gold: [], silver: [], bronze: [] };
     let STORE_CONFIG = {};
+
+    // CSV parser — handles quoted fields (RFC 4180) for reason text containing commas
+    function parseCSVLines(text) {
+      text = text.replace(/^\uFEFF/, ''); // strip BOM from Excel exports
+      var results = [], row = [], field = '', inQuotes = false;
+      for (var i = 0; i < text.length; i++) {
+        var c = text[i];
+        if (inQuotes) {
+          if (c === '"' && text[i + 1] === '"') { field += '"'; i++; }
+          else if (c === '"') { inQuotes = false; }
+          else { field += c; }
+        } else {
+          if (c === '"') { inQuotes = true; }
+          else if (c === ',') { row.push(field); field = ''; }
+          else if (c === '\n' || (c === '\r' && text[i + 1] === '\n')) {
+            if (c === '\r') i++;
+            row.push(field); field = '';
+            if (row.some(function(cell) { return cell.trim(); })) results.push(row);
+            row = [];
+          } else if (c === '\r') {
+            row.push(field); field = '';
+            if (row.some(function(cell) { return cell.trim(); })) results.push(row);
+            row = [];
+          } else { field += c; }
+        }
+      }
+      if (field || row.length) { row.push(field); if (row.some(function(cell) { return cell.trim(); })) results.push(row); }
+      return results;
+    }
+
+    function parseMattressCSV(text) {
+      var IMAGE_BASE = 'https://beford782.github.io/DreamFinder/images/mattresses/';
+      var REASON_KEYS = ['cooling','pressureRelief','motionIsolation','support','plush','medium','firm','durability','default'];
+      var lines = parseCSVLines(text);
+      if (!lines.length) return { gold: [], silver: [], bronze: [] };
+      var header = lines[0];
+      var result = { gold: [], silver: [], bronze: [] };
+
+      for (var i = 1; i < lines.length; i++) {
+        var row = lines[i];
+        var obj = {};
+        header.forEach(function(col, idx) { obj[col.trim()] = (row[idx] || '').trim(); });
+
+        var tier = obj.tier;
+        if (!tier || !result[tier]) continue; // skip rows without a valid tier
+
+        var reasons = {};
+        REASON_KEYS.forEach(function(k) {
+          var val = obj['reason_' + k];
+          if (val) reasons[k] = val;
+        });
+
+        result[tier].push({
+          id: obj.id,
+          name: obj.name,
+          brand: obj.brand || '',
+          subBrand: obj.subBrand || '',
+          firmness: parseInt(obj.firmness, 10) || 5,
+          tags: obj.tags ? obj.tags.split('|').map(function(s) { return s.trim(); }).filter(Boolean) : [],
+          features: obj.features ? obj.features.split('|').map(function(s) { return s.trim(); }).filter(Boolean) : [],
+          imageUrl: IMAGE_BASE + obj.name.toLowerCase().replace(/\s+/g, '-') + '.png',
+          reasons: reasons
+        });
+      }
+      return result;
+    }
 
     (async function loadAppData() {
       try {
         const [mattressRes, storeRes] = await Promise.all([
-          fetch('./data/mattresses.json'),
+          fetch('./data/mattresses.csv'),
           fetch('./data/store-config.json')
         ]);
-        MATTRESSES = await mattressRes.json();
+        var csvText = await mattressRes.text();
+        MATTRESSES = parseMattressCSV(csvText);
         STORE_CONFIG = await storeRes.json();
       } catch (e) {
         console.error('Failed to load app data:', e);
