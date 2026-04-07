@@ -4961,11 +4961,14 @@
         errorEl.textContent = msg || 'Something went wrong. Please try again.';
       }
       
+      console.log('[DreamFinder] dreamCode in payload:', payload.dreamCode);
+      console.log('[DreamFinder] htmlBody length:', (payload.htmlBody || '').length);
+      console.log('[DreamFinder] htmlBody contains dreamCode:', (payload.htmlBody || '').indexOf(payload.dreamCode) > -1);
+
       if (GOOGLE_SCRIPT_URL) {
         // Real send via Google Apps Script
         fetch(GOOGLE_SCRIPT_URL, {
           method: 'POST',
-          mode: 'no-cors',
           body: JSON.stringify(payload)
         })
         .then(function() {
