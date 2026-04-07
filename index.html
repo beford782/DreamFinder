@@ -3432,6 +3432,7 @@
         <div class="reveal-result" id="revealResult">
           <div class="reveal-congrats" id="revealCongrats">🎉 Congratulations!</div>
           <div class="reveal-amount"><span id="revealPct"></span> OFF</div>
+          <div style="font-size:1.4rem;font-weight:800;letter-spacing:4px;color:var(--gold);margin-top:0.3rem;" id="revealCode"></div>
           <div class="reveal-subtitle" id="revealSubtitle">Applied to your purchase today</div>
         </div>
       </div>
@@ -3690,6 +3691,8 @@
       document.querySelectorAll('.store-discount-pct').forEach(function(el) { el.textContent = STORE_DISCOUNT + '%'; });
       const codeEl = document.getElementById('discountCodeDisplay');
       if (codeEl) codeEl.textContent = DISCOUNT_CODE;
+      const revealCodeEl = document.getElementById('revealCode');
+      if (revealCodeEl) revealCodeEl.textContent = DISCOUNT_CODE;
     });
 
     // ===== Generate starfield (deferred) =====
