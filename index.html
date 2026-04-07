@@ -3539,7 +3539,13 @@
       </div>
       <h3 class="email-title">Don't forget your results</h3>
       <p class="email-subtitle">Get your sleep profile, mattress matches, and discount sent straight to you — so you can review at home or share with your partner.</p>
-      
+
+      <div class="discount-code-box" style="text-align:center; margin:1rem 0;">
+        <div class="discount-code-label">Your Exclusive Discount Code</div>
+        <div class="discount-code">DREAM</div>
+        <div class="discount-expiry" style="margin-top:0.4rem;">Show this code in-store for <span class="store-discount-pct" style="color:var(--gold); font-weight:600;"></span> off your purchase</div>
+      </div>
+
       <div class="email-preview" id="emailPreview">
         <!-- Dynamically shows a summary of what they'll receive -->
       </div>
@@ -3680,6 +3686,7 @@
       const bannerPct = document.getElementById('bannerPct');
       if (revealPct) revealPct.textContent = STORE_DISCOUNT + '%';
       if (bannerPct) bannerPct.textContent = STORE_DISCOUNT + '% OFF';
+      document.querySelectorAll('.store-discount-pct').forEach(function(el) { el.textContent = STORE_DISCOUNT + '%'; });
     });
 
     // ===== Generate starfield (deferred) =====
@@ -4869,7 +4876,8 @@
   </td></tr>
   <tr><td style="background:linear-gradient(135deg,#c9a84c,#a8893d);padding:14px 32px;text-align:center;">
     <span style="font-size:17px;font-weight:700;color:#0d1730;">&#127991; ${STORE_DISCOUNT}% OFF &mdash; Your Discount Is Ready!</span><br>
-    <span style="font-size:12px;color:#0d1730;">Show this email to your sleep specialist today</span>
+    <span style="font-size:22px;font-weight:800;letter-spacing:4px;color:#0d1730;display:inline-block;margin:6px 0;">DREAM</span><br>
+    <span style="font-size:12px;color:#0d1730;">Show this code to your sleep specialist today</span>
   </td></tr>
   <tr><td style="padding:24px 32px 8px;">
     <div style="font-size:10px;letter-spacing:2px;color:#c9a84c;text-transform:uppercase;margin-bottom:6px;">Your Sleep Profile</div>
