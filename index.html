@@ -4545,6 +4545,12 @@
             var orderIds = Array.from(document.querySelectorAll('.mattress-card[data-tier="' + tier + '"]')).map(function(c){ return c.getAttribute('data-id'); });
             window.openMattressDrawer(id, orderIds);
           }, { passive: false });
+          card.addEventListener('click', function(e) {
+            e.preventDefault();
+            var id = card.getAttribute('data-id');
+            var orderIds = Array.from(document.querySelectorAll('.mattress-card[data-tier="' + tier + '"]')).map(function(c){ return c.getAttribute('data-id'); });
+            window.openMattressDrawer(id, orderIds);
+          });
         });
       });
       
