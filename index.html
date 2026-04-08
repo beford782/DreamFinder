@@ -4567,8 +4567,9 @@
       const particleHost = document.getElementById('revealParticleHost');
 
       // Reset
-      overlay.classList.remove('fade-out');
+      overlay.classList.remove('fade-out', 'hidden');
       overlay.style.display = 'flex';
+      overlay.style.pointerEvents = '';
       ring.classList.remove('pulse');
       intro.style.opacity = '0';
       slotWrap.style.display = 'none';
