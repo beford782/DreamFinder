@@ -3172,7 +3172,7 @@
       </svg>
       <span id="locationText">Texas</span>
     </div>
-    <button id="headerStartOverBtn" onclick="startOver()" ontouchend="event.preventDefault();startOver();" style="display:none; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:var(--cream); font-family:inherit; font-size:0.75rem; font-weight:600; padding:0.4rem 0.9rem; border-radius:8px; cursor:pointer; touch-action:manipulation; letter-spacing:0.2px;">↺ Restart Quiz</button>
+    <button id="headerStartOverBtn" onclick="startOver()" ontouchend="event.preventDefault();startOver();" style="display:none; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:var(--cream); font-family:inherit; font-size:0.75rem; font-weight:600; padding:0.4rem 0.9rem; border-radius:8px; cursor:pointer; touch-action:manipulation; letter-spacing:0.2px; pointer-events:auto;">↺ Restart Quiz</button>
     <button id="savedPicksBtn" onclick="window.showSavedPicks()" ontouchend="event.preventDefault();window.showSavedPicks();" style="display:none; background:linear-gradient(135deg,#c9a84c,#a8893d); color:#0d1730; font-family:inherit; font-size:0.75rem; font-weight:700; padding:0.4rem 0.9rem; border-radius:8px; cursor:pointer; touch-action:manipulation; border:none; gap:0.4rem; align-items:center;">
       ⭐ Picks <span id="savedPicksCount" style="background:#0d1730; color:#c9a84c; border-radius:50%; width:18px; height:18px; display:inline-flex; align-items:center; justify-content:center; font-size:0.65rem; font-weight:700; margin-left:0.2rem;">0</span>
     </button>
@@ -5413,6 +5413,7 @@
           e.preventDefault();
           window.startOver();
         }, { passive: false });
+        hBtn.addEventListener('click', function(e) { e.preventDefault(); window.startOver(); });
       }
     });
 
