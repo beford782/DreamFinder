@@ -1787,6 +1787,9 @@
       opacity: 0;
       pointer-events: none;
     }
+    .discount-reveal-overlay.hidden {
+      display: none !important;
+    }
     .discount-reveal {
       text-align: center;
       position: relative;
@@ -4719,7 +4722,7 @@
                         pctWrap.style.opacity = '1';
                         countUp(STORE_DISCOUNT, 1200, () => {
                           // Show subtitle
-                          setTimeout(() => { subtitle.style.opacity = '1'; }, 200);
+                          setTimeout(() => { subtitle.style.opacity = '1'; overlay.style.pointerEvents = 'none'; }, 200);
                         });
                       }, 300);
 
@@ -4734,8 +4737,8 @@
       }, 900);
 
       // Phase 3: Fade out at 9s, hide at 9.7s
-      setTimeout(() => { overlay.classList.add('fade-out'); }, 9000);
-      setTimeout(() => { overlay.style.display = 'none'; }, 9700);
+      setTimeout(() => { overlay.classList.add('fade-out'); overlay.style.pointerEvents = 'none'; }, 9000);
+      setTimeout(() => { overlay.style.display = 'none'; overlay.classList.add('hidden'); }, 9700);
 
       // Log full analytics summary
       analytics.log('session_summary', analytics.getSummary());
