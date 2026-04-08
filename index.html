@@ -3683,6 +3683,18 @@
     // ----- QUESTIONS -----
     const QUESTIONS = [
       {
+        id: 'mattress_size', category: 'Getting Started', question: 'What size mattress are you looking for?',
+        helpText: "We'll make sure recommendations fit your space", type: 'single',
+        options: [
+          { id: 'twin', label: 'Twin', icon: 'solo', sublabel: 'Kids or tight spaces', scores: {} },
+          { id: 'twin_xl', label: 'Twin XL', icon: 'solo', sublabel: 'Extra length, single sleeper', scores: {} },
+          { id: 'full', label: 'Full', icon: 'solo', sublabel: 'Solo or cozy pair', scores: {} },
+          { id: 'queen', label: 'Queen', icon: 'partner', sublabel: 'Most popular size', scores: {} },
+          { id: 'king', label: 'King', icon: 'family', sublabel: 'Maximum space', scores: {} },
+          { id: 'cal_king', label: 'Cal King', icon: 'family', sublabel: 'Extra length', scores: {} }
+        ]
+      },
+      {
         id: 'sleep_position', category: 'Sleep Style', question: "How do you usually sleep?",
         helpText: "Think about where you naturally end up", type: 'single',
         options: [
@@ -3713,6 +3725,17 @@
         ]
       },
       {
+        id: 'partner_disturbance', category: 'Sleep Partner', question: "Does your partner's movement wake you up?",
+        helpText: 'Motion isolation is one of the biggest upgrades in a new mattress', type: 'single',
+        skipIf: { question: 'partner_sleep', answer: 'solo' },
+        options: [
+          { id: 'yes_often', label: 'Yes, Often', icon: 'motion', sublabel: 'Every movement wakes me', scores: { motionIsolation: 4, hybrid: 3, memory: 2 } },
+          { id: 'sometimes', label: 'Sometimes', icon: 'combo', sublabel: 'Bigger movements bother me', scores: { motionIsolation: 3, hybrid: 2 } },
+          { id: 'rarely', label: 'Rarely', icon: 'check', sublabel: 'Light sleeper but mostly fine', scores: { motionIsolation: 1 } },
+          { id: 'not_applicable', label: "Doesn't Apply", icon: 'solo', sublabel: 'I sleep alone', scores: {} }
+        ]
+      },
+      {
         id: 'firmness', category: 'Comfort Preferences', question: "What firmness level do you prefer?",
         helpText: "Slide to your ideal comfort", type: 'slider',
         min: 1, max: 10, defaultValue: 5,
@@ -3727,7 +3750,6 @@
           { id: 'hot', label: 'Sleeping Too Hot', icon: 'flame', sublabel: 'Night sweats, overheating', scores: { cooling: 3, hybrid: 2 } },
           { id: 'tossing', label: 'Tossing & Turning', icon: 'combo', sublabel: "Can't get comfortable", scores: { comfort: 2, medium: 1 } },
           { id: 'stiff', label: 'Waking Up Stiff or Sore', icon: 'stiff', sublabel: 'Morning aches', scores: { pressureRelief: 2, comfort: 2 } },
-          { id: 'partner', label: 'Partner Disturbance', icon: 'partner', sublabel: 'Feel them move', scores: { motionIsolation: 3, memory: 2 } },
           { id: 'sagging', label: 'Mattress Sagging', icon: 'sagging', sublabel: 'Dips or indentations', scores: { durability: 2, quality: 2 } },
           { id: 'too_soft', label: 'Mattress Too Soft', icon: 'couch', sublabel: 'Sinking in too much', scores: { firm: 3, support: 2 } },
           { id: 'none', label: 'No Major Issues', icon: 'check', sublabel: 'Just time for an upgrade', scores: {} }
@@ -3998,6 +4020,16 @@
     window.nextQuestion = function() {
       if (currentQuestion < QUESTIONS.length - 1) {
         currentQuestion++;
+        const q = QUESTIONS[currentQuestion];
+        if (q.skipIf && answers[q.skipIf.question] === q.skipIf.answer) {
+          answers[q.id] = 'not_applicable';
+          if (currentQuestion < QUESTIONS.length - 1) {
+            currentQuestion++;
+          } else {
+            showProfileScreen();
+            return;
+          }
+        }
         renderQuestion();
       } else {
         showProfileScreen();
@@ -4007,6 +4039,10 @@
     window.prevQuestion = function() {
       if (currentQuestion > 0) {
         currentQuestion--;
+        const q = QUESTIONS[currentQuestion];
+        if (q.skipIf && answers[q.skipIf.question] === q.skipIf.answer) {
+          if (currentQuestion > 0) currentQuestion--;
+        }
         renderQuestion();
       } else {
         showScreen('welcomeScreen');
