@@ -1,0 +1,20 @@
+{
+  "storeName": "Bel Furniture",
+  "colors": {
+    "storePrimary": "#8B1A1A",
+    "storePrimaryLight": "#a52525",
+    "storePrimaryGlow": "rgba(139, 26, 26, 0.15)"
+  },
+  "text": {
+    "pageTitle": "DreamFinder — Bel Furniture Sleep Quiz",
+    "metaDescription": "Take the DreamFinder sleep quiz at Bel Furniture and get personalized mattress recommendations.",
+    "ogTitle": "DreamFinder — Bel Furniture",
+    "socialProof": "Trusted by Bel Furniture customers across Texas",
+    "footer": "&copy; 2026 Bel Furniture. All rights reserved.",
+    "emailPrivacy": "We'll only use your email to send your results.",
+    "privacyPolicy": "Your information is never shared with third parties.",
+    "inStockText": "In Stock at Bel Furniture",
+    "emailHeader": "Bel Furniture × DreamFinder",
+    "emailSubtext": "Bring this email to your Bel Furniture store"
+  }
+}
