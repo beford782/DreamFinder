@@ -1,0 +1,212 @@
+# DreamFinder — Claude Code Project Guide
+
+## What DreamFinder Is
+DreamFinder is a store-agnostic single-page tablet kiosk app for mattress showroom floors.
+Customers take a 7-question sleep quiz, get personalized mattress recommendations across
+Gold/Silver/Bronze tiers, browse accessories, and receive results + a discount code by email.
+Salespeople get a handoff screen showing the customer's saved picks.
+
+**DreamFinder is a white-label product.** The canonical app has no relationship to any
+specific retailer. Each store gets its own fully customized deployment.
+
+---
+
+## This Repo — Bel Furniture Deployment
+Deployed at: https://beford782.github.io/DreamFinder
+Repo: https://github.com/beford782/DreamFinder
+Local path: `C:\Users\BlakeFord\Documents\GitHub\DreamFinder`
+
+This is Bel Furniture's instance. Everything in `data/` is Bel-specific.
+Do not treat any Bel-specific content (mattress models, branding, discount codes,
+GAS endpoint) as a default or starting point for other retailers.
+
+---
+
+## White-Label Architecture — Critical Rules
+
+### The store-agnostic boundary
+`index.html` must contain zero store-specific content. No retailer names, logos,
+colors, mattress models, or discount codes hardcoded in the HTML.
+
+All store identity lives in two files only:
+- `data/store-config.json` — branding, store name, colors, discount prefix, GAS URL
+- `data/mattresses.csv` / `data/mattresses.json` — this store's mattress lineup
+
+### Each retailer gets its own repo
+Do not push Bel changes to another retailer's deployment.
+Do not copy `data/mattresses.csv` between retailer repos — each store has a
+completely different product lineup.
+
+**Planned deployments (separate repos):**
+- Bel Furniture — this repo (active)
+- Star Furniture — separate repo (planned)
+- Lacks Furniture — separate repo (planned)
+
+### New features must be config-driven
+Any feature that could vary by store (colors, copy, quiz questions, tier names,
+email templates) must be driven by `store-config.json`, not hardcoded.
+If you find yourself writing a store name or brand color into the HTML, stop —
+it belongs in config.
+
+### Quiz questions are currently hardcoded — known limitation
+The 7 quiz questions and their answer options live in the HTML, not in config.
+This is a known gap. Do not add more hardcoded store-specific question logic.
+Flag any question customization requests as requiring a config migration first.
+
+---
+
+## App Architecture — Read Before Touching Anything
+
+### Single-file HTML
+`index.html` is the entire app. No separate JS or CSS files. Do not split it.
+
+### Domain Lock
+A domain lock at the top of the `<script>` block restricts where the app runs.
+Allowed domains: `beford782.github.io`, `localhost`, `127.0.0.1`, and `''` (local file access).
+If deploying to a new domain, add it to the `allowed` array around line 3607.
+
+### Data files
+- `data/mattresses.csv` — source of truth for mattress lineup, edit this
+- `data/mattresses.json` — generated file, never edit directly
+- `data/store-config.json` — all store-specific configuration
+
+The app fetches both JSON files at load time.
+
+### Build script
+```
+.\build-data.ps1
+```
+Run from repo root. Converts `data\mattresses.csv` → `data\mattresses.json`.
+Always run this before committing if the CSV was changed.
+Never commit CSV changes without also committing the regenerated JSON.
+
+---
+
+## Mattress Data — CSV Column Reference
+
+| Column | Notes |
+|---|---|
+| `tier` | gold / silver / bronze |
+| `id` | g1–g33, unique per deployment, never reuse |
+| `name` | Model name |
+| `brand` | Spring Air / Restonic / Bel-O-Pedic (Bel-specific) |
+| `subBrand` | Sub-line (Copper, Last Mattress, etc.) |
+| `firmnessScore` | 1–10 number used by scoring engine |
+| `firmnessLabel` | Display text (Plush, Medium, Firm, etc.) |
+| `price` | Leave blank — not displayed in app |
+| `locally-made` | yes / no — affects scoring (see below) |
+| `quizTags` | Pipe-delimited. Used by scoring engine as `features` in JSON |
+| `displayBadges` | Pipe-delimited. 2–3 chips shown on card |
+| `highlight` | One punchy line for the card hero (~10 words) |
+| `features` | Long-form feature text for display |
+| `reason_*` | Personalised match reason shown to customer per quiz answer |
+
+---
+
+## Scoring Engine — How Recommendations Work
+
+Located in `index.html` around line 4040. Three scoring passes:
+
+**1. Firmness (most important, max +50)**
+Matches customer's slider answer to `firmnessScore`. Perfect match = +50,
+penalty of -20 if diff ≥ 4.
+
+**2. Feature matching**
+Quiz answers map to feature tags via `opt.scores`. Each matching tag adds points.
+Tags are stored in the JSON `features` array (mapped from `quizTags` in CSV).
+
+**3. Locally made bonus (+25)**
+If `m.locallyMade === true`, adds 25 points and appends a match reason.
+In the Bel deployment: Spring Air and Restonic = locally made, Bel-O-Pedic = not.
+This value and logic may differ per retailer deployment.
+
+Qualified results = top 3 models scoring ≥ 60% of the top score.
+
+IMPORTANT: Do not modify scoring weights or logic without confirming with Blake.
+This area has had significant prior tuning.
+
+---
+
+## Backend — Google Apps Script
+
+Email delivery and lead logging use a Google Apps Script (GAS) web app.
+The GAS endpoint URL lives in the HTML (search for `GOOGLE_SCRIPT_URL`).
+Each retailer deployment has its own GAS script and endpoint.
+
+If GAS needs redeployment: Manage Deployments → pencil icon → New version.
+The GAS script builds email HTML server-side to avoid payload size limits.
+
+---
+
+## iPad / Touch Event Rules
+
+The app runs on iPads in showrooms. These rules must be preserved in all deployments:
+- `touch-action: manipulation` on all interactive elements
+- Dynamic elements (mattress cards, buttons) need both `touchend` and `pointerdown` listeners
+- `event.preventDefault()` on touchend handlers to prevent ghost clicks
+- `location.reload()` must never be used — always call `window.startOver()` to reset
+
+IMPORTANT: Do not change touch handling without confirming with Blake — this required
+significant debugging to get right.
+
+---
+
+## Key App Flows (Don't Break These)
+
+- **Quiz → Results**: 7 questions → scoring engine → Gold/Silver/Bronze tier tabs → top pick badge
+- **Mattress drawer**: Opens on card tap. Prev/next navigation between results. Firmness bar, match reasons, features.
+- **Accessories**: 3-step flow (Foundations → Pillows → Protectors). Sticky cart bar. Cart persists to handoff screen.
+- **Discount reveal**: Dramatic animation — DREAM + 3-digit code. 10rem gold glow font.
+- **Handoff screen**: Customer marks "I'm Interested" on mattresses/accessories. Salesperson sees saved picks.
+- **Idle timeout**: Inactivity triggers reset flow back to start screen. Uses `window.startOver()`.
+
+---
+
+## Accessory Images
+
+Location: `images/accessories/`
+Current filenames the app expects:
+- `pillow-activecool.png`
+- `pillow-activedry.png`
+- `protector-activecool.png`
+- `protector-activedry.jpg`
+
+These 4 images need attention: delete any corrupted files and re-upload originals
+with the filenames above. The app code already references these names.
+
+---
+
+## Deployment
+
+```
+git add .
+git commit -m "description"
+git push origin main --force
+```
+
+Force push is intentional — always used for this repo.
+GitHub Pages updates within 1–2 minutes after push.
+
+---
+
+## Division of Labour — Regular Claude vs Claude Code
+
+**Regular Claude (claude.ai)** — design, logic, new features, producing updated
+HTML and scripts. Works across sessions without access to the repo directly.
+
+**Claude Code** — applying file changes, running build scripts, committing, pushing.
+
+### Handoff workflow
+When Regular Claude produces a new `index.html` or `build-data.ps1`:
+1. Replace the existing file in the repo
+2. If CSV was also updated, run `.\build-data.ps1` to regenerate the JSON
+3. Verify no regressions in touch events, scoring, or GAS integration
+4. Commit and push
+
+### What Claude Code should never do without checking with Blake first
+- Modify scoring weights or logic in the quiz engine
+- Change touch event handling
+- Hardcode any store-specific content into `index.html`
+- Copy mattress data or config between retailer repos
+- Edit `data/mattresses.json` directly (always regenerate from CSV)
+- Add store names, colors, or branding anywhere except `store-config.json`
