@@ -5,12 +5,13 @@ A single-page mattress recommendation quiz for an in-store tablet / web kiosk. U
 ## Stack
 
 - Vanilla HTML/CSS/JS. No build step, no framework, no bundler, no tests.
-- Entire app lives in one file: `index.html` (~318KB, ~5000+ lines).
+- `index.html` (~234KB, ~2400 lines) — markup + all JS.
+- `styles.css` (~84KB, ~3200 lines) — all CSS, extracted from index.html.
 - Data is externalized:
   - `data/mattresses.csv` — source of truth for mattress catalog (edit this).
   - `data/mattresses.json` — derived JSON the app loads at runtime.
   - `data/store-config.json` — store-level config.
-- Backend: a single Google Apps Script endpoint handles email + discount-code logging. The URL is hardcoded as `GOOGLE_SCRIPT_URL` at `index.html:4868`.
+- Backend: a single Google Apps Script endpoint handles email + discount-code logging. The URL is hardcoded as `GOOGLE_SCRIPT_URL` at `index.html:1693`.
 
 ## How to run / test
 
@@ -37,7 +38,7 @@ This repo has a history of this anti-pattern — see commits `19966ce`, `0d9cb8f
 
 ### Context rule: don't blindly Read all of index.html
 
-`index.html` is huge. Reading the whole file burns context you'll need for the task. Prefer:
+`index.html` is still large (~2400 lines). Reading the whole file burns context you'll need for the task. Prefer:
 
 1. `Grep` for the relevant function, id, or class first.
 2. `Read` with `offset` and `limit` around the matches.
@@ -45,7 +46,7 @@ This repo has a history of this anti-pattern — see commits `19966ce`, `0d9cb8f
 
 ### Deployment config lives in one place
 
-When the Google Apps Script endpoint is redeployed (which happens), the only edit needed is `GOOGLE_SCRIPT_URL` at `index.html:4868`. Do not scatter URLs or discount prefixes elsewhere in the code.
+When the Google Apps Script endpoint is redeployed (which happens), the only edit needed is `GOOGLE_SCRIPT_URL` at `index.html:1693`. Do not scatter URLs or discount prefixes elsewhere in the code.
 
 ### Commit style
 
