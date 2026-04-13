@@ -83,6 +83,17 @@ foreach ($row in $rows) {
     $highlight = ""
     if ($row.highlight -and $row.highlight.Trim()) { $highlight = $row.highlight.Trim() }
 
+    # Auto-resolve image URL from images/mattresses/ folder
+    $imageUrl = ""
+    $imgName = $row.name.Trim().ToLower()
+    $imgDir = "images\mattresses"
+    foreach ($ext in @("png", "jpg", "webp")) {
+        if (Test-Path "$imgDir\$imgName.$ext") {
+            $imageUrl = "images/mattresses/$imgName.$ext"
+            break
+        }
+    }
+
     $mattress = [ordered]@{
         id            = $row.id.Trim()
         name          = $row.name.Trim()
@@ -94,6 +105,7 @@ foreach ($row in $rows) {
         features      = $features
         tags          = $tags
         highlight     = $highlight
+        imageUrl      = $imageUrl
         reasons       = $reasons
     }
 
