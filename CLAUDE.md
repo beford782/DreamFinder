@@ -2,7 +2,7 @@
 
 ## What DreamFinder Is
 DreamFinder is a store-agnostic single-page tablet kiosk app for mattress showroom floors.
-Customers take a 7-question sleep quiz, get personalized mattress recommendations across
+Customers take a 9-question sleep quiz, get personalized mattress recommendations across
 Gold/Silver/Bronze tiers, browse accessories, and receive results + a discount code by email.
 Salespeople get a handoff screen showing the customer's saved picks.
 
@@ -49,7 +49,7 @@ If you find yourself writing a store name or brand color into the HTML, stop —
 it belongs in config.
 
 ### Quiz questions are currently hardcoded — known limitation
-The 7 quiz questions and their answer options live in the HTML, not in config.
+The 9 quiz questions and their answer options live in the HTML, not in config.
 This is a known gap. Do not add more hardcoded store-specific question logic.
 Flag any question customization requests as requiring a config migration first.
 
@@ -153,7 +153,7 @@ significant debugging to get right.
 
 ## Key App Flows (Don't Break These)
 
-- **Quiz → Results**: 7 questions → scoring engine → Gold/Silver/Bronze tier tabs → top pick badge
+- **Quiz → Results**: 9 questions → scoring engine → Gold/Silver/Bronze tier tabs → top pick badge
 - **Mattress drawer**: Opens on card tap. Prev/next navigation between results. Firmness bar, match reasons, features.
 - **Accessories**: 3-step flow (Foundations → Pillows → Protectors). Sticky cart bar. Cart persists to handoff screen.
 - **Discount reveal**: Dramatic animation — DREAM + 3-digit code. 10rem gold glow font.
