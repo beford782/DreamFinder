@@ -102,7 +102,7 @@ foreach ($row in $rows) {
 
 # Convert to JSON and write
 $json = $result | ConvertTo-Json -Depth 4
-$json | Out-File -FilePath $jsonPath -Encoding UTF8 -Force
+[System.IO.File]::WriteAllText($jsonPath, $json, (New-Object System.Text.UTF8Encoding $false))
 
 $counts = "gold: $($result.gold.Count), silver: $($result.silver.Count), bronze: $($result.bronze.Count)"
 Write-Host "Built $jsonPath - $counts"
