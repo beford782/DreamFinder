@@ -5148,13 +5148,24 @@
       
       // Get top pick and all matches from analytics
       const topPick = analytics.topPick;
+      // Email clients (Gmail etc.) can't resolve relative image paths, so
+      // convert any relative URLs (e.g. "images/mattresses/caitlin.png")
+      // into absolute URLs rooted at the GitHub Pages deployment.
+      const PUBLIC_ASSET_ROOT = 'https://beford782.github.io/DreamFinder/';
+      function toAbsoluteImageUrl(u) {
+        if (!u) return '';
+        if (/^https?:\/\//i.test(u) || u.startsWith('//')) return u;
+        return PUBLIC_ASSET_ROOT + u.replace(/^\.?\/*/, '');
+      }
       const allMatches = (analytics.allMatches || []).map(m => ({
         name: m.name,
         brand: m.brand + (m.subBrand ? ' · ' + m.subBrand : ''),
         matchPct: m.matchPct,
-        imageUrl: m.imageUrl || ''
+        imageUrl: toAbsoluteImageUrl(m.imageUrl)
       }));
-      const accList = analytics.recommendedAccessories || [];
+      const accList = (analytics.recommendedAccessories || []).map(a => Object.assign({}, a, {
+        imageUrl: toAbsoluteImageUrl(a.imageUrl)
+      }));
 
       // Build HTML email client-side with product images
       const firstName = name.split(' ')[0] || name;
