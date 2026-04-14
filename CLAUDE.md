@@ -187,6 +187,21 @@ git push origin main --force
 Force push is intentional — always used for this repo.
 GitHub Pages updates within 1–2 minutes after push.
 
+### IMPORTANT: Claude Code on the Web creates feature branches automatically
+If this session is running in Claude Code on the web (claude.ai/code),
+pushes default to a `claude/<name>-<id>` branch — NOT to main.
+GitHub Pages only deploys from main, so those pushes do not go live.
+
+**At the start of every session and before any commit/push, Claude MUST:**
+1. Check the current branch with `git branch --show-current`
+2. If the branch is anything other than `main`, warn Blake clearly that
+   pushes on this branch will NOT deploy, and offer to either:
+   - Push to main directly: `git push origin HEAD:main --force`, or
+   - Use the `git ship` alias (already configured locally) which does the same
+
+Never assume a push to a `claude/*` branch is a successful deployment.
+Always confirm main was updated before reporting that a change is live.
+
 ---
 
 ## Division of Labour — Regular Claude vs Claude Code
