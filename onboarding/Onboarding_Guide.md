@@ -49,6 +49,12 @@ This is just one row of basic info:
 - **Badge** — A short label like "Local Favorite" or "Est. 1990"
 - **Location** — Your state or region (shown before GPS kicks in)
 - **Discount %** — The completion reward discount (default 5%)
+- **Email Sender Name** — The "From" name on customer result emails
+- **Email Subject Line** — The subject line on customer result emails
+- **Contact Email** — Email shown on the privacy/terms screen
+- **Store Phone** — Shown in the customer email and on the salesperson handoff screen
+- **Store Address** — Shown in the customer email so they know where to come
+- **Store Hours** — Shown in the customer email (e.g., "Mon–Sat 10am–8pm · Sun 12–6pm")
 - **Footer Text** — The copyright/credit line at the bottom of the app (e.g., "Powered by DreamFinder · (c) 2026 Your Store Name")
 
 ### Step 3: Fill Out the Mattresses Tab
@@ -97,12 +103,13 @@ DreamFinder - [Your Store Name]/
 ```
 
 **Image requirements:**
-- Mattresses: 600 x 400 px, PNG or JPG, transparent or white background
-- Accessories: 400 x 300 px, PNG/JPG/WebP
-- Logo: Min 400px wide, PNG with transparent background
-- Icons: Exactly 192x192 and 512x512, square PNG
+- **Mattresses & accessories:** Up to **1000 px on the long edge**. Send the **highest-quality source you have** in any common format (WebP, JPG, PNG). We auto-convert everything to optimized WebP at build time, so don't waste time pre-shrinking.
+- **Logo:** Min 400px wide, **PNG** with transparent background (kept as-is)
+- **Icons:** Exactly 192×192 and 512×512, square **PNG** (kept as-is)
 
 **File names must match the ID column in your spreadsheet.**
+
+> **About the auto-conversion:** during the build we resize images to a max of 1000 px on the long edge and re-encode as WebP at quality 82. The result is roughly 100× smaller than the original PNG with no visible loss. Customer-facing pages load nearly instantly even on slow showroom WiFi.
 
 ---
 

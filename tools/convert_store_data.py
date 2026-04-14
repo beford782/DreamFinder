@@ -10,20 +10,109 @@ Reads a completed onboarding spreadsheet (.xlsx) and generates:
   5. (Optional) A full store-specific index.html
 
 Usage:
-    python convert_store_data.py <spreadsheet.xlsx> [--image-base-url URL] [--output-html]
+    python convert_store_data.py <spreadsheet.xlsx> [options]
+
+Common flags:
+    --image-base-url URL       Public URL prefix where images will be served
+    --source-images PATH       Auto-convert retailer images (mattresses/, accessories/) to optimized WebP
+    --output-dir PATH          Where to write the build output (default: .)
+    --output-html              Generate a complete index.html
+    --skip-image-conversion    Skip the WebP conversion step
 
 Examples:
-    python convert_store_data.py "Store_Data.xlsx" --image-base-url "https://example.github.io/DreamFinder"
-    python convert_store_data.py "Store_Data.xlsx" --output-html --image-base-url "https://example.github.io/DreamFinder"
+    # Just emit the JSON / CSS / JS without touching images
+    python convert_store_data.py "Store_Data.xlsx" --image-base-url "https://acme.github.io/DreamFinder"
+
+    # Full build with image conversion (recommended for new retailer onboarding)
+    python convert_store_data.py "Store_Data.xlsx" \\
+        --image-base-url "https://acme.github.io/DreamFinder" \\
+        --source-images "./incoming/" \\
+        --output-dir "../"
 """
 
 import argparse
+import glob
 import json
 import os
 import re
 import sys
 
 import openpyxl
+
+
+# ── Image conversion ──────────────────────────────────────────────────────
+# Source images for mattresses and accessories are converted to optimized
+# WebP at build time. Keeps customer-facing pages small (~100x reduction
+# vs. the original PNG/JPG sources) without asking the retailer to pre-shrink.
+
+WEBP_LONG_EDGE = 1000
+WEBP_QUALITY = 82
+CONVERTIBLE_EXTS = ('.png', '.jpg', '.jpeg', '.PNG', '.JPG', '.JPEG', '.webp', '.WEBP')
+
+
+def convert_images_to_webp(src_dir, dst_dir, label='images'):
+    """Convert every image in src_dir into optimized .webp in dst_dir.
+
+    - Resizes so the long edge is at most WEBP_LONG_EDGE
+    - Encodes as WebP at WEBP_QUALITY
+    - Output filename is the source stem + '.webp' (lowercased)
+    - Idempotent: re-converting the same source overwrites the .webp
+
+    Returns a list of (src_basename, src_bytes, dst_bytes) tuples.
+    Requires Pillow (`pip install Pillow`).
+    """
+    try:
+        from PIL import Image
+    except ImportError:
+        print("[!] Pillow not installed — skipping image conversion.")
+        print("    Install with: pip install Pillow")
+        return []
+
+    if not os.path.isdir(src_dir):
+        print(f"[!] {label} source folder not found: {src_dir} — skipping conversion.")
+        return []
+
+    os.makedirs(dst_dir, exist_ok=True)
+    results = []
+    for src_path in sorted(glob.glob(os.path.join(src_dir, '*'))):
+        if not src_path.endswith(CONVERTIBLE_EXTS):
+            continue
+        base = os.path.basename(src_path)
+        stem, _ = os.path.splitext(base)
+        dst_path = os.path.join(dst_dir, stem.lower() + '.webp')
+
+        try:
+            img = Image.open(src_path)
+            # WebP doesn't need alpha for product photos; flatten on white.
+            if img.mode in ('RGBA', 'LA'):
+                bg = Image.new('RGB', img.size, (255, 255, 255))
+                bg.paste(img, mask=img.split()[-1])
+                img = bg
+            elif img.mode != 'RGB':
+                img = img.convert('RGB')
+
+            w, h = img.size
+            if max(w, h) > WEBP_LONG_EDGE:
+                if w >= h:
+                    new_w = WEBP_LONG_EDGE
+                    new_h = int(h * WEBP_LONG_EDGE / w)
+                else:
+                    new_h = WEBP_LONG_EDGE
+                    new_w = int(w * WEBP_LONG_EDGE / h)
+                img = img.resize((new_w, new_h), Image.LANCZOS)
+
+            img.save(dst_path, 'WEBP', quality=WEBP_QUALITY, method=6)
+            results.append((base, os.path.getsize(src_path), os.path.getsize(dst_path)))
+        except Exception as e:
+            print(f"[!] Failed to convert {base}: {e}")
+
+    if results:
+        before = sum(r[1] for r in results)
+        after = sum(r[2] for r in results)
+        print(f"  {label}: converted {len(results)} images "
+              f"({before/1024/1024:.1f} MB → {after/1024/1024:.1f} MB, "
+              f"{100*(1-after/before):.1f}% smaller)")
+    return results
 
 
 def read_store_info(ws):
@@ -56,7 +145,11 @@ def read_store_info(ws):
         "Default Location": "default_location",
         "Default Discount %": "default_discount",
         "Email Sender Name": "email_sender",
+        "Email Subject Line": "email_subject",
         "Contact Email": "contact_email",
+        "Store Phone": "store_phone",
+        "Store Address": "store_address",
+        "Store Hours": "store_hours",
         "Footer Text": "footer_text",
     }
 
@@ -121,10 +214,12 @@ def read_mattresses(ws, image_base_url):
         tags = [t.strip() for t in str(vals.get("Display Tags", "") or "").split(",") if t.strip()]
         features = [f.strip() for f in str(vals.get("Feature Keywords", "") or "").split(",") if f.strip()]
 
-        # Build image URL
+        # Build image URL. Source file may be .png/.jpg/etc., but auto-conversion
+        # produces .webp — point the URL at the converted version.
         img_file = str(vals.get("Image File Name", "") or "").strip()
         if img_file:
-            image_url = f"{image_base_url}/images/mattresses/{img_file}"
+            stem, _ = os.path.splitext(img_file)
+            image_url = f"{image_base_url}/images/mattresses/{stem.lower()}.webp"
         else:
             image_url = ""
 
@@ -199,7 +294,8 @@ def read_accessories(ws, image_base_url):
 
         img_file = str(vals.get("Image File Name", "") or "").strip()
         if img_file:
-            image = f"{image_base_url}/images/accessories/{img_file}"
+            stem, _ = os.path.splitext(img_file)
+            image = f"{image_base_url}/images/accessories/{stem.lower()}.webp"
         else:
             image = ""
 
@@ -393,10 +489,29 @@ def main():
                         help="Generate a complete index.html (requires ../index.html as template)")
     parser.add_argument("--output-dir", default=".",
                         help="Directory to write output files (default: current dir)")
+    parser.add_argument("--source-images", default=None,
+                        help="Path to retailer's submitted images folder (with mattresses/ and accessories/ subdirs). "
+                             "If set, images are auto-converted to optimized WebP into <output-dir>/images/.")
+    parser.add_argument("--skip-image-conversion", action="store_true",
+                        help="Skip image WebP conversion (if you've already done it).")
     args = parser.parse_args()
 
     # Strip trailing slash from URL
     args.image_base_url = args.image_base_url.rstrip("/")
+
+    # Auto-convert source images to WebP if a source folder was provided
+    if args.source_images and not args.skip_image_conversion:
+        print(f"Converting source images from {args.source_images}...")
+        convert_images_to_webp(
+            os.path.join(args.source_images, 'mattresses'),
+            os.path.join(args.output_dir, 'images', 'mattresses'),
+            label='mattresses'
+        )
+        convert_images_to_webp(
+            os.path.join(args.source_images, 'accessories'),
+            os.path.join(args.output_dir, 'images', 'accessories'),
+            label='accessories'
+        )
 
     print(f"Reading {args.spreadsheet}...")
     wb = openpyxl.load_workbook(args.spreadsheet, data_only=True)
