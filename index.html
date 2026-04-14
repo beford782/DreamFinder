@@ -10,7 +10,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%23d4a84b'/><ellipse cx='62' cy='50' rx='30' ry='45' fill='%230b1929'/></svg>">
 
   <!-- Open Graph / Social -->
-  <meta id="metaDescription" name="description" content="Find your perfect mattress with DreamFinder — a personalized sleep consultation powered by Bel Furniture. 8 quick questions, expert recommendations, and an exclusive discount.">
+  <meta id="metaDescription" name="description" content="Find your perfect mattress with DreamFinder — a personalized sleep consultation powered by Bel Furniture. 9 quick questions, expert recommendations, and an exclusive discount.">
   <meta id="ogTitle" property="og:title" content="Bel Furniture × DreamFinder — Find Your Perfect Mattress">
   <meta property="og:description" content="Take our 5-minute sleep consultation and get personalized mattress recommendations with an exclusive discount.">
   <meta property="og:type" content="website">
@@ -3931,15 +3931,6 @@
     window.nextQuestion = function() {
       if (currentQuestion < QUESTIONS.length - 1) {
         currentQuestion++;
-        renderQuestion();
-      } else {
-        showProfileScreen();
-      }
-    }
-
-    window.nextQuestion = function() {
-      if (currentQuestion < QUESTIONS.length - 1) {
-        currentQuestion++;
         // Skip question if skipIf condition is met
         const q = QUESTIONS[currentQuestion];
         if (q.skipIf && answers[q.skipIf.question] === q.skipIf.answer) {
@@ -4148,7 +4139,7 @@
       if (partnerSleep && partnerSleep !== 'solo') dataPoints++;
       if (firmness !== 5) dataPoints++;
       var confidence = Math.min(Math.round(70 + (dataPoints * 4)), 98);
-      document.getElementById('profileConfidence').textContent = confidence + '% profile match confidence \u00B7 Based on 7 answers';
+      document.getElementById('profileConfidence').textContent = confidence + '% profile match confidence \u00B7 Based on ' + QUESTIONS.length + ' answers';
 
       // ----- BUILD STAT GRID -----
       var sizeLabels = { twin: 'Twin', twin_xl: 'Twin XL', full: 'Full', queen: 'Queen', king: 'King', cal_king: 'Cal King' };
@@ -5106,11 +5097,6 @@
       document.getElementById('cardDots').innerHTML = dotsHtml;
     }
 
-    function goBackToQuestions() {
-      currentQuestion = QUESTIONS.length - 1;
-      showScreen('questionScreen');
-      renderQuestion();
-    }
 
     // ----- START OVER -----
     // ----- SAVED PICKS -----

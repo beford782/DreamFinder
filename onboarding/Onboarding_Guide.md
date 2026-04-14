@@ -1,7 +1,7 @@
 # DreamFinder Store Onboarding Guide
 
 Welcome! DreamFinder is a personalized mattress recommendation app that helps your
-floor sales team guide customers to their perfect mattress through a quick 8-question
+floor sales team guide customers to their perfect mattress through a quick 9-question
 sleep consultation quiz.
 
 To set up DreamFinder for your store, we need a few things from you.
