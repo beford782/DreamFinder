@@ -1,5 +1,16 @@
 # DreamFinder — Claude Code Project Guide
 
+## Working With Blake
+
+If Blake asks you to do something and you know of a better approach —
+whether it's a cleaner implementation, a simpler workflow, a tool that
+would make the task easier, or a potential pitfall with the current
+approach — **speak up before acting**. Briefly explain the alternative
+and let him decide. Don't just silently execute what was asked if you
+can see a better path.
+
+---
+
 ## What DreamFinder Is
 DreamFinder is a store-agnostic single-page tablet kiosk app for mattress showroom floors.
 Customers take a 9-question sleep quiz, get personalized mattress recommendations across
