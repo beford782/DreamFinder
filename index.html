@@ -1675,6 +1675,7 @@
       align-items: center;
       justify-content: center;
       transition: opacity 0.6s ease;
+      pointer-events: none;
     }
     .discount-reveal-overlay.fade-out {
       opacity: 0;
@@ -3065,7 +3066,7 @@
       </svg>
       <span id="locationText">Texas</span>
     </div>
-    <button id="headerStartOverBtn" onclick="startOver()" ontouchend="event.preventDefault();startOver();" style="display:none; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:var(--cream); font-family:inherit; font-size:0.75rem; font-weight:600; padding:0.4rem 0.9rem; border-radius:8px; cursor:pointer; touch-action:manipulation; letter-spacing:0.2px;">↺ Restart Quiz</button>
+    <button id="headerStartOverBtn" class="js-start-over" style="display:none; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:var(--cream); font-family:inherit; font-size:0.75rem; font-weight:600; padding:0.4rem 0.9rem; border-radius:8px; cursor:pointer; touch-action:manipulation; letter-spacing:0.2px;">↺ Restart Quiz</button>
     <button id="savedPicksBtn" onclick="window.showSavedPicks()" ontouchend="event.preventDefault();window.showSavedPicks();" style="display:none; background:linear-gradient(135deg,#c9a84c,#a8893d); color:#0d1730; font-family:inherit; font-size:0.75rem; font-weight:700; padding:0.4rem 0.9rem; border-radius:8px; cursor:pointer; touch-action:manipulation; border:none; gap:0.4rem; align-items:center;">
       ⭐ Picks <span id="savedPicksCount" style="background:#0d1730; color:#c9a84c; border-radius:50%; width:18px; height:18px; display:inline-flex; align-items:center; justify-content:center; font-size:0.65rem; font-weight:700; margin-left:0.2rem;">0</span>
     </button>
@@ -3457,7 +3458,7 @@
 
       
       <div class="email-actions">
-        <button class="email-skip-btn" onclick="startOver()" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); color:var(--cream); font-family:inherit; font-size:0.8rem; font-weight:600; padding:0.6rem 1.5rem; border-radius:10px; cursor:pointer; touch-action:manipulation;">↺ Start New Customer</button>
+        <button class="email-skip-btn js-start-over" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); color:var(--cream); font-family:inherit; font-size:0.8rem; font-weight:600; padding:0.6rem 1.5rem; border-radius:10px; cursor:pointer; touch-action:manipulation;">↺ Start New Customer</button>
       </div>
     </div>
   </div>
@@ -3495,7 +3496,7 @@
     </div>
     <div id="accFooter" style="text-align:center; margin-top:1.25rem; padding-bottom:1rem; opacity:0; transform:translateY(10px); transition:all 0.5s ease-out; display:flex; flex-direction:column; gap:0.5rem; align-items:center;">
       <button class="cta-btn" onclick="showEmailCapture()" style="background:linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 100%); color:var(--navy); border:2px solid var(--gold-pale); padding:0.75rem 2rem; border-radius:14px; font-family:inherit; font-size:0.95rem; font-weight:700; cursor:pointer; box-shadow:0 4px 0 #9a7a2e, 0 6px 20px rgba(212,168,75,0.25);">Send Me My Results</button>
-      <button class="cta-btn" onclick="startOver()" style="background:transparent; color:var(--cream-dim); font-size:0.72rem; padding:0.4rem 1rem; border:1px solid rgba(255,255,255,0.1); font-weight:500; border-radius:8px; cursor:pointer; font-family:inherit;">Start Over</button>
+      <button class="cta-btn js-start-over" style="background:transparent; color:var(--cream-dim); font-size:0.72rem; padding:0.4rem 1rem; border:1px solid rgba(255,255,255,0.1); font-weight:500; border-radius:8px; cursor:pointer; font-family:inherit; touch-action:manipulation;">Start Over</button>
     </div>
   </div>
 
@@ -4448,7 +4449,7 @@
             '</div>'
           ).join('');
           return `
-            <div class="mattress-card" data-id="${m.id}" data-tier="${tier}" onclick="window.openMattressDrawer('${m.id}', ${JSON.stringify(top3.map(x=>x.id))})" ontouchend="event.preventDefault();window.openMattressDrawer('${m.id}', ${JSON.stringify(top3.map(x=>x.id))});" style="touch-action:manipulation; cursor:pointer;">\n              ${isTopPick?`<div class="top-pick-badge"><div class="top-pick-icon">${icon('target',28)}</div><div><div class="top-pick-label">Top Pick For You</div><div class="top-pick-why">${topPickWhy}</div></div></div>`:''}
+            <div class="mattress-card" data-id="${m.id}" data-tier="${tier}" style="touch-action:manipulation; cursor:pointer;">\n              ${isTopPick?`<div class="top-pick-badge"><div class="top-pick-icon">${icon('target',28)}</div><div><div class="top-pick-label">Top Pick For You</div><div class="top-pick-why">${topPickWhy}</div></div></div>`:''}
               ${m.imageUrl?`<div class="card-image"><img src="${m.imageUrl}" alt="${m.name}"></div>`:''}
               <div class="card-header">
                 <div>
@@ -4471,17 +4472,6 @@
         }).join('')}</div>`;
 
         document.getElementById(tier + 'Content').innerHTML = html;
-
-        // Attach direct touch listeners for iPad
-        document.getElementById(tier + 'Content').querySelectorAll('.mattress-card').forEach(function(card) {
-          card.addEventListener('touchend', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            var id = card.getAttribute('data-id');
-            var orderIds = Array.from(document.querySelectorAll('.mattress-card[data-tier="' + tier + '"]')).map(function(c){ return c.getAttribute('data-id'); });
-            window.openMattressDrawer(id, orderIds);
-          }, { passive: false });
-        });
       });
       
       const dotsHtml = Array(firstTierCardCount).fill(0).map((_, i) => 
@@ -4678,7 +4668,7 @@
       }, 900);
 
       // Phase 3: Fade out at 9s, hide at 9.7s
-      setTimeout(() => { overlay.classList.add('fade-out'); overlay.style.pointerEvents = 'none'; }, 9000);
+      setTimeout(() => { overlay.classList.add('fade-out'); }, 9000);
       setTimeout(() => { overlay.style.display = 'none'; overlay.classList.add('hidden'); }, 9700);
 
       // Log full analytics summary
@@ -5308,69 +5298,27 @@
     })();
 
 
-    
-    // ===== GLOBAL iOS TOUCH FIX =====
-    // iOS Safari sometimes blocks clicks on elements with onclick. This converts
-    // touchend events to clicks globally for all buttons and tappable divs.
-    document.addEventListener('touchend', function(e) {
-      var el = e.target;
-      // Walk up to find the clickable element
-      while (el && el !== document.body) {
-        if (el.tagName === 'BUTTON' || 
-            el.onclick || 
-            el.getAttribute('onclick') ||
-            el.classList.contains('mattress-card') ||
-            el.classList.contains('option-card') ||
-            el.classList.contains('tier-tab') ||
-            el.classList.contains('accessory-card')) {
-          e.preventDefault();
-          el.click();
-          return;
-        }
-        el = el.parentElement;
-      }
-    }, { passive: false });
 
-    // Direct touch delegation on carousel container for iPad
-    document.addEventListener('DOMContentLoaded', function() {
-      var carousel = document.querySelector('.carousel-container');
-      if (carousel) {
-        carousel.addEventListener('touchend', function(e) {
-          var card = e.target.closest('.mattress-card');
-          if (card) {
-            e.preventDefault();
-            e.stopPropagation();
-            var id = card.getAttribute('data-id');
-            var tier = card.getAttribute('data-tier');
-            var orderIds = Array.from(document.querySelectorAll('.mattress-card[data-tier="' + tier + '"]')).map(function(c){ return c.getAttribute('data-id'); });
-            window.openMattressDrawer(id, orderIds);
-          }
-        }, { passive: false });
-      }
-      // Restart button
-      var hBtn = document.getElementById('headerStartOverBtn');
-      if (hBtn) {
-        hBtn.addEventListener('touchend', function(e) {
-          e.preventDefault();
-          window.startOver();
-        }, { passive: false });
+    // ===== Unified delegated tap handlers =====
+    // `touch-action: manipulation` is set on all tappable elements, so iOS
+    // fires `click` within ~50ms of touchend. One listener handles everything.
+    document.addEventListener('click', function(e) {
+      // Any "start over" / "restart" button
+      var soBtn = e.target.closest('.js-start-over');
+      if (soBtn) { e.preventDefault(); window.startOver(); return; }
+
+      // Mattress result cards → open drawer
+      var card = e.target.closest('.mattress-card');
+      if (card) {
+        var id = card.getAttribute('data-id');
+        var tier = card.getAttribute('data-tier');
+        var orderIds = Array.from(
+          document.querySelectorAll('.mattress-card[data-tier="' + tier + '"]')
+        ).map(function(c) { return c.getAttribute('data-id'); });
+        window.openMattressDrawer(id, orderIds);
+        return;
       }
     });
-
-    // ===== Programmatic click handlers (failsafe for inline onclick) =====
-    document.querySelectorAll('.email-skip-btn').forEach(btn => {
-      btn.addEventListener('click', function(e) { e.preventDefault(); window.startOver(); });
-    });
-    // Accessories "Start Over" button
-    const accFooter = document.getElementById('accFooter');
-    if (accFooter) {
-      const accBtns = accFooter.querySelectorAll('.cta-btn');
-      accBtns.forEach(btn => {
-        if (btn.textContent.trim() === 'Start Over') {
-          btn.addEventListener('click', function(e) { e.preventDefault(); window.startOver(); });
-        }
-      });
-    }
   </script>
 
   <script>
