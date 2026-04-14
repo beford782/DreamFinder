@@ -2500,6 +2500,15 @@
       margin-bottom: 0.1rem;
     }
 
+    .price-tier {
+      display: inline-block;
+      margin-left: 0.3rem;
+      color: var(--gold);
+      font-weight: 700;
+      font-size: 0.82em;
+      letter-spacing: 0.5px;
+    }
+
     .card-name {
       font-size: 0.95rem;
       font-weight: 700;
@@ -3451,6 +3460,11 @@
       <button class="tier-tab silver" onclick="showTier('silver')">🥈 Silver</button>
       <button class="tier-tab bronze" onclick="showTier('bronze')">🥉 Bronze</button>
     </div>
+    <div id="tierExplainer" style="text-align:center; font-size:0.7rem; color:var(--cream-dim); padding:0.4rem 1rem 0.6rem; line-height:1.4;">
+      <span style="color:#d4a84b; font-weight:700;">Gold</span> · premium materials &nbsp;·&nbsp;
+      <span style="color:#c0c7ce; font-weight:700;">Silver</span> · mid-range value &nbsp;·&nbsp;
+      <span style="color:#cd7f32; font-weight:700;">Bronze</span> · entry-level
+    </div>
     <div style="text-align:center; font-size:0.68rem; color:var(--cream-dim); margin:-0.25rem 0 0.4rem; opacity:0.85;">Tap any mattress card to explore details &amp; features</div>
     
     <!-- Carousel container -->
@@ -3520,6 +3534,8 @@
       <h3 style="font-size:1.1rem; font-weight:700; color:var(--cream); margin-bottom:0.2rem;">Customer's Interested Picks</h3>
       <p style="font-size:0.75rem; color:var(--cream-dim);">Mattresses the customer marked as interested</p>
     </div>
+    <!-- Customer context card (built in showSavedPicks) -->
+    <div id="customerContextCard" style="margin-bottom:1rem;"></div>
     <div id="savedPicksList" style="display:flex; flex-direction:column; gap:0.75rem; margin-bottom:1.5rem;"></div>
     <div style="text-align:center; display:flex; flex-direction:column; gap:0.6rem; align-items:center;">
       <button onclick="showScreen('resultsScreen')" ontouchend="event.preventDefault();showScreen('resultsScreen');" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:var(--cream); font-family:inherit; font-size:0.82rem; font-weight:600; padding:0.6rem 1.5rem; border-radius:10px; cursor:pointer; touch-action:manipulation;">← Back to Results</button>
@@ -4087,6 +4103,14 @@
       container.style.animation = 'none';
       container.offsetHeight;
       container.style.animation = '';
+    }
+
+    // Quality tiers (gold/silver/bronze) map directly to price indicators.
+    function priceTierSymbol(tier) {
+      if (tier === 'gold') return '$$$';
+      if (tier === 'silver') return '$$';
+      if (tier === 'bronze') return '$';
+      return '';
     }
 
     function getFirmnessLabel(val) {
@@ -4831,7 +4855,7 @@
               <div class="card-header">
                 <div>
                   <div class="card-brand">${m.brand}${m.subBrand?' &middot; '+m.subBrand:''}</div>
-                  <div class="card-name">${m.name}</div>
+                  <div class="card-name">${m.name} <span class="price-tier">${priceTierSymbol(tier)}</span></div>
                 </div>
                 <span class="match-score">${pct}%</span>
               </div>
@@ -5521,7 +5545,8 @@
           brand: d.m.brand + (d.m.subBrand ? ' · ' + d.m.subBrand : ''),
           pct: d.pct,
           firmFeel: d.firmFeel,
-          imageUrl: d.m.imageUrl || ''
+          imageUrl: d.m.imageUrl || '',
+          tier: d.tier || ''
         });
       }
       // Update button state
@@ -5546,7 +5571,64 @@
       if (countEl) countEl.textContent = total;
     };
 
+    // Salesperson context labels (S6)
+    const TRIGGER_LABELS = {
+      pain: 'Back or Body Pain',
+      worn_out: 'Old Mattress',
+      moving: 'Moving or New Space',
+      upgrade: 'Just Upgrading',
+      browsing: 'Just Looking'
+    };
+    const QUALITY_LABELS = { poor: 'Poorly', fair: 'Not Great', okay: 'Okay', well: 'Pretty Well' };
+    const AGE_LABELS = {
+      under_2: '< 2 yrs', three_seven: '3–7 yrs', eight_fifteen: '8–15 yrs',
+      fifteen_plus: '15+ yrs', not_sure: 'Not sure'
+    };
+    const SIZE_LABELS_SHORT = {
+      twin: 'Twin', twin_xl: 'Twin XL', full: 'Full', queen: 'Queen', king: 'King', cal_king: 'Cal King'
+    };
+
+    function renderCustomerContextCard() {
+      var el = document.getElementById('customerContextCard');
+      if (!el) return;
+      var profile = analytics.profileName ? (analytics.profileName + ' · ' + (analytics.profileSubtitle || '')) : '';
+      var triggerLbl = TRIGGER_LABELS[answers.trigger] || '';
+      var qualityLbl = QUALITY_LABELS[answers.sleep_quality] || '';
+      var ageLbl = AGE_LABELS[answers.current_mattress_age] || '';
+      var sizeLbl = SIZE_LABELS_SHORT[answers.mattress_size] || '';
+      var firmness = answers.firmness || 5;
+      var firmLbl = firmness <= 3 ? 'Plush' : firmness >= 7 ? 'Firm' : 'Medium';
+      var tempLbl = answers.temperature === 'hot' ? 'Hot' : answers.temperature === 'cold' ? 'Cold' :
+                    answers.temperature === 'opposite' ? 'Mixed' : 'Comfortable';
+      var partnerLbl = answers.partner_sleep === 'partner' ? 'Shared bed' :
+                       answers.partner_sleep === 'family' ? 'Family bed' : 'Solo';
+      var issues = (answers.sleep_issues || []).filter(function(x){ return x !== 'none'; });
+      var issuesLbl = issues.length ? issues.length + ' issue' + (issues.length>1?'s':'') : 'No issues';
+
+      var pills = [];
+      if (sizeLbl) pills.push(sizeLbl);
+      pills.push(firmLbl + ' feel');
+      if (tempLbl !== 'Comfortable') pills.push(tempLbl + ' sleeper');
+      pills.push(partnerLbl);
+      if (ageLbl) pills.push('Mattress ' + ageLbl);
+      if (qualityLbl) pills.push('Sleeps ' + qualityLbl);
+      pills.push(issuesLbl);
+
+      el.innerHTML =
+        '<div style="background:linear-gradient(135deg, rgba(212,168,75,0.12), rgba(212,168,75,0.04)); border:1px solid rgba(212,168,75,0.35); border-radius:14px; padding:0.85rem 1rem;">'
+        + (triggerLbl ? '<div style="font-size:0.6rem; text-transform:uppercase; letter-spacing:1.8px; color:var(--gold); font-weight:700; margin-bottom:0.25rem;">Came in for</div>'
+            + '<div style="font-size:1.05rem; font-weight:700; color:var(--cream); margin-bottom:0.55rem;">' + triggerLbl + '</div>' : '')
+        + (profile ? '<div style="font-size:0.7rem; color:var(--cream-dim); margin-bottom:0.5rem;">Profile: <span style="color:var(--gold); font-weight:600;">' + profile + '</span></div>' : '')
+        + '<div style="display:flex; flex-wrap:wrap; gap:0.35rem;">'
+        + pills.map(function(p) {
+            return '<span style="font-size:0.65rem; color:var(--cream); background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); padding:0.25rem 0.55rem; border-radius:999px;">' + p + '</span>';
+          }).join('')
+        + '</div>'
+        + '</div>';
+    }
+
     window.showSavedPicks = function() {
+      renderCustomerContextCard();
       var list = document.getElementById('savedPicksList');
       if (!list) return;
       var html = '';
@@ -5561,7 +5643,7 @@
             + (p.imageUrl ? '<img src="' + p.imageUrl + '" style="width:70px; height:60px; object-fit:cover; border-radius:8px; flex-shrink:0;">' : '')
             + '<div style="flex:1;">'
             + '<div style="font-size:0.65rem; color:var(--gold); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:0.15rem;">Pick #' + (i+1) + '</div>'
-            + '<div style="font-size:1rem; font-weight:700; color:var(--cream);">' + p.name + '</div>'
+            + '<div style="font-size:1rem; font-weight:700; color:var(--cream);">' + p.name + (p.tier ? ' <span class="price-tier">' + priceTierSymbol(p.tier) + '</span>' : '') + '</div>'
             + '<div style="font-size:0.72rem; color:var(--cream-dim);">' + p.brand + '</div>'
             + '<div style="font-size:0.72rem; color:var(--gold); margin-top:0.2rem;">' + p.pct + '% Match · ' + p.firmFeel + '</div>'
             + '</div>'
@@ -5794,7 +5876,8 @@
       }
 
       document.getElementById('drawerBrand').textContent = m.brand + (m.subBrand ? ' - ' + m.subBrand : '');
-      document.getElementById('drawerName').textContent = m.name;
+      var priceSym = priceTierSymbol(d.tier || '');
+      document.getElementById('drawerName').innerHTML = m.name + (priceSym ? ' <span class="price-tier">' + priceSym + '</span>' : '');
       document.getElementById('drawerSub').textContent = (m.tags||[]).join(' - ');
       document.getElementById('drawerMatch').textContent = d.pct + '% Match';
 
