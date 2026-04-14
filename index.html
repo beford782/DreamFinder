@@ -1345,6 +1345,106 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
+
+    /* ===== CONFIDENCE + SOCIAL PROOF (under subtitle) ===== */
+    .profile-confidence-pill {
+      display: inline-block;
+      margin-top: 0.5rem;
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      background: rgba(212,168,75,0.12);
+      border: 1px solid rgba(212,168,75,0.3);
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      opacity: 0;
+    }
+    .profile-screen.animate .profile-confidence-pill {
+      animation: profileFadeIn 0.35s ease-out 0.72s forwards;
+    }
+
+    .profile-social-proof {
+      font-size: 0.65rem;
+      color: rgba(240,230,200,0.45);
+      margin-top: 0.35rem;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      opacity: 0;
+    }
+    .profile-screen.animate .profile-social-proof {
+      animation: profileFadeIn 0.35s ease-out 0.82s forwards;
+    }
+
+    /* ===== PERSONALIZED OPENER ===== */
+    .profile-opener {
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--cream-dim);
+      font-style: italic;
+      margin: 0.6rem 0 0.2rem;
+      line-height: 1.4;
+      opacity: 0;
+    }
+    .profile-opener:empty { display: none; }
+    .profile-screen.animate .profile-opener {
+      animation: profileFadeIn 0.4s ease-out 0.6s forwards;
+    }
+
+    /* ===== WHAT'S NOT A PRIORITY ===== */
+    .profile-non-priority {
+      font-size: 0.7rem;
+      color: rgba(240,230,200,0.48);
+      text-align: center;
+      margin: -0.25rem 0 0.75rem;
+      line-height: 1.35;
+      padding: 0 0.5rem;
+      opacity: 0;
+    }
+    .profile-non-priority:empty { display: none; }
+    .profile-screen.animate .profile-non-priority {
+      animation: profileFadeIn 0.4s ease-out 1.5s forwards;
+    }
+
+    /* ===== BACK TO EDIT LINK ===== */
+    .profile-back-edit {
+      display: block;
+      text-align: center;
+      margin-top: 0.6rem;
+      font-size: 0.72rem;
+      color: rgba(240,230,200,0.5);
+      text-decoration: none;
+      font-family: inherit;
+      letter-spacing: 0.2px;
+      touch-action: manipulation;
+      cursor: pointer;
+    }
+    .profile-back-edit:active { color: var(--gold); }
+
+    /* ===== CTA loading state (anticipation pacing) ===== */
+    .profile-cta-btn.loading {
+      background: linear-gradient(180deg, rgba(212,168,75,0.45) 0%, rgba(184,146,47,0.45) 100%);
+      color: rgba(15,31,51,0.6);
+      cursor: wait;
+      pointer-events: none;
+      box-shadow: 0 2px 0 rgba(154,122,46,0.5), 0 3px 10px rgba(212,168,75,0.15);
+    }
+
+    /* ===== PROFILE THEME ACCENTS =====
+       Applied as .theme-warm / .theme-cool / .theme-calm / .theme-energetic
+       on the .profile-screen. Recolors the glow + priority card accents. */
+    .profile-screen.theme-warm  { --profile-accent: #e07b4a; --profile-accent-glow: rgba(224,123,74,0.18); }
+    .profile-screen.theme-cool  { --profile-accent: #5aa8d6; --profile-accent-glow: rgba(90,168,214,0.18); }
+    .profile-screen.theme-calm  { --profile-accent: #8fb57e; --profile-accent-glow: rgba(143,181,126,0.16); }
+    .profile-screen.theme-energetic { --profile-accent: #d4a84b; --profile-accent-glow: rgba(212,168,75,0.18); }
+
+    .profile-screen[class*="theme-"] .profile-priority-icon-wrap {
+      background: var(--profile-accent-glow, rgba(212,168,75,0.12));
+    }
+    .profile-screen[class*="theme-"] .profile-bg-glow {
+      background: radial-gradient(circle at 50% 30%, var(--profile-accent-glow, rgba(212,168,75,0.18)) 0%, transparent 70%);
+    }
       background: rgba(255, 193, 7, 0.2);
       color: #ffd54f;
     }
@@ -3235,23 +3335,28 @@
       <div class="profile-particle"></div>
       <div class="profile-particle"></div>
     </div>
-    
+
     <div class="profile-content">
-      
+
       <!-- Badge -->
       <div class="profile-reveal-badge">
         <span class="profile-badge-text">
           <span class="profile-checkmark"></span>
-          Profile Complete
+          Your Sleep DNA, Decoded
         </span>
       </div>
-      
+
       <!-- Icon + Name + Subtitle -->
       <div class="profile-hero">
         <div class="profile-reveal-icon" id="profileIcon"></div>
         <div class="profile-reveal-title" id="profileTitle">The <span class="profile-highlight">Sleeper</span></div>
         <div class="profile-subtitle" id="profileSubtitle"></div>
+        <div class="profile-confidence-pill" id="profileConfidencePill"></div>
+        <div class="profile-social-proof" id="profileSocialProof"></div>
       </div>
+
+      <!-- Personalised opener (trigger + age + quality) -->
+      <div class="profile-opener" id="profileOpener"></div>
 
       <!-- Quick-stat grid — salesperson reads in 2 seconds -->
       <div class="profile-stat-grid" id="profileStatGrid"></div>
@@ -3265,17 +3370,23 @@
       <!-- Priority cards — plain English, no percentages -->
       <div class="profile-priorities" id="profileScores"></div>
 
+      <!-- What's NOT a priority -->
+      <div class="profile-non-priority" id="profileNonPriority"></div>
+
       <!-- Chips (hidden, kept for analytics use) -->
       <div id="profileChips" style="display:none;"></div>
       <div id="profileConfidence" style="display:none;"></div>
-      
+
       <!-- CTA -->
       <div class="profile-cta-section">
-        <button class="profile-cta-btn" onclick="showResults()" ontouchend="event.preventDefault();showResults();">
-          See My Perfect Matches →
+        <button class="profile-cta-btn" id="profileCtaBtn" onclick="showResults()" ontouchend="event.preventDefault();showResults();">
+          <span id="profileCtaText">Show Me My Top 3 Picks →</span>
         </button>
+        <a href="#" class="profile-back-edit" id="profileBackEdit"
+          onclick="event.preventDefault();window.showScreen('reviewScreen');window.renderReview();"
+          ontouchend="event.preventDefault();window.showScreen('reviewScreen');window.renderReview();">← Edit my answers</a>
       </div>
-      
+
     </div>
   </div>
 
@@ -4180,9 +4291,72 @@
     }
 
     // ----- SHOW PROFILE SCREEN -----
+    // ----- PROFILE THEME + SOCIAL PROOF LOOKUP -----
+    // Maps each of the 16 profile archetypes to a theme class and a fake-but-
+    // plausible "1 in N" frequency so the reveal feels specific.
+    const PROFILE_META = {
+      'The Ache Fighter':    { theme: 'warm',      rarity: 6  },
+      'The Back Saver':      { theme: 'warm',      rarity: 8  },
+      'The Heat Beater':     { theme: 'cool',      rarity: 5  },
+      'The Cozy Nester':     { theme: 'cool',      rarity: 12 },
+      'The Peacekeeper':     { theme: 'calm',      rarity: 7  },
+      'The Space Sharer':    { theme: 'calm',      rarity: 18 },
+      'The Cloud Chaser':    { theme: 'cool',      rarity: 9  },
+      'The Rock Solid':      { theme: 'energetic', rarity: 10 },
+      'The Night Owl':       { theme: 'calm',      rarity: 20 },
+      'The Restorer':        { theme: 'calm',      rarity: 14 },
+      'The Comeback':        { theme: 'warm',      rarity: 15 },
+      'The Fresh Start':     { theme: 'cool',      rarity: 22 },
+      'The Goldilocks':      { theme: 'energetic', rarity: 11 },
+      'The Dreamer':         { theme: 'energetic', rarity: 13 },
+      'The Steady Sleeper':  { theme: 'energetic', rarity: 9  },
+      'The Connoisseur':     { theme: 'energetic', rarity: 25 }
+    };
+
+    // Profile-specific one-liner openers (replace the generic "We'll find you a...")
+    const PROFILE_OPENERS = {
+      'The Ache Fighter':   "Let's get you out of pain. You need a ",
+      'The Back Saver':     "To support that back, we need a ",
+      'The Heat Beater':    "No more night sweats. You need a ",
+      'The Cozy Nester':    "Let's wrap you up warm with a ",
+      'The Peacekeeper':    "To keep the peace at night, we'll find you a ",
+      'The Space Sharer':   "With the whole family in bed, you'll want a ",
+      'The Cloud Chaser':   "Floating on a cloud means a ",
+      'The Rock Solid':     "For that firm foundation, you need a ",
+      'The Night Owl':      "To tame the night, we recommend a ",
+      'The Restorer':       "To truly recharge, you need a ",
+      'The Comeback':       "Time for a sleep comeback. You need a ",
+      'The Fresh Start':    "Breathe easy — you need a ",
+      'The Goldilocks':     "You know what you like. Here's a ",
+      'The Dreamer':        "Dream bigger with a ",
+      'The Steady Sleeper': "Steady and balanced — you'll love a ",
+      'The Connoisseur':    "For a discerning sleeper like you, we recommend a "
+    };
+
+    // Builds the italic opener line based on trigger / mattress age / sleep quality.
+    // Only one line shows — prioritize the strongest emotional hook.
+    function buildProfileOpener(answers) {
+      const trigger = answers.trigger;
+      const quality = answers.sleep_quality;
+      const age = answers.current_mattress_age;
+
+      // Highest-priority hooks: pain, moving, poor sleep, very old mattress
+      if (trigger === 'pain') return 'Pain is temporary — let\'s end it tonight.';
+      if (quality === 'poor') return 'You said you\'re sleeping poorly. That ends here.';
+      if (trigger === 'moving') return 'New home, new bed — the first night should feel like home.';
+      if (age === 'fifteen_plus') return 'Your mattress has earned its retirement.';
+      if (age === 'eight_fifteen') return 'Time to retire that old mattress.';
+      if (trigger === 'worn_out') return 'You\'ve waited long enough for better sleep.';
+      if (trigger === 'upgrade') return 'You\'re ready to level up.';
+      if (quality === 'fair') return 'Your sleep deserves better than fine.';
+      if (trigger === 'browsing' && quality === 'well') return 'Already sleeping well? Let\'s keep that going.';
+      if (trigger === 'browsing') return 'Curious minds sleep better — here\'s what fits you.';
+      return '';
+    }
+
     function showProfileScreen() {
       document.getElementById('progressFill').style.width = '100%';
-      
+
       const position = answers.sleep_position;
       const temp = answers.temperature;
       const firmness = answers.firmness || 5;
@@ -4190,18 +4364,20 @@
       const health = answers.health_conditions || [];
       const partnerSleep = answers.partner_sleep;
       const partnerDisturbance = answers.partner_disturbance;
-      
+
       // ----- ASSIGN PROFILE (16 types) -----
       const fullPositionLabels = {
         'side': 'Side Sleeper', 'back': 'Back Sleeper', 'stomach': 'Stomach Sleeper',
         'combo': 'Combo Sleeper', 'no_idea': 'Restless Sleeper'
       };
-      
-      // Build subtitle: temperature + position
+
+      // Build subtitle: temperature + position + partner context
       var subtitle = '';
       if (temp === 'hot') subtitle += 'Hot ';
       else if (temp === 'cold') subtitle += 'Cozy ';
       subtitle += fullPositionLabels[position] || 'Sleeper';
+      if (partnerSleep === 'partner') subtitle += ' \u00B7 Shared Bed';
+      else if (partnerSleep === 'family') subtitle += ' \u00B7 Family Bed';
       
       // Count pain signals
       var painCount = 0;
@@ -4261,10 +4437,10 @@
         profileName = 'The Night Owl';
         profileIconKey = 'snore';
       } else if (isAging || hasExtraSupport) {
-        profileName = 'The Recharger';
+        profileName = 'The Restorer';
         profileIconKey = 'aging';
       } else if (hasSagging) {
-        profileName = 'The Long Hauler';
+        profileName = 'The Comeback';
         profileIconKey = 'sagging';
       } else if (hasAllergies) {
         profileName = 'The Fresh Start';
@@ -4273,13 +4449,13 @@
         profileName = 'The Goldilocks';
         profileIconKey = 'comfort';
       } else if (noIssues && noHealth) {
-        profileName = 'The Upgrader';
+        profileName = 'The Dreamer';
         profileIconKey = 'check';
       } else if (isMedium) {
-        profileName = 'The Balanced Sleeper';
+        profileName = 'The Steady Sleeper';
         profileIconKey = 'target';
       } else {
-        profileName = 'The Smart Shopper';
+        profileName = 'The Connoisseur';
         profileIconKey = 'moon';
       }
       
@@ -4287,11 +4463,20 @@
       document.getElementById('profileIcon').innerHTML = icon(profileIconKey, 56);
       document.getElementById('profileTitle').innerHTML = '<span class="profile-highlight">' + profileName + '</span>';
       document.getElementById('profileSubtitle').textContent = subtitle;
-      
+
+      // Apply per-profile theme class (warm / cool / calm / energetic)
+      var meta = PROFILE_META[profileName] || { theme: 'energetic', rarity: 10 };
+      var profileScreenEl = document.getElementById('profileScreen');
+      profileScreenEl.classList.remove('theme-warm', 'theme-cool', 'theme-calm', 'theme-energetic');
+      profileScreenEl.classList.add('theme-' + meta.theme);
+
+      // Personalised italic opener (from trigger / sleep_quality / mattress age)
+      document.getElementById('profileOpener').textContent = buildProfileOpener(answers);
+
       // Store for use on results and accessories pages
       analytics.profileName = profileName;
       analytics.profileSubtitle = subtitle;
-      
+
       // ----- CONFIDENCE SIGNAL -----
       var dataPoints = 1; // position always answered
       if (temp && temp !== 'comfortable') dataPoints++;
@@ -4301,6 +4486,11 @@
       if (firmness !== 5) dataPoints++;
       var confidence = Math.min(Math.round(70 + (dataPoints * 4)), 98);
       document.getElementById('profileConfidence').textContent = confidence + '% profile match confidence \u00B7 Based on ' + visibleQuestions().length + ' answers';
+      // Surface the confidence visibly as a pill under the subtitle
+      document.getElementById('profileConfidencePill').textContent = confidence + '% Match Confidence';
+      // Social proof: "1 in N customers share this profile"
+      document.getElementById('profileSocialProof').textContent =
+        '1 in ' + meta.rarity + ' customers share this profile';
 
       // ----- BUILD STAT GRID -----
       var sizeLabels = { twin: 'Twin', twin_xl: 'Twin XL', full: 'Full', queen: 'Queen', king: 'King', cal_king: 'Cal King' };
@@ -4338,7 +4528,7 @@
       if (partnerDisturbance === 'yes_often' || partnerDisturbance === 'sometimes' || partnerSleep === 'partner' || partnerSleep === 'family') recParts.push('<strong>motion isolation</strong>');
       if (issues.includes('back_pain') || health.includes('extra_support')) recParts.push('<strong>lumbar support</strong>');
       
-      var oneliner = "We'll find you a ";
+      var oneliner = PROFILE_OPENERS[profileName] || "We'll find you a ";
       if (recParts.length === 1) {
         oneliner += recParts[0];
       } else if (recParts.length === 2) {
@@ -4400,10 +4590,42 @@
           + '<div class="profile-priority-badge">' + p.badge + '</div>'
           + '</div>';
       }).join('');
-      
+
+      // ----- WHAT'S NOT A PRIORITY (P13) -----
+      // Help set expectations: mention one or two tradeoffs the customer
+      // is implicitly making based on what didn't land in the top 3.
+      var topNames = topPriorities.map(function(p) { return p.name; });
+      var nonPriorityMsg = '';
+      var hasCooling = topNames.indexOf('Temperature Regulation') > -1;
+      var hasSupport = topNames.indexOf('Spinal Support') > -1;
+      var hasPressure = topNames.indexOf('Pressure Relief') > -1;
+      var hasMotion = topNames.indexOf('Motion Isolation') > -1;
+      if (!hasCooling && (temp === 'comfortable' || temp === 'cold')) {
+        nonPriorityMsg = 'Cooling is a lower priority for you — we\'re focused on feel and support.';
+      } else if (!hasSupport && !hasPressure && !hasMotion && hasCooling) {
+        nonPriorityMsg = 'Temperature is your biggest need — feel and support come second.';
+      } else if (!hasMotion && partnerSleep === 'solo') {
+        nonPriorityMsg = 'No partner, so we\'re not optimizing for motion isolation.';
+      }
+      document.getElementById('profileNonPriority').textContent = nonPriorityMsg;
+
+      // ----- ANTICIPATION PACING (P8) -----
+      // Brief "scoring mattresses…" hold on the CTA so the reveal feels earned.
+      var ctaBtn = document.getElementById('profileCtaBtn');
+      var ctaText = document.getElementById('profileCtaText');
+      if (ctaBtn && ctaText) {
+        var finalLabel = 'Show Me My Top 3 Picks →';
+        ctaText.textContent = 'Scoring mattresses against your profile…';
+        ctaBtn.classList.add('loading');
+        setTimeout(function() {
+          ctaBtn.classList.remove('loading');
+          ctaText.textContent = finalLabel;
+        }, 1800);
+      }
+
       // Show the profile screen
       showScreen('profileScreen');
-      
+
       // Trigger animations after screen is visible
       var ps = document.getElementById('profileScreen');
       ps.classList.remove('animate');
