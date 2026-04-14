@@ -15,12 +15,11 @@
   <meta property="og:description" content="Take our 5-minute sleep consultation and get personalized mattress recommendations with an exclusive discount.">
   <meta property="og:type" content="website">
   <meta name="theme-color" content="#0f1f33">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="DreamFinder">
   <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="icon-192.png">
-  <meta name="theme-color" content="#0f1f33">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -4274,7 +4273,11 @@
       topPick: null,
       events: [],
       log: function(event, data) {
-        const entry = { ts: Date.now(), event, ...(data || {}) };
+        // Shallow-copy data and drop `events` to avoid circular refs when
+        // callers pass getSummary() (which contains this.events).
+        const safe = data ? { ...data } : {};
+        delete safe.events;
+        const entry = { ts: Date.now(), event, ...safe };
         if (!this.events) this.events = [];
         this.events.push(entry);
         console.log('[DreamFinder]', event, data || '');
@@ -5319,17 +5322,6 @@
         return;
       }
     });
-  </script>
-
-  <script>
-    // Register Service Worker for offline support
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function() {
-        navigator.serviceWorker.register('./sw.js')
-          .then(function(reg) { console.log('SW registered'); })
-          .catch(function(err) { console.log('SW failed:', err); });
-      });
-    }
   </script>
 
   <!-- Privacy & Terms Overlay -->
