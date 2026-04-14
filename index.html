@@ -10,7 +10,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%23d4a84b'/><ellipse cx='62' cy='50' rx='30' ry='45' fill='%230b1929'/></svg>">
 
   <!-- Open Graph / Social -->
-  <meta id="metaDescription" name="description" content="Find your perfect mattress with DreamFinder — a personalized sleep consultation powered by Bel Furniture. 9 quick questions, expert recommendations, and an exclusive discount.">
+  <meta id="metaDescription" name="description" content="Find your perfect mattress with DreamFinder — a personalized sleep consultation powered by Bel Furniture. 12 quick questions, expert recommendations, and an exclusive discount.">
   <meta id="ogTitle" property="og:title" content="Bel Furniture × DreamFinder — Find Your Perfect Mattress">
   <meta property="og:description" content="Take our 5-minute sleep consultation and get personalized mattress recommendations with an exclusive discount.">
   <meta property="og:type" content="website">
@@ -3212,6 +3212,20 @@
     </div>
   </div>
 
+  <!-- SCREEN: Review Answers (before profile reveal) -->
+  <div class="screen" id="reviewScreen">
+    <div class="question-container" style="max-width:620px; margin:0 auto; padding:1.5rem 1rem 2rem;">
+      <div class="question-category" style="margin-bottom:0.4rem;">Almost There</div>
+      <div class="question-text" style="font-size:1.4rem; margin-bottom:0.4rem;">Quick review</div>
+      <div class="question-help" style="margin-bottom:1.25rem;">Make sure everything looks right, then we'll build your match.</div>
+      <div id="reviewList"></div>
+      <div class="question-nav" style="margin-top:1.5rem;">
+        <button class="nav-btn back" onclick="prevQuestion()" ontouchend="event.preventDefault();prevQuestion();">← Back</button>
+        <button class="nav-btn next" onclick="window.showProfileScreen()" ontouchend="event.preventDefault();window.showProfileScreen();">Looks Good →</button>
+      </div>
+    </div>
+  </div>
+
   <!-- SCREEN: Profile Summary -->
   <div class="profile-screen screen" id="profileScreen">
     <div class="profile-bg-glow"></div>
@@ -3594,6 +3608,17 @@
     // ----- QUESTIONS -----
     const QUESTIONS = [
       {
+        id: 'trigger', category: 'Getting Started', question: "What brought you in today?",
+        helpText: "Helps your sleep specialist tailor the visit", type: 'single',
+        options: [
+          { id: 'pain', label: 'Back or Body Pain', icon: 'spine', sublabel: 'Current mattress is hurting me', scores: {} },
+          { id: 'worn_out', label: 'Old Mattress', icon: 'sagging', sublabel: 'Time for an upgrade', scores: {} },
+          { id: 'moving', label: 'Moving or New Space', icon: 'family', sublabel: 'New home, new bed', scores: {} },
+          { id: 'upgrade', label: 'Just Upgrading', icon: 'cloud', sublabel: 'Ready for something better', scores: {} },
+          { id: 'browsing', label: 'Just Looking', icon: 'smile', sublabel: 'Exploring options', scores: {} }
+        ]
+      },
+      {
         id: 'mattress_size', category: 'Getting Started', question: "What size mattress are you looking for?",
         helpText: "We'll make sure recommendations fit your space", type: 'single',
         options: [
@@ -3606,37 +3631,38 @@
         ]
       },
       {
-        id: 'sleep_position', category: 'Sleep Style', question: "How do you usually sleep?",
+        id: 'sleep_position', category: 'About You', question: "How do you usually sleep?",
         helpText: "Think about where you naturally end up", type: 'single',
         options: [
           { id: 'side', label: 'Side Sleeper', icon: 'side', sublabel: 'Curled up', scores: { plush: 2, pressureRelief: 2, soft: 1 } },
           { id: 'back', label: 'Back Sleeper', icon: 'back', sublabel: 'Flat on back', scores: { support: 2, medium: 2, zoned: 1 } },
           { id: 'stomach', label: 'Stomach Sleeper', icon: 'stomach', sublabel: 'Face down', scores: { firm: 2, support: 1 } },
           { id: 'combo', label: 'Combination', icon: 'combo', sublabel: 'Move around', scores: { medium: 2, responsive: 2 } },
-          { id: 'no_idea', label: 'No Idea', icon: 'question', sublabel: 'I wake up in weird positions', scores: { medium: 2, responsive: 2 } }
+          { id: 'no_idea', label: 'Not Sure', icon: 'question', sublabel: 'I wake up in weird positions', scores: { medium: 2, responsive: 2 } }
         ]
       },
       {
-        id: 'temperature', category: 'Comfort Preferences', question: "How do you sleep temperature-wise?",
-        helpText: "Temperature regulation is key to deep sleep", type: 'single',
+        id: 'body_type', category: 'About You', question: "What weight range should we match for?",
+        helpText: "This helps us pick the right support level", type: 'single',
         options: [
-          { id: 'hot', label: 'I Sleep Hot', icon: 'flame', sublabel: 'Night sweats, kick off covers', scores: { cooling: 3, hybrid: 2 } },
-          { id: 'comfortable', label: "I'm Comfortable", icon: 'smile', sublabel: 'No temperature issues', scores: {} },
-          { id: 'cold', label: 'I Sleep Cold', icon: 'snowflake', sublabel: 'Need blankets to warm up', scores: { memory: 1, plush: 1 } },
-          { id: 'opposite', label: "We're Opposite", icon: 'hotcold', sublabel: 'One hot, one cold', scores: { cooling: 2, hybrid: 1 } }
+          { id: 'petite', label: 'Under 130 lbs', icon: 'cloud', sublabel: 'Light support', scores: { plush: 2, soft: 1 } },
+          { id: 'average', label: '130 to 200 lbs', icon: 'weight', sublabel: 'Standard support', scores: { medium: 2 } },
+          { id: 'athletic', label: '200 to 230 lbs', icon: 'support', sublabel: 'Medium-firm support', scores: { support: 2, medium: 1, responsive: 1 } },
+          { id: 'plus', label: 'Over 230 lbs', icon: 'support', sublabel: 'Maximum support', scores: { firm: 2, support: 3, hybrid: 2, durability: 2 } },
+          { id: 'different', label: 'Different Weights', icon: 'partner', sublabel: 'Mixed support needs', scores: { medium: 2, support: 1, motionIsolation: 2 }, hideIf: { question: 'partner_sleep', answer: 'solo' } }
         ]
       },
       {
-        id: 'partner_sleep', category: 'Sleep Partner', question: "Who's sharing the bed with you?",
+        id: 'partner_sleep', category: "Who's With You", question: "Who's sharing the bed with you?",
         helpText: "This shapes which features matter most", type: 'single',
         options: [
           { id: 'solo', label: 'Solo Sleeper', icon: 'solo', sublabel: 'Just me', scores: {} },
           { id: 'partner', label: 'With a Partner', icon: 'partner', sublabel: 'Sharing the bed', scores: { motionIsolation: 2 } },
-          { id: 'family', label: "It's a Full Bed", icon: 'family', sublabel: 'Kids, pets, or both', scores: { durability: 2, motionIsolation: 1 } }
+          { id: 'family', label: 'Family Bed', icon: 'family', sublabel: 'Kids, pets, or both', scores: { durability: 2, motionIsolation: 1 } }
         ]
       },
       {
-        id: 'partner_disturbance', category: 'Sleep Partner', question: "Does your partner's movement wake you up?",
+        id: 'partner_disturbance', category: "Who's With You", question: "Does your partner's movement wake you up?",
         helpText: "Motion isolation is one of the biggest upgrades in a new mattress", type: 'single',
         skipIf: { question: 'partner_sleep', answer: 'solo' },
         options: [
@@ -3647,14 +3673,45 @@
         ]
       },
       {
-        id: 'firmness', category: 'Comfort Preferences', question: "What firmness level do you prefer?",
+        id: 'temperature', category: 'What You Like', question: "How do you sleep temperature-wise?",
+        helpText: "Temperature regulation is key to deep sleep", type: 'single',
+        options: [
+          { id: 'hot', label: 'I Sleep Hot', icon: 'flame', sublabel: 'Night sweats, kick off covers', scores: { cooling: 3, hybrid: 2 } },
+          { id: 'comfortable', label: "I'm Comfortable", icon: 'smile', sublabel: 'No temperature issues', scores: {} },
+          { id: 'cold', label: 'I Sleep Cold', icon: 'snowflake', sublabel: 'Need blankets to warm up', scores: { memory: 1, plush: 1 } },
+          { id: 'opposite', label: "We're Opposite", icon: 'hotcold', sublabel: 'One hot, one cold', scores: { cooling: 2, hybrid: 1 }, hideIf: { question: 'partner_sleep', answer: 'solo' } }
+        ]
+      },
+      {
+        id: 'firmness', category: 'What You Like', question: "What firmness level do you prefer?",
         helpText: "Slide to your ideal comfort", type: 'slider',
         min: 1, max: 10, defaultValue: 5,
         labels: ['Soft — Sink right in', 'Medium', 'Firm — Solid support']
       },
       {
-        id: 'sleep_issues', category: 'Current Sleep', question: "Any issues with your current mattress?",
-        helpText: "Select as many as apply", type: 'multiple',
+        id: 'current_mattress_age', category: "What You're Solving", question: "How old is your current mattress?",
+        helpText: "Most mattresses last 7–10 years", type: 'single',
+        options: [
+          { id: 'under_2', label: 'Less Than 2 Years', icon: 'check', sublabel: 'Pretty new', scores: {} },
+          { id: 'three_seven', label: '3 to 7 Years', icon: 'combo', sublabel: 'Middle of its life', scores: {} },
+          { id: 'eight_fifteen', label: '8 to 15 Years', icon: 'aging', sublabel: 'Past its prime', scores: {} },
+          { id: 'fifteen_plus', label: 'Over 15 Years', icon: 'sagging', sublabel: 'Long overdue', scores: {} },
+          { id: 'not_sure', label: 'Not Sure', icon: 'question', sublabel: "Can't remember", scores: {} }
+        ]
+      },
+      {
+        id: 'sleep_quality', category: "What You're Solving", question: "How well do you sleep right now?",
+        helpText: "Honest answer — we can help either way", type: 'single',
+        options: [
+          { id: 'poor', label: 'Poorly', icon: 'stiff', sublabel: 'Restless, waking often', scores: {} },
+          { id: 'fair', label: 'Not Great', icon: 'combo', sublabel: 'Could be a lot better', scores: {} },
+          { id: 'okay', label: 'Okay', icon: 'smile', sublabel: 'Mostly fine', scores: {} },
+          { id: 'well', label: 'Pretty Well', icon: 'check', sublabel: 'Usually rested', scores: {} }
+        ]
+      },
+      {
+        id: 'sleep_issues', category: "What You're Solving", question: "Any issues with your current mattress?",
+        helpText: "Pick your top 3", type: 'multiple',
         options: [
           { id: 'back_pain', label: 'Back Pain', icon: 'spine', sublabel: 'Lower or upper back', scores: { support: 3, zoned: 2, firm: 1 } },
           { id: 'hip_pain', label: 'Hip or Shoulder Pain', icon: 'pressure', sublabel: 'Pressure points', scores: { pressureRelief: 3, plush: 2 } },
@@ -3663,31 +3720,20 @@
           { id: 'stiff', label: 'Waking Up Stiff or Sore', icon: 'stiff', sublabel: 'Morning aches', scores: { pressureRelief: 2, comfort: 2 } },
           { id: 'sagging', label: 'Mattress Sagging', icon: 'sagging', sublabel: 'Dips or indentations', scores: { durability: 2, quality: 2 } },
           { id: 'too_soft', label: 'Mattress Too Soft', icon: 'couch', sublabel: 'Sinking in too much', scores: { firm: 3, support: 2 } },
-          { id: 'none', label: 'No Major Issues', icon: 'check', sublabel: 'Just time for an upgrade', scores: {} }
+          { id: 'none', label: 'No Major Issues', icon: 'check', sublabel: 'Just time for an upgrade', scores: { comfort: 1, quality: 1, durable: 1 } }
         ]
       },
       {
-        id: 'health_conditions', category: 'Health & Wellness', question: "Anything else going on that affects your sleep?",
-        helpText: "Select as many as apply", type: 'multiple',
+        id: 'health_conditions', category: "What You're Solving", question: "Anything else going on that affects your sleep?",
+        helpText: "Pick your top 3", type: 'multiple',
         options: [
           { id: 'nerve_pain', label: 'Nerve Pain or Tingling', icon: 'lightning', sublabel: 'Shooting pain, numbness', scores: { support: 3, firm: 2, zoned: 2 } },
           { id: 'allergies', label: 'Allergies', icon: 'sneeze', sublabel: 'Dust, sneezing, stuffy', scores: { hypoallergenic: 3 } },
           { id: 'snoring', label: 'Snoring or Sleep Apnea', icon: 'snore', sublabel: 'You or your partner', scores: { adjustable: 3 } },
           { id: 'reflux', label: 'Acid Reflux / Heartburn', icon: 'flame', sublabel: 'Burns when lying down', scores: { adjustable: 3 } },
           { id: 'extra_support', label: 'Need Extra Support', icon: 'weight', sublabel: 'Larger build or heavier weight', scores: { support: 3, firm: 2, durable: 3 } },
-          { id: 'getting_older', label: 'Getting Older', icon: 'aging', sublabel: "Body's changing", scores: { support: 2, comfort: 2, pressureRelief: 1 } },
+          { id: 'getting_older', label: 'Changing Needs', icon: 'aging', sublabel: 'Looking for gentler support', scores: { support: 2, comfort: 2, pressureRelief: 1 } },
           { id: 'none', label: 'None of These', icon: 'check', sublabel: "I'm good", scores: {} }
-        ]
-      },
-      {
-        id: 'body_type', category: 'Support Level', question: "What weight range should we match for?",
-        helpText: "This helps us pick the right support level", type: 'single',
-        options: [
-          { id: 'petite', label: 'Under 130 lbs', icon: 'cloud', sublabel: 'Light support', scores: { plush: 2, soft: 1 } },
-          { id: 'average', label: '130 to 200 lbs', icon: 'weight', sublabel: 'Standard support', scores: { medium: 2 } },
-          { id: 'athletic', label: '200 to 230 lbs', icon: 'support', sublabel: 'Medium-firm support', scores: { support: 2, medium: 1, responsive: 1 } },
-          { id: 'plus', label: 'Over 230 lbs', icon: 'support', sublabel: 'Maximum support', scores: { firm: 2, support: 3, hybrid: 2, durability: 2 } },
-          { id: 'different', label: 'Different Weights', icon: 'partner', sublabel: 'Mixed support needs', scores: { medium: 2, support: 1, motionIsolation: 2 } }
         ]
       }
     ];
@@ -3799,7 +3845,10 @@
     window.showScreen = function(id) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       document.getElementById(id).classList.add('active');
-      const showProgress = id === 'questionScreen' || id === 'profileScreen';
+      const showProgress = id === 'questionScreen' || id === 'profileScreen' || id === 'reviewScreen';
+      if (id === 'reviewScreen') {
+        document.getElementById('progressFill').style.width = '100%';
+      }
       document.getElementById('progressBar').classList.toggle('visible', showProgress);
       // Show/hide location vs Start Over in header
       const loc = document.querySelector('.header-location');
@@ -3826,6 +3875,7 @@
       }
       currentQuestion = 0;
       answers = {};
+      editingFromReview = false;
       analytics.startedAt = Date.now();
       analytics.log('quiz_started');
       showScreen('questionScreen');
@@ -3841,11 +3891,29 @@
       return "Great, keep going";
     }
 
+    // Compute the list of questions visible given current answers (skip logic).
+    // Used by progress bar and review screen.
+    function visibleQuestions() {
+      return QUESTIONS.filter(qq =>
+        !qq.skipIf || answers[qq.skipIf.question] !== qq.skipIf.answer
+      );
+    }
+
     window.renderQuestion = function() {
       const q = QUESTIONS[currentQuestion];
-      const total = QUESTIONS.length;
-      const pct = ((currentQuestion) / total) * 100;
+      // Progress reflects only questions that will actually be shown.
+      const visible = visibleQuestions();
+      const stepIdx = Math.max(0, visible.findIndex(qq => qq.id === q.id));
+      const total = visible.length;
+      const pct = (stepIdx / total) * 100;
       document.getElementById('progressFill').style.width = pct + '%';
+
+      // Filter out options that are hidden for the current answer set.
+      const displayOptions = q.options
+        ? q.options.filter(opt =>
+            !opt.hideIf || answers[opt.hideIf.question] !== opt.hideIf.answer
+          )
+        : null;
 
       const container = document.getElementById('questionContainer');
 
@@ -3853,7 +3921,7 @@
         const val = answers[q.id] !== undefined ? answers[q.id] : q.defaultValue;
         container.innerHTML = `
           <div class="question-category">${q.category}</div>
-          <div class="question-number">${getProgressPhrase(currentQuestion, total)}</div>
+          <div class="question-number">${getProgressPhrase(stepIdx, total)}</div>
           <div class="question-text">${q.question}</div>
           <div class="question-help">${q.helpText}</div>
           <div class="slider-container">
@@ -3880,21 +3948,21 @@
       } else {
         const isMulti = q.type === 'multiple';
         const selected = isMulti ? (answers[q.id] || []) : answers[q.id];
-        const colClass = q.options.length <= 3 ? 'single-col' : (q.options.length > 8 ? 'compact' : '');
+        const colClass = displayOptions.length <= 3 ? 'single-col' : (displayOptions.length > 8 ? 'compact' : '');
 
         container.innerHTML = `
           <div class="question-category">${q.category}</div>
-          <div class="question-number">${getProgressPhrase(currentQuestion, total)}</div>
+          <div class="question-number">${getProgressPhrase(stepIdx, total)}</div>
           <div class="question-text">${q.question}</div>
           <div class="question-help">${q.helpText}</div>
-          ${isMulti ? '<div class="multi-note">Tap all that apply</div>' : ''}
+          ${isMulti ? '<div class="multi-note" id="multiNote">Pick your top 3</div>' : ''}
           <div class="options-grid ${colClass}">
-            ${q.options.map(opt => `
+            ${displayOptions.map(opt => `
               <button class="option-btn ${isMulti ? (selected.includes(opt.id) ? 'selected' : '') : (selected === opt.id ? 'selected' : '')}"
                 onclick="selectOption('${q.id}', '${opt.id}', ${isMulti})">
                 <span class="opt-icon">${opt.icon ? icon(opt.icon, 28) : ''}</span>
                 <span class="opt-label">${opt.label}</span>
-                ${opt.sublabel && q.options.length <= 6 ? `<span class="opt-sub">${opt.sublabel}</span>` : ''}
+                ${opt.sublabel && displayOptions.length <= 6 ? `<span class="opt-sub">${opt.sublabel}</span>` : ''}
               </button>
             `).join('')}
           </div>
@@ -3921,13 +3989,18 @@
     window.selectOption = function(qId, optId, isMulti) {
       if (isMulti) {
         if (!answers[qId]) answers[qId] = [];
-        const idx = answers[qId].indexOf(optId);
         if (optId === 'none') {
           answers[qId] = ['none'];
         } else {
           answers[qId] = answers[qId].filter(x => x !== 'none');
-          if (idx > -1) answers[qId].splice(idx, 1);
-          else answers[qId].push(optId);
+          const idx = answers[qId].indexOf(optId);
+          if (idx > -1) {
+            answers[qId].splice(idx, 1);
+          } else {
+            // Soft cap at 3 selections — ignore adds beyond that.
+            if (answers[qId].length >= 3) return;
+            answers[qId].push(optId);
+          }
         }
       } else {
         answers[qId] = optId;
@@ -3935,7 +4008,17 @@
       renderQuestion();
     }
 
+    // When the user taps "Edit" on the review screen we enter edit mode:
+    // next/prev then snap straight back to the review instead of walking
+    // through the remaining questions again.
+    var editingFromReview = false;
+
     window.nextQuestion = function() {
+      if (editingFromReview) {
+        editingFromReview = false;
+        goToReview();
+        return;
+      }
       if (currentQuestion < QUESTIONS.length - 1) {
         currentQuestion++;
         // Skip question if skipIf condition is met
@@ -3945,17 +4028,32 @@
           if (currentQuestion < QUESTIONS.length - 1) {
             currentQuestion++;
           } else {
-            showProfileScreen();
+            goToReview();
             return;
           }
         }
         renderQuestion();
       } else {
-        showProfileScreen();
+        goToReview();
       }
     }
 
     window.prevQuestion = function() {
+      // If we're on the review screen, go back to the last visible question.
+      const reviewEl = document.getElementById('reviewScreen');
+      if (reviewEl && reviewEl.classList.contains('active')) {
+        const vis = visibleQuestions();
+        const lastId = vis[vis.length - 1].id;
+        currentQuestion = QUESTIONS.findIndex(q => q.id === lastId);
+        showScreen('questionScreen');
+        renderQuestion();
+        return;
+      }
+      if (editingFromReview) {
+        editingFromReview = false;
+        goToReview();
+        return;
+      }
       if (currentQuestion > 0) {
         currentQuestion--;
         // Skip back over a skipped question
@@ -3968,6 +4066,52 @@
         showScreen('welcomeScreen');
       }
     }
+
+    // ----- REVIEW SCREEN -----
+    function goToReview() {
+      showScreen('reviewScreen');
+      renderReview();
+    }
+
+    function formatAnswer(q, v) {
+      if (q.type === 'slider') {
+        const num = (v !== undefined && v !== null) ? v : q.defaultValue;
+        return num + '/10 · ' + getFirmnessLabel(num);
+      }
+      if (q.type === 'multiple') {
+        if (!v || !v.length) return '—';
+        return v.map(function(id) {
+          var o = q.options.find(function(x) { return x.id === id; });
+          return o ? o.label : id;
+        }).join(', ');
+      }
+      var opt = q.options && q.options.find(function(x) { return x.id === v; });
+      return opt ? opt.label : '—';
+    }
+
+    window.renderReview = function() {
+      const list = document.getElementById('reviewList');
+      const items = visibleQuestions().map(function(q) {
+        const val = formatAnswer(q, answers[q.id]);
+        const idx = QUESTIONS.indexOf(q);
+        return '<div class="review-row" style="display:flex; justify-content:space-between; align-items:center; gap:0.75rem; padding:0.75rem 0; border-bottom:1px solid rgba(255,255,255,0.08);">'
+          + '<div style="flex:1; min-width:0;">'
+          +   '<div style="font-size:0.65rem; color:var(--gold); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:0.15rem;">' + q.category + '</div>'
+          +   '<div style="font-size:0.9rem; color:var(--cream); font-weight:500;">' + q.question + '</div>'
+          +   '<div style="font-size:0.85rem; color:var(--cream-dim); margin-top:0.2rem;">' + val + '</div>'
+          + '</div>'
+          + '<button class="js-review-edit" data-idx="' + idx + '" onclick="window.editAnswer(' + idx + ')" ontouchend="event.preventDefault();window.editAnswer(' + idx + ');" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:var(--cream); font-size:0.72rem; font-family:inherit; font-weight:600; padding:0.4rem 0.85rem; border-radius:8px; touch-action:manipulation; cursor:pointer;">Edit</button>'
+          + '</div>';
+      }).join('');
+      list.innerHTML = items;
+    };
+
+    window.editAnswer = function(idx) {
+      editingFromReview = true;
+      currentQuestion = idx;
+      showScreen('questionScreen');
+      renderQuestion();
+    };
 
     // ----- SCORING ENGINE -----
     function calculateScores() {
@@ -3991,6 +4135,11 @@
       });
 
       // 2. Feature scoring from all other answers
+      // Cap per-mattress-per-feature accumulation so overlapping signals
+      // (e.g. hot sleeper + "too hot" issue) don't double-count into a
+      // runaway score. featTotals tracks how much has been awarded so far.
+      const FEATURE_CAP = 5;
+      const featTotals = {}; // { mattressId: { feat: pointsAwarded } }
       Object.entries(answers).forEach(([qId, ans]) => {
         const q = QUESTIONS.find(x => x.id === qId);
         if (!q || q.type === 'slider') return;
@@ -4001,9 +4150,14 @@
           const opt = q.options.find(o => o.id === optId);
           if (!opt?.scores) return;
           Object.values(MATTRESSES).flat().forEach(m => {
+            if (!featTotals[m.id]) featTotals[m.id] = {};
             Object.entries(opt.scores).forEach(([feat, pts]) => {
               if (m.features?.includes(feat)) {
-                scores[m.id] += pts;
+                const current = featTotals[m.id][feat] || 0;
+                const added = Math.min(pts, FEATURE_CAP - current);
+                if (added <= 0) return;
+                featTotals[m.id][feat] = current + added;
+                scores[m.id] += added;
                 const reason = m.reasons?.[feat];
                 if (reason && !matchReasons[m.id].includes(reason)) {
                   matchReasons[m.id].push(reason);
@@ -4146,7 +4300,7 @@
       if (partnerSleep && partnerSleep !== 'solo') dataPoints++;
       if (firmness !== 5) dataPoints++;
       var confidence = Math.min(Math.round(70 + (dataPoints * 4)), 98);
-      document.getElementById('profileConfidence').textContent = confidence + '% profile match confidence \u00B7 Based on ' + QUESTIONS.length + ' answers';
+      document.getElementById('profileConfidence').textContent = confidence + '% profile match confidence \u00B7 Based on ' + visibleQuestions().length + ' answers';
 
       // ----- BUILD STAT GRID -----
       var sizeLabels = { twin: 'Twin', twin_xl: 'Twin XL', full: 'Full', queen: 'Queen', king: 'King', cal_king: 'Cal King' };
@@ -5259,6 +5413,7 @@
       // Reset all state
       currentQuestion = 0;
       answers = {};
+      editingFromReview = false;
       analytics.sessionId = Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
       analytics.startedAt = null;
       analytics.completedAt = null;

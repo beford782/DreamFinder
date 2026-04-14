@@ -13,7 +13,7 @@ can see a better path.
 
 ## What DreamFinder Is
 DreamFinder is a store-agnostic single-page tablet kiosk app for mattress showroom floors.
-Customers take a 9-question sleep quiz, get personalized mattress recommendations across
+Customers take a 12-question sleep quiz, get personalized mattress recommendations across
 Gold/Silver/Bronze tiers, browse accessories, and receive results + a discount code by email.
 Salespeople get a handoff screen showing the customer's saved picks.
 
@@ -60,7 +60,7 @@ If you find yourself writing a store name or brand color into the HTML, stop —
 it belongs in config.
 
 ### Quiz questions are currently hardcoded — known limitation
-The 9 quiz questions and their answer options live in the HTML, not in config.
+The 12 quiz questions and their answer options live in the HTML, not in config.
 This is a known gap. Do not add more hardcoded store-specific question logic.
 Flag any question customization requests as requiring a config migration first.
 
