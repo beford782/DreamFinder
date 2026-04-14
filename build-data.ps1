@@ -87,7 +87,7 @@ foreach ($row in $rows) {
     $imageUrl = ""
     $imgName = $row.name.Trim().ToLower()
     $imgDir = "images\mattresses"
-    foreach ($ext in @("png", "jpg", "webp")) {
+    foreach ($ext in @("webp", "jpg", "png")) {
         if (Test-Path "$imgDir\$imgName.$ext") {
             $imageUrl = "images/mattresses/$imgName.$ext"
             break
