@@ -4941,28 +4941,28 @@
       const rows1 = buildReel(r1, d1);
       const rows2 = buildReel(r2, d2);
 
-      // Spin a reel — scrolls rows rapidly then eases to final position
+      // Spin a reel — uses rAF so motion is smooth on iPad Safari and
+      // doesn't hitch if a frame is dropped. Duration is in ms.
       function spinReel(reelEl, wrapEl, rows, onDone) {
         const rowH = 56;
-        const totalRows = rows + 1;
         const targetY = -(rows * rowH);
-        let currentY = 0;
-        const steps = rows * 3; // fast ticks per row
-        let tick = 0;
-        const interval = setInterval(() => {
-          tick++;
-          const progress = tick / steps;
-          // Ease out: fast start, slow end
-          const eased = 1 - Math.pow(1 - progress, 3);
-          currentY = targetY * eased;
-          reelEl.style.transform = `translateY(${currentY}px)`;
-          if (tick >= steps) {
-            clearInterval(interval);
-            reelEl.style.transform = `translateY(${targetY}px)`;
+        const duration = 1100; // ms — longer, less whip-crack
+        const start = performance.now();
+        function frame(now) {
+          const elapsed = now - start;
+          const t = Math.min(elapsed / duration, 1);
+          // Ease out cubic: fast start, slow end
+          const eased = 1 - Math.pow(1 - t, 3);
+          reelEl.style.transform = 'translateY(' + (targetY * eased) + 'px)';
+          if (t < 1) {
+            requestAnimationFrame(frame);
+          } else {
+            reelEl.style.transform = 'translateY(' + targetY + 'px)';
             wrapEl.classList.add('locked');
             if (onDone) onDone();
           }
-        }, 18);
+        }
+        requestAnimationFrame(frame);
       }
 
       // Burst particles
@@ -4983,21 +4983,22 @@
         }
       }
 
-      // Count up percentage
+      // Count up percentage — rAF for smooth counting
       function countUp(target, duration, onDone) {
-        const start = Date.now();
-        const tick = setInterval(() => {
-          const elapsed = Date.now() - start;
-          const progress = Math.min(elapsed / duration, 1);
-          const eased = 1 - Math.pow(1 - progress, 2); // ease out quad
-          const val = Math.round(eased * target);
-          counter.textContent = val;
-          if (progress >= 1) {
-            clearInterval(tick);
+        const start = performance.now();
+        function frame(now) {
+          const elapsed = now - start;
+          const t = Math.min(elapsed / duration, 1);
+          const eased = 1 - Math.pow(1 - t, 2); // ease out quad
+          counter.textContent = Math.round(eased * target);
+          if (t < 1) {
+            requestAnimationFrame(frame);
+          } else {
             counter.textContent = target;
             if (onDone) onDone();
           }
-        }, 30);
+        }
+        requestAnimationFrame(frame);
       }
 
       // ---- SEQUENCE ----
@@ -5052,8 +5053,16 @@
                           // Show subtitle
                           setTimeout(() => {
                             subtitle.style.opacity = '1';
-                            // Animation complete — stop overlay blocking clicks
-                            overlay.style.pointerEvents = 'none';
+                            // Hold the final state so the customer reads the
+                            // discount, THEN fade out. (Previously this was a
+                            // fixed 9s timer that could race the animation.)
+                            setTimeout(() => {
+                              overlay.classList.add('fade-out');
+                              setTimeout(() => {
+                                overlay.style.display = 'none';
+                                overlay.classList.add('hidden');
+                              }, 700);
+                            }, 2600);
                           }, 200);
                         });
                       }, 300);
@@ -5067,10 +5076,6 @@
 
         }, 300);
       }, 900);
-
-      // Phase 3: Fade out at 9s, hide at 9.7s
-      setTimeout(() => { overlay.classList.add('fade-out'); }, 9000);
-      setTimeout(() => { overlay.style.display = 'none'; overlay.classList.add('hidden'); }, 9700);
 
       // Log full analytics summary
       analytics.log('session_summary', analytics.getSummary());
