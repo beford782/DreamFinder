@@ -5589,6 +5589,91 @@
       if (countEl) countEl.textContent = total;
     };
 
+    // Salesperson sales cheat sheet — one entry per profile archetype.
+    // Three bullets: what to say first, what to physically demo, how to close.
+    const PROFILE_SALES_NOTES = {
+      'The Ache Fighter': {
+        lead: "Acknowledge the pain directly — \"Back and hip pain together is tough. Let's end it tonight.\"",
+        demo: 'Lay them on a zoned-support mattress for 2+ minutes. Let them feel the pressure relief vs. their current bed.',
+        close: 'Pain relief is urgent. Reinforce the trial period and return policy — remove decision risk.'
+      },
+      'The Back Saver': {
+        lead: 'Back pain usually means their current mattress lost its support. Frame the visit as fixing that.',
+        demo: 'Firmness test — have them lie on 3 firmness levels. Ask which one lets them breathe easiest.',
+        close: 'Wellness framing — this is an investment in their spine, not just a purchase.'
+      },
+      'The Heat Beater': {
+        lead: "\"You'll want to feel the difference between foam and hybrid.\" Touch test first before any sales pitch.",
+        demo: 'Back-of-hand on memory foam vs. a cooling hybrid for 60 seconds. They should feel warmth difference.',
+        close: 'Quantify the benefit — "No more 2am flipping to the cool side of the pillow."'
+      },
+      'The Cozy Nester': {
+        lead: 'They want warmth without overheating. Show a hybrid with a memory foam top.',
+        demo: 'Have them lie fully (not sitting) for 2 minutes — let them feel the cocoon effect.',
+        close: 'Cozy framing — "This is the bed you\'ll never want to leave in the morning."'
+      },
+      'The Peacekeeper': {
+        lead: 'Partner-disturbance problems are fixable. Frame it as a relationship quality-of-life win.',
+        demo: 'Bounce test — have them lie on one side while you press and release on the other. Zero transfer.',
+        close: '"You\'ll both sleep better, which means you\'ll both feel better." Relationship ROI.'
+      },
+      'The Space Sharer': {
+        lead: 'With kids and/or pets in bed, durability and motion isolation are everything.',
+        demo: 'Show edge support — sit on the edge, demonstrate no roll-off. Talk about coil count and warranty.',
+        close: 'Long-haul framing — "This has to last until the kids stop needing you at 3am."'
+      },
+      'The Cloud Chaser': {
+        lead: 'They like to sink in. Bring them to the plushest model you have first.',
+        demo: '5-minute side-sleep test on a plush top. Shoulders and hips should feel supported, not bottomed out.',
+        close: 'Luxury / indulgence framing — "You deserve to love your bed."'
+      },
+      'The Rock Solid': {
+        lead: "They know what they want. Don't waste time on plush — lead with firm.",
+        demo: 'Press down on surface to show give/resistance. Compare a true firm to a medium — most people\'s "firm" is actually medium.',
+        close: 'Support framing — "Proper firm isn\'t hard, it\'s supportive. Your body will thank you in week one."'
+      },
+      'The Night Owl': {
+        lead: 'Adjustable base changes everything for snoring/reflux. Lead with that, not the mattress.',
+        demo: 'Raise the head 30° on an adjustable base. Have them feel how much easier breathing becomes.',
+        close: 'Health + partner framing — "Your partner will thank you in the first week."'
+      },
+      'The Restorer': {
+        lead: 'Lead with dignity — ease of getting in and out of bed. No one wants to feel "old."',
+        demo: 'Lie-to-sit test on a higher-profile mattress with good edge support.',
+        close: '"You\'ve earned comfortable sleep. You shouldn\'t have to struggle to get in bed."'
+      },
+      'The Comeback': {
+        lead: 'The sagging they mentioned IS the reason their sleep has been off. Name it.',
+        demo: 'Walk them to their sagged model if in showroom. Then lie on a new model — feel the flat, level support.',
+        close: 'Quality construction framing — "This is built to stay flat for 10+ years."'
+      },
+      'The Fresh Start': {
+        lead: 'Allergies change the whole purchase. Lead with cover materials and certifications.',
+        demo: 'Show fabric, explain anti-microbial construction. Mention washable covers if applicable.',
+        close: 'Clean-sleep framing — "A fresh start starts with what you breathe on all night."'
+      },
+      'The Goldilocks': {
+        lead: "They know their preferences. Don't over-explain — skip to the premium options.",
+        demo: 'Quality cues — stitching, cover material, coil construction. Let them touch the details.',
+        close: 'Quality appreciation — "If you\'re picky, these are the models that never disappoint."'
+      },
+      'The Dreamer': {
+        lead: 'This is the fun part — they\'re not fixing anything, just upgrading. Lean into the excitement.',
+        demo: 'Walk them across the Gold tier. Let them feel the differences between 3-4 models.',
+        close: 'Aspirational — "Every night can feel like a hotel bed."'
+      },
+      'The Steady Sleeper': {
+        lead: 'Medium is the sweet spot — comfortable for every position. Frame it as versatile.',
+        demo: 'Show adaptability — have them try side, then back, on the same mattress.',
+        close: 'Versatility framing — "This handles tonight, tomorrow, and 7 years from now."'
+      },
+      'The Connoisseur': {
+        lead: 'Specific tastes, unclear profile. Ask open questions first — what did they love / hate about their last mattress?',
+        demo: 'Component demo — open a cover, show layers and coils. Talk construction.',
+        close: 'Discerning-buyer framing — "You\'re not buying a mattress, you\'re investing in sleep."'
+      }
+    };
+
     // Salesperson context labels (S6)
     const TRIGGER_LABELS = {
       pain: 'Back or Body Pain',
@@ -5632,6 +5717,21 @@
       if (qualityLbl) pills.push('Sleeps ' + qualityLbl);
       pills.push(issuesLbl);
 
+      // Sales cheat sheet for this profile archetype
+      var notes = PROFILE_SALES_NOTES[analytics.profileName] || null;
+      var notesHtml = '';
+      if (notes) {
+        notesHtml =
+          '<div style="margin-top:0.75rem; padding-top:0.75rem; border-top:1px dashed rgba(212,168,75,0.3);">'
+          + '<div style="font-size:0.6rem; text-transform:uppercase; letter-spacing:1.8px; color:var(--gold); font-weight:700; margin-bottom:0.5rem;">Sales Cheat Sheet</div>'
+          + '<div style="display:flex; flex-direction:column; gap:0.4rem;">'
+          + '<div><span style="font-size:0.6rem; color:var(--gold); font-weight:700; letter-spacing:1px; text-transform:uppercase;">Lead with</span><div style="font-size:0.78rem; color:var(--cream); line-height:1.4; margin-top:0.15rem;">' + notes.lead + '</div></div>'
+          + '<div><span style="font-size:0.6rem; color:var(--gold); font-weight:700; letter-spacing:1px; text-transform:uppercase;">Demo hook</span><div style="font-size:0.78rem; color:var(--cream); line-height:1.4; margin-top:0.15rem;">' + notes.demo + '</div></div>'
+          + '<div><span style="font-size:0.6rem; color:var(--gold); font-weight:700; letter-spacing:1px; text-transform:uppercase;">Close angle</span><div style="font-size:0.78rem; color:var(--cream); line-height:1.4; margin-top:0.15rem;">' + notes.close + '</div></div>'
+          + '</div>'
+          + '</div>';
+      }
+
       el.innerHTML =
         '<div style="background:linear-gradient(135deg, rgba(212,168,75,0.12), rgba(212,168,75,0.04)); border:1px solid rgba(212,168,75,0.35); border-radius:14px; padding:0.85rem 1rem;">'
         + (triggerLbl ? '<div style="font-size:0.6rem; text-transform:uppercase; letter-spacing:1.8px; color:var(--gold); font-weight:700; margin-bottom:0.25rem;">Came in for</div>'
@@ -5642,6 +5742,7 @@
             return '<span style="font-size:0.65rem; color:var(--cream); background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); padding:0.25rem 0.55rem; border-radius:999px;">' + p + '</span>';
           }).join('')
         + '</div>'
+        + notesHtml
         + '</div>';
     }
 
