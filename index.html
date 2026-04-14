@@ -3817,6 +3817,13 @@
     // ----- START QUIZ -----
     window.startQuiz = function() {
       console.log('startQuiz called');
+      // Guard: ensure mattress data finished loading before the quiz begins.
+      // On slow networks the fetch in loadAppData() may not have resolved.
+      if (!MATTRESSES || !MATTRESSES.gold || MATTRESSES.gold.length === 0) {
+        console.warn('[DreamFinder] Mattress data not loaded yet — retrying in 400ms');
+        setTimeout(window.startQuiz, 400);
+        return;
+      }
       currentQuestion = 0;
       answers = {};
       analytics.startedAt = Date.now();
@@ -4872,15 +4879,26 @@
       }
       
       if (GOOGLE_SCRIPT_URL) {
-        // Real send via Google Apps Script
+        // Real send via Google Apps Script.
+        // NOTE: No Content-Type header → "simple request" → no CORS preflight.
+        // GAS web apps deployed as "Anyone" return Access-Control-Allow-Origin:*,
+        // so we can read the JSON response and check success.
         fetch(GOOGLE_SCRIPT_URL, {
           method: 'POST',
-          mode: 'no-cors',
           body: JSON.stringify(payload)
         })
-        .then(function() {
-          // no-cors returns an opaque response — can't read it, but if we get here it sent
-          showSuccess();
+        .then(function(res) {
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          return res.json();
+        })
+        .then(function(data) {
+          if (data && data.success) {
+            showSuccess();
+          } else {
+            var msg = (data && data.error) ? data.error : 'Email could not be sent.';
+            console.error('[DreamFinder] GAS returned failure:', msg);
+            showError('We couldn\'t send your email — please ask your sales specialist to re-send it.');
+          }
         })
         .catch(function(err) {
           console.error('[DreamFinder] Email error:', err);

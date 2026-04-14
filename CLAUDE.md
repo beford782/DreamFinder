@@ -119,8 +119,11 @@ Never commit CSV changes without also committing the regenerated JSON.
 Located in `index.html` around line 4040. Three scoring passes:
 
 **1. Firmness (most important, max +50)**
-Matches customer's slider answer to `firmnessScore`. Perfect match = +50,
-penalty of -20 if diff ≥ 4.
+Linear sliding scale: `firmScore = max(0, 50 - diff * 10)` where
+`diff = |customerFirmness - mattressFirmness|`. So: diff 0 = +50,
+diff 1 = +40, diff 2 = +30, diff 3 = +20, diff 4 = +10, diff 5+ = 0.
+Additionally, if `diff ≥ 4` an extra **-20** penalty is applied,
+so a diff of 4 nets -10 and a diff of 5+ nets -20.
 
 **2. Feature matching**
 Quiz answers map to feature tags via `opt.scores`. Each matching tag adds points.
