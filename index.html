@@ -5181,19 +5181,32 @@
         if (/^https?:\/\//i.test(u) || u.startsWith('//')) return u;
         return PUBLIC_ASSET_ROOT + u.replace(/^\.?\/*/, '');
       }
-      const allMatches = (analytics.allMatches || []).map(m => ({
-        name: m.name,
-        brand: m.brand + (m.subBrand ? ' · ' + m.subBrand : ''),
-        matchPct: m.matchPct,
-        imageUrl: toAbsoluteImageUrl(m.imageUrl)
-      }));
+      // Prefer the customer's saved picks (what they marked "I'm Interested" on)
+      // over the algorithm's top recommendations. Fall back to the top
+      // recommendations if they didn't save anything.
+      const saved = (window._savedPicks || []);
+      const allMatches = saved.length > 0
+        ? saved.map(p => ({
+            name: p.name,
+            brand: p.brand,
+            matchPct: p.pct,
+            imageUrl: toAbsoluteImageUrl(p.imageUrl)
+          }))
+        : (analytics.allMatches || []).map(m => ({
+            name: m.name,
+            brand: m.brand + (m.subBrand ? ' · ' + m.subBrand : ''),
+            matchPct: m.matchPct,
+            imageUrl: toAbsoluteImageUrl(m.imageUrl)
+          }));
       const accList = (analytics.recommendedAccessories || []).map(a => Object.assign({}, a, {
         imageUrl: toAbsoluteImageUrl(a.imageUrl)
       }));
 
       // Build HTML email client-side with product images
       const firstName = name.split(' ')[0] || name;
-      const topMatches = allMatches.slice(0, 3);
+      // When customer saved picks, show all of them (they explicitly chose these).
+      // When falling back to recommendations, cap at top 3 to keep the email concise.
+      const topMatches = saved.length > 0 ? allMatches.slice(0, 6) : allMatches.slice(0, 3);
       const emailHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="margin:0;padding:0;background:#f4f4f4;font-family:Arial,sans-serif;">
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f4;padding:20px 0;"><tr><td align="center">
 <table width="600" cellpadding="0" cellspacing="0" style="background:#0d1730;border-radius:12px;overflow:hidden;max-width:600px;">
