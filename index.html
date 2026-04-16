@@ -5544,47 +5544,63 @@
       // When customer saved picks, show all of them (they explicitly chose these).
       // When falling back to recommendations, cap at top 3 to keep the email concise.
       const topMatches = saved.length > 0 ? allMatches.slice(0, 6) : allMatches.slice(0, 3);
+      const _es = currentLang === 'es';
+      const _storeTextBlock = (_es && STORE_CONFIG.text_es) ? STORE_CONFIG.text_es : STORE_CONFIG.text;
+      const _emailHeader = (_storeTextBlock && _storeTextBlock.emailHeader) || "Bel Furniture × DreamFinder";
+      const _emailSubtext = (_storeTextBlock && _storeTextBlock.emailSubtext) || (_es ? "Lleva este correo a tu tienda Bel Furniture" : "Bring this email to your Bel Furniture store");
+      const _eTitle = _es ? `Tus Combinaciones Perfectas, ${firstName}` : `Your Perfect Matches, ${firstName}`;
+      const _eSubtitle = _es ? 'Basado en tu perfil de sueño personalizado' : 'Based on your personalized sleep profile';
+      const _eDiscount = _es ? `&#127991; ${STORE_DISCOUNT}% DE DESCUENTO &mdash; ¡Tu Descuento Está Listo!` : `&#127991; ${STORE_DISCOUNT}% OFF &mdash; Your Discount Is Ready!`;
+      const _eShowCode = _es ? 'Muestra este correo a tu especialista de sueño hoy' : 'Show this email to your sleep specialist today';
+      const _eCodeLabel = _es ? 'Tu Código de Descuento' : 'Your Discount Code';
+      const _eCodeRedeem = _es ? `Presenta este código para canjear tu ${STORE_DISCOUNT}% de descuento` : `Present this code to redeem your ${STORE_DISCOUNT}% off`;
+      const _eProfileLabel = _es ? 'Tu Perfil de Sueño' : 'Your Sleep Profile';
+      const _eMatchesLabel = _es ? 'Tus Mejores Opciones de Colchón' : 'Your Top Mattress Matches';
+      const _eTopPick = _es ? 'Mejor Opción' : 'Top Pick';
+      const _eMatch = _es ? 'Compatibilidad' : 'Match';
+      const _eAccLabel = _es ? 'Accesorios Recomendados' : 'Recommended Accessories';
+      const _eDiscountWaiting = _es ? `Tu ${STORE_DISCOUNT}% de descuento te está esperando` : `Your ${STORE_DISCOUNT}% discount is waiting for you`;
       const emailHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="margin:0;padding:0;background:#f4f4f4;font-family:Arial,sans-serif;">
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f4;padding:20px 0;"><tr><td align="center">
 <table width="600" cellpadding="0" cellspacing="0" style="background:#0d1730;border-radius:12px;overflow:hidden;max-width:600px;">
   <tr><td style="background:linear-gradient(135deg,#1a2744,#0d1730);padding:32px 32px 24px;text-align:center;border-bottom:2px solid #c9a84c;">
-    <div style="font-size:11px;letter-spacing:3px;color:#c9a84c;text-transform:uppercase;margin-bottom:8px;">${(STORE_CONFIG.text && STORE_CONFIG.text.emailHeader) || "Bel Furniture × DreamFinder"}</div>
-    <div style="font-size:24px;font-weight:700;color:#ffffff;margin-bottom:6px;">Your Perfect Matches, ${firstName}</div>
-    <div style="font-size:13px;color:#a0b0c8;">Based on your personalized sleep profile</div>
+    <div style="font-size:11px;letter-spacing:3px;color:#c9a84c;text-transform:uppercase;margin-bottom:8px;">${_emailHeader}</div>
+    <div style="font-size:24px;font-weight:700;color:#ffffff;margin-bottom:6px;">${_eTitle}</div>
+    <div style="font-size:13px;color:#a0b0c8;">${_eSubtitle}</div>
   </td></tr>
   <tr><td style="background:linear-gradient(135deg,#c9a84c,#a8893d);padding:14px 32px;text-align:center;">
-    <span style="font-size:17px;font-weight:700;color:#0d1730;">&#127991; ${STORE_DISCOUNT}% OFF &mdash; Your Discount Is Ready!</span><br>
-    <span style="font-size:12px;color:#0d1730;">Show this email to your sleep specialist today</span>
+    <span style="font-size:17px;font-weight:700;color:#0d1730;">${_eDiscount}</span><br>
+    <span style="font-size:12px;color:#0d1730;">${_eShowCode}</span>
   </td></tr>
   <tr><td style="padding:16px 32px 8px; text-align:center;">
     <div style="display:inline-block; border:2px dashed #c9a84c; border-radius:12px; padding:12px 28px; background:rgba(201,168,76,0.08);">
-      <div style="font-size:10px;letter-spacing:2px;color:#c9a84c;text-transform:uppercase;margin-bottom:6px;">Your Discount Code</div>
+      <div style="font-size:10px;letter-spacing:2px;color:#c9a84c;text-transform:uppercase;margin-bottom:6px;">${_eCodeLabel}</div>
       <div style="font-size:26px;font-weight:800;letter-spacing:0.12em;color:#ffffff;font-family:monospace;">${generateDreamCode(analytics.sessionId)}</div>
-      <div style="font-size:11px;color:#a0b0c8;margin-top:4px;">Present this code to redeem your ${STORE_DISCOUNT}% off</div>
+      <div style="font-size:11px;color:#a0b0c8;margin-top:4px;">${_eCodeRedeem}</div>
     </div>
   </td></tr>
   <tr><td style="padding:24px 32px 8px;">
-    <div style="font-size:10px;letter-spacing:2px;color:#c9a84c;text-transform:uppercase;margin-bottom:6px;">Your Sleep Profile</div>
+    <div style="font-size:10px;letter-spacing:2px;color:#c9a84c;text-transform:uppercase;margin-bottom:6px;">${_eProfileLabel}</div>
     <div style="font-size:14px;color:#ffffff;font-weight:600;">${profName}</div>
   </td></tr>
   <tr><td style="padding:16px 32px 8px;">
-    <div style="font-size:10px;letter-spacing:2px;color:#c9a84c;text-transform:uppercase;margin-bottom:14px;">Your Top Mattress Matches</div>
+    <div style="font-size:10px;letter-spacing:2px;color:#c9a84c;text-transform:uppercase;margin-bottom:14px;">${_eMatchesLabel}</div>
     ${topMatches.map((m, i) => `
     <table width="100%" cellpadding="0" cellspacing="0" style="background:${i===0?'#1d3352':'rgba(255,255,255,0.04)'};border:${i===0?'1.5px solid #c9a84c':'1px solid rgba(255,255,255,0.08)'};border-radius:10px;overflow:hidden;margin-bottom:10px;">
       <tr>
         ${m.imageUrl ? `<td width="90" style="vertical-align:top;padding:0;"><img src="${m.imageUrl}" width="90" height="80" alt="${m.name}" style="display:block;object-fit:cover;"></td>` : ''}
         <td style="padding:12px 14px;vertical-align:middle;">
-          ${i===0 ? '<div style="font-size:9px;letter-spacing:2px;color:#c9a84c;text-transform:uppercase;margin-bottom:3px;">&#11088; Top Pick</div>' : ''}
+          ${i===0 ? `<div style="font-size:9px;letter-spacing:2px;color:#c9a84c;text-transform:uppercase;margin-bottom:3px;">&#11088; ${_eTopPick}</div>` : ''}
           <div style="font-size:15px;font-weight:700;color:#ffffff;">${m.name}</div>
           <div style="font-size:11px;color:#a0b0c8;margin-top:2px;">${m.brand}</div>
-          <div style="font-size:12px;color:#c9a84c;margin-top:4px;font-weight:600;">${m.matchPct}% Match</div>
+          <div style="font-size:12px;color:#c9a84c;margin-top:4px;font-weight:600;">${m.matchPct}% ${_eMatch}</div>
         </td>
       </tr>
     </table>`).join('')}
   </td></tr>
   ${accList.length > 0 ? `
   <tr><td style="padding:8px 32px 16px;">
-    <div style="font-size:10px;letter-spacing:2px;color:#c9a84c;text-transform:uppercase;margin-bottom:14px;">Recommended Accessories</div>
+    <div style="font-size:10px;letter-spacing:2px;color:#c9a84c;text-transform:uppercase;margin-bottom:14px;">${_eAccLabel}</div>
     <table width="100%" cellpadding="0" cellspacing="0"><tr>
       ${accList.slice(0,3).map(a => `<td style="width:${Math.floor(100/Math.min(accList.length,3))}%;padding:0 4px;vertical-align:top;text-align:center;">
         <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;overflow:hidden;">
@@ -5596,8 +5612,8 @@
     </tr></table>
   </td></tr>` : ''}
   <tr><td style="padding:20px 32px 28px;text-align:center;border-top:1px solid rgba(255,255,255,0.08);">
-    <div style="font-size:13px;color:#a0b0c8;margin-bottom:4px;">${(STORE_CONFIG.text && STORE_CONFIG.text.emailSubtext) || "Bring this email to your Bel Furniture store"}</div>
-    <div style="font-size:13px;color:#c9a84c;font-weight:700;">Your ${STORE_DISCOUNT}% discount is waiting for you</div>
+    <div style="font-size:13px;color:#a0b0c8;margin-bottom:4px;">${_emailSubtext}</div>
+    <div style="font-size:13px;color:#c9a84c;font-weight:700;">${_eDiscountWaiting}</div>
     <div style="margin-top:16px;font-size:10px;color:#4a5a6a;">Session: ${analytics.sessionId}</div>
   </td></tr>
 </table></td></tr></table></body></html>`;
@@ -5614,6 +5630,7 @@
         discount: STORE_DISCOUNT,
         dreamCode: generateDreamCode(analytics.sessionId),
         sessionId: analytics.sessionId,
+        lang: currentLang,
         allMatches: allMatches,
         accessories: accList,
         htmlBody: emailHtml
