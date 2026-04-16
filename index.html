@@ -4259,6 +4259,7 @@
     // ----- SCREEN MANAGEMENT -----
     window.showScreen = function(id) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      if (typeof applyTranslations === 'function') applyTranslations();
       document.getElementById(id).classList.add('active');
       const showProgress = id === 'questionScreen' || id === 'profileScreen' || id === 'reviewScreen';
       if (id === 'reviewScreen') {
@@ -4613,7 +4614,7 @@
       Object.values(MATTRESSES).flat().forEach(m => {
         if (m.locallyMade === true) {
           scores[m.id] += 25;
-          matchReasons[m.id].push('Made locally — typically in stock and ready for fast delivery');
+          matchReasons[m.id].push(currentLang === 'es' ? 'Hecho localmente — generalmente en stock y listo para entrega rápida' : 'Made locally — typically in stock and ready for fast delivery');
         }
       });
 
