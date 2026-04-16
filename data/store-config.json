@@ -16,5 +16,17 @@
     "inStockText": "In Stock at Bel Furniture",
     "emailHeader": "Bel Furniture × DreamFinder",
     "emailSubtext": "Bring this email to your Bel Furniture store"
+  },
+  "text_es": {
+    "pageTitle": "DreamFinder — Prueba de Sueño de Bel Furniture",
+    "metaDescription": "Toma la prueba de sueño DreamFinder en Bel Furniture y recibe recomendaciones personalizadas de colchones.",
+    "ogTitle": "DreamFinder — Bel Furniture",
+    "socialProof": "Confiado por clientes de Bel Furniture en todo Texas",
+    "footer": "&copy; 2026 Bel Furniture. Todos los derechos reservados.",
+    "emailPrivacy": "Solo usaremos tu correo para enviarte tus resultados.",
+    "privacyPolicy": "Tu información nunca se comparte con terceros.",
+    "inStockText": "Disponible en Bel Furniture",
+    "emailHeader": "Bel Furniture × DreamFinder",
+    "emailSubtext": "Lleva este correo a tu tienda Bel Furniture"
   }
 }

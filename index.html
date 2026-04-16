@@ -4165,26 +4165,31 @@
       if (STORE_CONFIG.colors.storePrimaryLight) root.style.setProperty('--store-primary-light', STORE_CONFIG.colors.storePrimaryLight);
       if (STORE_CONFIG.colors.storePrimaryGlow) root.style.setProperty('--store-primary-glow', STORE_CONFIG.colors.storePrimaryGlow);
 
-      if (STORE_CONFIG.text) {
-        document.title = STORE_CONFIG.text.pageTitle || document.title;
+      // Pick the language-appropriate text block
+      var textBlock = (currentLang === 'es' && STORE_CONFIG.text_es)
+        ? STORE_CONFIG.text_es
+        : STORE_CONFIG.text;
+
+      if (textBlock) {
+        document.title = textBlock.pageTitle || document.title;
         var metaDesc = document.getElementById('metaDescription');
-        if (metaDesc && STORE_CONFIG.text.metaDescription) metaDesc.setAttribute('content', STORE_CONFIG.text.metaDescription);
+        if (metaDesc && textBlock.metaDescription) metaDesc.setAttribute('content', textBlock.metaDescription);
         var ogTitle = document.getElementById('ogTitle');
-        if (ogTitle && STORE_CONFIG.text.ogTitle) ogTitle.setAttribute('content', STORE_CONFIG.text.ogTitle);
+        if (ogTitle && textBlock.ogTitle) ogTitle.setAttribute('content', textBlock.ogTitle);
         document.querySelectorAll('[data-store="name"]').forEach(function(el) {
           el.textContent = STORE_CONFIG.storeName || el.textContent;
         });
         document.querySelectorAll('[data-store="social-proof"]').forEach(function(el) {
-          el.textContent = STORE_CONFIG.text.socialProof || el.textContent;
+          el.textContent = textBlock.socialProof || el.textContent;
         });
         document.querySelectorAll('[data-store="footer"]').forEach(function(el) {
-          el.innerHTML = STORE_CONFIG.text.footer || el.innerHTML;
+          el.innerHTML = textBlock.footer || el.innerHTML;
         });
         document.querySelectorAll('[data-store="email-privacy"]').forEach(function(el) {
-          el.textContent = STORE_CONFIG.text.emailPrivacy || el.textContent;
+          el.textContent = textBlock.emailPrivacy || el.textContent;
         });
         document.querySelectorAll('[data-store="privacy-policy"]').forEach(function(el) {
-          el.textContent = STORE_CONFIG.text.privacyPolicy || el.textContent;
+          el.textContent = textBlock.privacyPolicy || el.textContent;
         });
       }
     }
@@ -4612,42 +4617,42 @@
     // Maps each of the 16 profile archetypes to a theme class and a fake-but-
     // plausible "1 in N" frequency so the reveal feels specific.
     const PROFILE_META = {
-      'The Ache Fighter':    { theme: 'warm',      rarity: 6  },
-      'The Back Saver':      { theme: 'warm',      rarity: 8  },
-      'The Heat Beater':     { theme: 'cool',      rarity: 5  },
-      'The Cozy Nester':     { theme: 'cool',      rarity: 12 },
-      'The Peacekeeper':     { theme: 'calm',      rarity: 7  },
-      'The Space Sharer':    { theme: 'calm',      rarity: 18 },
-      'The Cloud Chaser':    { theme: 'cool',      rarity: 9  },
-      'The Rock Solid':      { theme: 'energetic', rarity: 10 },
-      'The Night Owl':       { theme: 'calm',      rarity: 20 },
-      'The Restorer':        { theme: 'calm',      rarity: 14 },
-      'The Comeback':        { theme: 'warm',      rarity: 15 },
-      'The Fresh Start':     { theme: 'cool',      rarity: 22 },
-      'The Goldilocks':      { theme: 'energetic', rarity: 11 },
-      'The Dreamer':         { theme: 'energetic', rarity: 13 },
-      'The Steady Sleeper':  { theme: 'energetic', rarity: 9  },
-      'The Connoisseur':     { theme: 'energetic', rarity: 25 }
+      'The Ache Fighter':    { theme: 'warm',      rarity: 6,  name_es: 'El Guerrero del Dolor' },
+      'The Back Saver':      { theme: 'warm',      rarity: 8,  name_es: 'El Protector de Espalda' },
+      'The Heat Beater':     { theme: 'cool',      rarity: 5,  name_es: 'El Vencedor del Calor' },
+      'The Cozy Nester':     { theme: 'cool',      rarity: 12, name_es: 'El Acurrucado' },
+      'The Peacekeeper':     { theme: 'calm',      rarity: 7,  name_es: 'El Pacificador' },
+      'The Space Sharer':    { theme: 'calm',      rarity: 18, name_es: 'El Que Comparte Espacio' },
+      'The Cloud Chaser':    { theme: 'cool',      rarity: 9,  name_es: 'El Cazador de Nubes' },
+      'The Rock Solid':      { theme: 'energetic', rarity: 10, name_es: 'El Roca Firme' },
+      'The Night Owl':       { theme: 'calm',      rarity: 20, name_es: 'El Búho Nocturno' },
+      'The Restorer':        { theme: 'calm',      rarity: 14, name_es: 'El Restaurador' },
+      'The Comeback':        { theme: 'warm',      rarity: 15, name_es: 'El Regreso' },
+      'The Fresh Start':     { theme: 'cool',      rarity: 22, name_es: 'El Nuevo Comienzo' },
+      'The Goldilocks':      { theme: 'energetic', rarity: 11, name_es: 'El Equilibrado' },
+      'The Dreamer':         { theme: 'energetic', rarity: 13, name_es: 'El Soñador' },
+      'The Steady Sleeper':  { theme: 'energetic', rarity: 9,  name_es: 'El Durmiente Estable' },
+      'The Connoisseur':     { theme: 'energetic', rarity: 25, name_es: 'El Conocedor' }
     };
 
     // Profile-specific one-liner openers (replace the generic "We'll find you a...")
     const PROFILE_OPENERS = {
-      'The Ache Fighter':   "Let's get you out of pain. You need a ",
-      'The Back Saver':     "To support that back, we need a ",
-      'The Heat Beater':    "No more night sweats. You need a ",
-      'The Cozy Nester':    "Let's wrap you up warm with a ",
-      'The Peacekeeper':    "To keep the peace at night, we'll find you a ",
-      'The Space Sharer':   "With the whole family in bed, you'll want a ",
-      'The Cloud Chaser':   "Floating on a cloud means a ",
-      'The Rock Solid':     "For that firm foundation, you need a ",
-      'The Night Owl':      "To tame the night, we recommend a ",
-      'The Restorer':       "To truly recharge, you need a ",
-      'The Comeback':       "Time for a sleep comeback. You need a ",
-      'The Fresh Start':    "Breathe easy — you need a ",
-      'The Goldilocks':     "You know what you like. Here's a ",
-      'The Dreamer':        "Dream bigger with a ",
-      'The Steady Sleeper': "Steady and balanced — you'll love a ",
-      'The Connoisseur':    "For a discerning sleeper like you, we recommend a "
+      'The Ache Fighter':   {en: "Let's get you out of pain. You need a ", es: "Vamos a sacarte del dolor. Necesitas un "},
+      'The Back Saver':     {en: "To support that back, we need a ", es: "Para apoyar esa espalda, necesitamos un "},
+      'The Heat Beater':    {en: "No more night sweats. You need a ", es: "No más sudores nocturnos. Necesitas un "},
+      'The Cozy Nester':    {en: "Let's wrap you up warm with a ", es: "Vamos a arroparte con un "},
+      'The Peacekeeper':    {en: "To keep the peace at night, we'll find you a ", es: "Para mantener la paz nocturna, te encontraremos un "},
+      'The Space Sharer':   {en: "With the whole family in bed, you'll want a ", es: "Con toda la familia en la cama, querrás un "},
+      'The Cloud Chaser':   {en: "Floating on a cloud means a ", es: "Flotar en una nube significa un "},
+      'The Rock Solid':     {en: "For that firm foundation, you need a ", es: "Para esa base firme, necesitas un "},
+      'The Night Owl':      {en: "To tame the night, we recommend a ", es: "Para domar la noche, recomendamos un "},
+      'The Restorer':       {en: "To truly recharge, you need a ", es: "Para recargar de verdad, necesitas un "},
+      'The Comeback':       {en: "Time for a sleep comeback. You need a ", es: "Es hora de volver a dormir bien. Necesitas un "},
+      'The Fresh Start':    {en: "Breathe easy — you need a ", es: "Respira tranquilo — necesitas un "},
+      'The Goldilocks':     {en: "You know what you like. Here's a ", es: "Sabes lo que te gusta. Aquí tienes un "},
+      'The Dreamer':        {en: "Dream bigger with a ", es: "Sueña en grande con un "},
+      'The Steady Sleeper': {en: "Steady and balanced — you'll love a ", es: "Estable y equilibrado — te encantará un "},
+      'The Connoisseur':    {en: "For a discerning sleeper like you, we recommend a ", es: "Para un durmiente exigente como tú, recomendamos un "}
     };
 
     // Builds the italic opener line based on trigger / mattress age / sleep quality.
@@ -4656,18 +4661,19 @@
       const trigger = answers.trigger;
       const quality = answers.sleep_quality;
       const age = answers.current_mattress_age;
+      const es = currentLang === 'es';
 
       // Highest-priority hooks: pain, moving, poor sleep, very old mattress
-      if (trigger === 'pain') return 'Pain is temporary — let\'s end it tonight.';
-      if (quality === 'poor') return 'You said you\'re sleeping poorly. That ends here.';
-      if (trigger === 'moving') return 'New home, new bed — the first night should feel like home.';
-      if (age === 'fifteen_plus') return 'Your mattress has earned its retirement.';
-      if (age === 'eight_fifteen') return 'Time to retire that old mattress.';
-      if (trigger === 'worn_out') return 'You\'ve waited long enough for better sleep.';
-      if (trigger === 'upgrade') return 'You\'re ready to level up.';
-      if (quality === 'fair') return 'Your sleep deserves better than fine.';
-      if (trigger === 'browsing' && quality === 'well') return 'Already sleeping well? Let\'s keep that going.';
-      if (trigger === 'browsing') return 'Curious minds sleep better — here\'s what fits you.';
+      if (trigger === 'pain') return es ? 'El dolor es temporal — terminemos con él esta noche.' : 'Pain is temporary — let\'s end it tonight.';
+      if (quality === 'poor') return es ? 'Dijiste que duermes mal. Eso se acaba aquí.' : 'You said you\'re sleeping poorly. That ends here.';
+      if (trigger === 'moving') return es ? 'Casa nueva, cama nueva — la primera noche debe sentirse como hogar.' : 'New home, new bed — the first night should feel like home.';
+      if (age === 'fifteen_plus') return es ? 'Tu colchón se ganó su jubilación.' : 'Your mattress has earned its retirement.';
+      if (age === 'eight_fifteen') return es ? 'Es hora de jubilar ese colchón viejo.' : 'Time to retire that old mattress.';
+      if (trigger === 'worn_out') return es ? 'Has esperado suficiente para dormir mejor.' : 'You\'ve waited long enough for better sleep.';
+      if (trigger === 'upgrade') return es ? 'Estás listo para mejorar.' : 'You\'re ready to level up.';
+      if (quality === 'fair') return es ? 'Tu sueño merece más que solo \'bien\'.' : 'Your sleep deserves better than fine.';
+      if (trigger === 'browsing' && quality === 'well') return es ? '¿Ya duermes bien? Mantengamos eso así.' : 'Already sleeping well? Let\'s keep that going.';
+      if (trigger === 'browsing') return es ? 'Las mentes curiosas duermen mejor — esto es lo tuyo.' : 'Curious minds sleep better — here\'s what fits you.';
       return '';
     }
 
@@ -4684,17 +4690,20 @@
 
       // ----- ASSIGN PROFILE (16 types) -----
       const fullPositionLabels = {
-        'side': 'Side Sleeper', 'back': 'Back Sleeper', 'stomach': 'Stomach Sleeper',
-        'combo': 'Combo Sleeper', 'no_idea': 'Restless Sleeper'
+        'side': {en: 'Side Sleeper', es: 'De Lado'},
+        'back': {en: 'Back Sleeper', es: 'Boca Arriba'},
+        'stomach': {en: 'Stomach Sleeper', es: 'Boca Abajo'},
+        'combo': {en: 'Combo Sleeper', es: 'Combinación'},
+        'no_idea': {en: 'Restless Sleeper', es: 'Durmiente Inquieto'}
       };
 
       // Build subtitle: temperature + position + partner context
       var subtitle = '';
-      if (temp === 'hot') subtitle += 'Hot ';
-      else if (temp === 'cold') subtitle += 'Cozy ';
-      subtitle += fullPositionLabels[position] || 'Sleeper';
-      if (partnerSleep === 'partner') subtitle += ' \u00B7 Shared Bed';
-      else if (partnerSleep === 'family') subtitle += ' \u00B7 Family Bed';
+      if (temp === 'hot') subtitle += currentLang === 'es' ? 'Caluroso ' : 'Hot ';
+      else if (temp === 'cold') subtitle += currentLang === 'es' ? 'Friolento ' : 'Cozy ';
+      subtitle += L(fullPositionLabels[position]) || (currentLang === 'es' ? 'Durmiente' : 'Sleeper');
+      if (partnerSleep === 'partner') subtitle += currentLang === 'es' ? ' \u00B7 Cama Compartida' : ' \u00B7 Shared Bed';
+      else if (partnerSleep === 'family') subtitle += currentLang === 'es' ? ' \u00B7 Cama Familiar' : ' \u00B7 Family Bed';
       
       // Count pain signals
       var painCount = 0;
@@ -4776,13 +4785,14 @@
         profileIconKey = 'moon';
       }
       
-      // Update profile display
-      document.getElementById('profileIcon').innerHTML = icon(profileIconKey, 56);
-      document.getElementById('profileTitle').innerHTML = '<span class="profile-highlight">' + profileName + '</span>';
-      document.getElementById('profileSubtitle').textContent = subtitle;
-
       // Apply per-profile theme class (warm / cool / calm / energetic)
       var meta = PROFILE_META[profileName] || { theme: 'energetic', rarity: 10 };
+
+      // Update profile display
+      document.getElementById('profileIcon').innerHTML = icon(profileIconKey, 56);
+      var displayName = currentLang === 'es' && meta.name_es ? meta.name_es : profileName;
+      document.getElementById('profileTitle').innerHTML = '<span class="profile-highlight">' + displayName + '</span>';
+      document.getElementById('profileSubtitle').textContent = subtitle;
       var profileScreenEl = document.getElementById('profileScreen');
       profileScreenEl.classList.remove('theme-warm', 'theme-cool', 'theme-calm', 'theme-energetic');
       profileScreenEl.classList.add('theme-' + meta.theme);
@@ -4802,35 +4812,38 @@
       if (partnerSleep && partnerSleep !== 'solo') dataPoints++;
       if (firmness !== 5) dataPoints++;
       var confidence = Math.min(Math.round(70 + (dataPoints * 4)), 98);
-      document.getElementById('profileConfidence').textContent = confidence + '% profile match confidence \u00B7 Based on ' + visibleQuestions().length + ' answers';
+      document.getElementById('profileConfidence').textContent = currentLang === 'es'
+        ? confidence + '% confianza de perfil \u00B7 Basado en ' + visibleQuestions().length + ' respuestas'
+        : confidence + '% profile match confidence \u00B7 Based on ' + visibleQuestions().length + ' answers';
       // Surface the confidence visibly as a pill under the subtitle
-      document.getElementById('profileConfidencePill').textContent = confidence + '% Match Confidence';
+      document.getElementById('profileConfidencePill').textContent = currentLang === 'es' ? confidence + '% Confianza' : confidence + '% Match Confidence';
       // Social proof: "1 in N customers share this profile"
-      document.getElementById('profileSocialProof').textContent =
-        '1 in ' + meta.rarity + ' customers share this profile';
+      document.getElementById('profileSocialProof').textContent = currentLang === 'es'
+        ? '1 de ' + meta.rarity + ' clientes comparten este perfil'
+        : '1 in ' + meta.rarity + ' customers share this profile';
 
       // ----- BUILD STAT GRID -----
       var sizeLabels = { twin: 'Twin', twin_xl: 'Twin XL', full: 'Full', queen: 'Queen', king: 'King', cal_king: 'Cal King' };
       var sizeVal = sizeLabels[answers.mattress_size] || '—';
-      var firmVal = firmness <= 3 ? 'Plush' : firmness >= 7 ? 'Firm' : 'Medium';
-      var tempVal = temp === 'hot' ? 'Hot' : temp === 'cold' ? 'Cold' : temp === 'opposite' ? 'Mixed' : 'Normal';
+      var firmVal = firmness <= 3 ? (currentLang === 'es' ? 'Suave' : 'Plush') : firmness >= 7 ? (currentLang === 'es' ? 'Firme' : 'Firm') : (currentLang === 'es' ? 'Medio' : 'Medium');
+      var tempVal = temp === 'hot' ? (currentLang === 'es' ? 'Caliente' : 'Hot') : temp === 'cold' ? (currentLang === 'es' ? 'Frío' : 'Cold') : temp === 'opposite' ? (currentLang === 'es' ? 'Mixto' : 'Mixed') : 'Normal';
       document.getElementById('profileStatGrid').innerHTML =
-        '<div class="profile-stat-cell"><div class="profile-stat-value">' + sizeVal + '</div><div class="profile-stat-label">Size</div></div>' +
-        '<div class="profile-stat-cell"><div class="profile-stat-value">' + firmVal + '</div><div class="profile-stat-label">Firmness</div></div>' +
-        '<div class="profile-stat-cell"><div class="profile-stat-value">' + tempVal + '</div><div class="profile-stat-label">Temp</div></div>';
+        '<div class="profile-stat-cell"><div class="profile-stat-value">' + sizeVal + '</div><div class="profile-stat-label">' + (currentLang === 'es' ? 'Tamaño' : 'Size') + '</div></div>' +
+        '<div class="profile-stat-cell"><div class="profile-stat-value">' + firmVal + '</div><div class="profile-stat-label">' + (currentLang === 'es' ? 'Firmeza' : 'Firmness') + '</div></div>' +
+        '<div class="profile-stat-cell"><div class="profile-stat-value">' + tempVal + '</div><div class="profile-stat-label">' + (currentLang === 'es' ? 'Temp.' : 'Temp') + '</div></div>';
       
       // ----- BUILD CHIPS -----
       const chips = [];
-      const shortPosLabels = { side: 'Side', back: 'Back', stomach: 'Stomach', combo: 'Combo', no_idea: 'Restless' };
-      chips.push({ icon: position || 'side', label: shortPosLabels[position] || 'Sleeper' });
-      if (temp === 'hot') chips.push({ icon: 'flame', label: 'Hot' });
-      else if (temp === 'cold') chips.push({ icon: 'snowflake', label: 'Cold' });
-      if (firmness <= 3) chips.push({ icon: 'cloud', label: 'Plush' });
-      else if (firmness >= 7) chips.push({ icon: 'rock', label: 'Firm' });
-      if (partnerSleep === 'partner' || partnerSleep === 'family') chips.push({ icon: 'partner', label: 'Shared' });
-      if (issues.includes('back_pain')) chips.push({ icon: 'spine', label: 'Back' });
-      if (issues.includes('hip_pain')) chips.push({ icon: 'pressure', label: 'Hips' });
-      if (issues.includes('hot') && temp !== 'hot') chips.push({ icon: 'flame', label: 'Hot' });
+      const shortPosLabels = { side: {en:'Side',es:'Lado'}, back: {en:'Back',es:'Espalda'}, stomach: {en:'Stomach',es:'Boca Abajo'}, combo: {en:'Combo',es:'Combo'}, no_idea: {en:'Restless',es:'Inquieto'} };
+      chips.push({ icon: position || 'side', label: L(shortPosLabels[position]) || (currentLang === 'es' ? 'Durmiente' : 'Sleeper') });
+      if (temp === 'hot') chips.push({ icon: 'flame', label: currentLang === 'es' ? 'Caliente' : 'Hot' });
+      else if (temp === 'cold') chips.push({ icon: 'snowflake', label: currentLang === 'es' ? 'Frío' : 'Cold' });
+      if (firmness <= 3) chips.push({ icon: 'cloud', label: currentLang === 'es' ? 'Suave' : 'Plush' });
+      else if (firmness >= 7) chips.push({ icon: 'rock', label: currentLang === 'es' ? 'Firme' : 'Firm' });
+      if (partnerSleep === 'partner' || partnerSleep === 'family') chips.push({ icon: 'partner', label: currentLang === 'es' ? 'Compartido' : 'Shared' });
+      if (issues.includes('back_pain')) chips.push({ icon: 'spine', label: currentLang === 'es' ? 'Espalda' : 'Back' });
+      if (issues.includes('hip_pain')) chips.push({ icon: 'pressure', label: currentLang === 'es' ? 'Cadera' : 'Hips' });
+      if (issues.includes('hot') && temp !== 'hot') chips.push({ icon: 'flame', label: currentLang === 'es' ? 'Caliente' : 'Hot' });
       
       document.getElementById('profileChips').innerHTML = chips.map(function(c) {
         return '<div class="profile-chip">' + icon(c.icon, 14) + ' ' + c.label + '</div>';
@@ -4838,21 +4851,24 @@
       
       // ----- BUILD ONE-LINER -----
       var recParts = [];
-      if (temp === 'hot' || issues.includes('hot')) recParts.push('<strong>cooling mattress</strong>');
-      if (position === 'side' || firmness <= 3) recParts.push('<strong>plush pressure relief</strong>');
-      else if (position === 'stomach' || firmness >= 7) recParts.push('<strong>firm support</strong>');
-      else recParts.push('<strong>balanced comfort</strong>');
-      if (partnerDisturbance === 'yes_often' || partnerDisturbance === 'sometimes' || partnerSleep === 'partner' || partnerSleep === 'family') recParts.push('<strong>motion isolation</strong>');
-      if (issues.includes('back_pain') || health.includes('extra_support')) recParts.push('<strong>lumbar support</strong>');
-      
-      var oneliner = PROFILE_OPENERS[profileName] || "We'll find you a ";
+      if (temp === 'hot' || issues.includes('hot')) recParts.push(currentLang === 'es' ? '<strong>colchón con enfriamiento</strong>' : '<strong>cooling mattress</strong>');
+      if (position === 'side' || firmness <= 3) recParts.push(currentLang === 'es' ? '<strong>alivio de presión suave</strong>' : '<strong>plush pressure relief</strong>');
+      else if (position === 'stomach' || firmness >= 7) recParts.push(currentLang === 'es' ? '<strong>soporte firme</strong>' : '<strong>firm support</strong>');
+      else recParts.push(currentLang === 'es' ? '<strong>comodidad equilibrada</strong>' : '<strong>balanced comfort</strong>');
+      if (partnerDisturbance === 'yes_often' || partnerDisturbance === 'sometimes' || partnerSleep === 'partner' || partnerSleep === 'family') recParts.push(currentLang === 'es' ? '<strong>aislamiento de movimiento</strong>' : '<strong>motion isolation</strong>');
+      if (issues.includes('back_pain') || health.includes('extra_support')) recParts.push(currentLang === 'es' ? '<strong>soporte lumbar</strong>' : '<strong>lumbar support</strong>');
+
+      var openerObj = PROFILE_OPENERS[profileName] || {en: "We'll find you a ", es: "Te encontraremos un "};
+      var oneliner = L(openerObj);
+      var withConn = currentLang === 'es' ? ' con ' : ' with ';
+      var andConn = currentLang === 'es' ? ' y ' : ', and ';
       if (recParts.length === 1) {
         oneliner += recParts[0];
       } else if (recParts.length === 2) {
-        oneliner += recParts[0] + ' with ' + recParts[1];
+        oneliner += recParts[0] + withConn + recParts[1];
       } else {
         var lastPart = recParts.pop();
-        oneliner += recParts.join(', ') + ', and ' + lastPart;
+        oneliner += recParts.join(', ') + andConn + lastPart;
       }
       oneliner += '.';
       document.getElementById('profileOneliner').innerHTML = oneliner;
