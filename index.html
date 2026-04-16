@@ -3547,7 +3547,7 @@
       <div class="profile-reveal-badge">
         <span class="profile-badge-text">
           <span class="profile-checkmark"></span>
-          Your Sleep DNA, Decoded
+          <span data-i18n="profile.badge">Your Sleep DNA, Decoded</span>
         </span>
       </div>
 
@@ -3568,7 +3568,7 @@
 
       <!-- BIG ONE-LINER — salesperson hero statement -->
       <div class="profile-statement-wrap">
-        <div class="profile-statement-eyebrow">Your Perfect Match</div>
+        <div class="profile-statement-eyebrow" data-i18n="profile.perfect_match">Your Perfect Match</div>
         <div class="profile-statement" id="profileOneliner"></div>
       </div>
 
@@ -3589,7 +3589,7 @@
         </button>
         <a href="#" class="profile-back-edit" id="profileBackEdit"
           onclick="event.preventDefault();window.showScreen('reviewScreen');window.renderReview();"
-          ontouchend="event.preventDefault();window.showScreen('reviewScreen');window.renderReview();">← Edit my answers</a>
+          ontouchend="event.preventDefault();window.showScreen('reviewScreen');window.renderReview();" data-i18n="profile.edit_answers">← Edit my answers</a>
       </div>
 
     </div>
@@ -4875,42 +4875,43 @@
       
       // ----- INFER PRIORITIES FOR CARDS -----
       const priorities = [];
-      
+      var es = currentLang === 'es';
+
       var coolingScore = 0;
       if (temp === 'hot') coolingScore += 40;
       if (issues.includes('hot')) coolingScore += 30;
-      if (coolingScore >= 40) priorities.push({ icon: 'cooling', name: 'Temperature Regulation', why: temp === 'hot' ? 'You sleep hot — cooling tech will make a big difference' : 'Night sweats noted — cooling layers prioritized', badge: 'KEY NEED', fill: Math.min(coolingScore + 35, 95) });
-      
+      if (coolingScore >= 40) priorities.push({ icon: 'cooling', name: es ? 'Regulación de Temperatura' : 'Temperature Regulation', why: temp === 'hot' ? (es ? 'Duermes con calor — la tecnología de enfriamiento hará una gran diferencia' : 'You sleep hot — cooling tech will make a big difference') : (es ? 'Sudores nocturnos notados — capas de enfriamiento priorizadas' : 'Night sweats noted — cooling layers prioritized'), badge: es ? 'NECESIDAD CLAVE' : 'KEY NEED', fill: Math.min(coolingScore + 35, 95) });
+
       var pressureScore = 0;
       if (position === 'side') pressureScore += 35;
       if (issues.includes('hip_pain')) pressureScore += 30;
       if (issues.includes('stiff')) pressureScore += 15;
-      if (pressureScore >= 30) priorities.push({ icon: 'target', name: 'Pressure Relief', why: position === 'side' ? 'Side sleepers need cushioning at hips & shoulders' : 'Hip and joint comfort is a priority', badge: 'KEY NEED', fill: Math.min(pressureScore + 35, 95) });
-      
+      if (pressureScore >= 30) priorities.push({ icon: 'target', name: es ? 'Alivio de Presión' : 'Pressure Relief', why: position === 'side' ? (es ? 'Los que duermen de lado necesitan amortiguación en caderas y hombros' : 'Side sleepers need cushioning at hips & shoulders') : (es ? 'La comodidad de caderas y articulaciones es prioridad' : 'Hip and joint comfort is a priority'), badge: es ? 'NECESIDAD CLAVE' : 'KEY NEED', fill: Math.min(pressureScore + 35, 95) });
+
       var supportScore = 0;
       if (issues.includes('back_pain')) supportScore += 35;
       if (position === 'back') supportScore += 20;
       if (position === 'stomach') supportScore += 25;
       if (health.includes('extra_support')) supportScore += 30;
-      if (supportScore >= 20) priorities.push({ icon: 'support', name: 'Spinal Support', why: issues.includes('back_pain') ? 'Back pain noted — reinforced support zone essential' : 'Your sleep position calls for strong lumbar alignment', badge: 'KEY NEED', fill: Math.min(supportScore + 40, 95) });
-      
+      if (supportScore >= 20) priorities.push({ icon: 'support', name: es ? 'Soporte Espinal' : 'Spinal Support', why: issues.includes('back_pain') ? (es ? 'Dolor de espalda notado — zona de soporte reforzada esencial' : 'Back pain noted — reinforced support zone essential') : (es ? 'Tu posición de sueño requiere fuerte alineación lumbar' : 'Your sleep position calls for strong lumbar alignment'), badge: es ? 'NECESIDAD CLAVE' : 'KEY NEED', fill: Math.min(supportScore + 40, 95) });
+
       if (partnerDisturbance === 'yes_often' || partnerDisturbance === 'sometimes' || partnerSleep === 'partner' || partnerSleep === 'family') {
-        var motionWhy = partnerDisturbance === 'yes_often' ? 'Partner movement wakes you — pocketed coils are essential' : partnerDisturbance === 'sometimes' ? 'Partner movement is an issue — motion isolation recommended' : 'Shared bed — motion isolation reduces sleep disruption';
-        priorities.push({ icon: 'motion', name: 'Motion Isolation', why: motionWhy, badge: partnerDisturbance === 'yes_often' ? 'HIGH PRIORITY' : 'RECOMMENDED', fill: partnerDisturbance === 'yes_often' ? 92 : 80 });
+        var motionWhy = partnerDisturbance === 'yes_often' ? (es ? 'El movimiento de tu pareja te despierta — resortes encapsulados son esenciales' : 'Partner movement wakes you — pocketed coils are essential') : partnerDisturbance === 'sometimes' ? (es ? 'El movimiento de tu pareja es un problema — aislamiento de movimiento recomendado' : 'Partner movement is an issue — motion isolation recommended') : (es ? 'Cama compartida — aislamiento de movimiento reduce interrupciones' : 'Shared bed — motion isolation reduces sleep disruption');
+        priorities.push({ icon: 'motion', name: es ? 'Aislamiento de Movimiento' : 'Motion Isolation', why: motionWhy, badge: partnerDisturbance === 'yes_often' ? (es ? 'ALTA PRIORIDAD' : 'HIGH PRIORITY') : (es ? 'RECOMENDADO' : 'RECOMMENDED'), fill: partnerDisturbance === 'yes_often' ? 92 : 80 });
       }
-      
-      if (firmness <= 3) priorities.push({ icon: 'cloud', name: 'Plush Comfort', why: 'You prefer a soft, sink-in feel', badge: 'PREFERENCE', fill: 80 });
-      else if (firmness >= 7) priorities.push({ icon: 'rock', name: 'Firm Feel', why: 'You prefer solid, firm support underfoot', badge: 'PREFERENCE', fill: 80 });
-      else priorities.push({ icon: 'target', name: 'Balanced Comfort', why: 'Medium feel — supportive without being too firm or soft', badge: 'PREFERENCE', fill: 70 });
-      
+
+      if (firmness <= 3) priorities.push({ icon: 'cloud', name: es ? 'Comodidad Suave' : 'Plush Comfort', why: es ? 'Prefieres una sensación suave y envolvente' : 'You prefer a soft, sink-in feel', badge: es ? 'PREFERENCIA' : 'PREFERENCE', fill: 80 });
+      else if (firmness >= 7) priorities.push({ icon: 'rock', name: es ? 'Sensación Firme' : 'Firm Feel', why: es ? 'Prefieres soporte sólido y firme' : 'You prefer solid, firm support underfoot', badge: es ? 'PREFERENCIA' : 'PREFERENCE', fill: 80 });
+      else priorities.push({ icon: 'target', name: es ? 'Comodidad Equilibrada' : 'Balanced Comfort', why: es ? 'Sensación media — soporte sin ser muy firme ni suave' : 'Medium feel — supportive without being too firm or soft', badge: es ? 'PREFERENCIA' : 'PREFERENCE', fill: 70 });
+
       // Sort by score descending, take top 3
       priorities.sort(function(a, b) { return b.fill - a.fill; });
       var topPriorities = priorities.slice(0, 3);
       if (topPriorities.length === 0) {
-        topPriorities.push({ icon: 'target', name: 'Balanced Comfort', why: 'No specific issues — optimized for all-round sleep quality', badge: 'RECOMMENDED', fill: 70 });
+        topPriorities.push({ icon: 'target', name: es ? 'Comodidad Equilibrada' : 'Balanced Comfort', why: es ? 'Sin problemas específicos — optimizado para calidad de sueño general' : 'No specific issues — optimized for all-round sleep quality', badge: es ? 'RECOMENDADO' : 'RECOMMENDED', fill: 70 });
       }
       while (topPriorities.length < 3) {
-        topPriorities.push({ icon: 'comfort', name: 'Overall Comfort', why: 'Matched to your sleep profile', badge: 'RECOMMENDED', fill: 60 });
+        topPriorities.push({ icon: 'comfort', name: es ? 'Comodidad General' : 'Overall Comfort', why: es ? 'Adaptado a tu perfil de sueño' : 'Matched to your sleep profile', badge: es ? 'RECOMENDADO' : 'RECOMMENDED', fill: 60 });
       }
       
       document.getElementById('profileScores').innerHTML = topPriorities.map(function(p) {
@@ -4929,16 +4930,16 @@
       // is implicitly making based on what didn't land in the top 3.
       var topNames = topPriorities.map(function(p) { return p.name; });
       var nonPriorityMsg = '';
-      var hasCooling = topNames.indexOf('Temperature Regulation') > -1;
-      var hasSupport = topNames.indexOf('Spinal Support') > -1;
-      var hasPressure = topNames.indexOf('Pressure Relief') > -1;
-      var hasMotion = topNames.indexOf('Motion Isolation') > -1;
+      var hasCooling = topNames.indexOf(es ? 'Regulación de Temperatura' : 'Temperature Regulation') > -1;
+      var hasSupport = topNames.indexOf(es ? 'Soporte Espinal' : 'Spinal Support') > -1;
+      var hasPressure = topNames.indexOf(es ? 'Alivio de Presión' : 'Pressure Relief') > -1;
+      var hasMotion = topNames.indexOf(es ? 'Aislamiento de Movimiento' : 'Motion Isolation') > -1;
       if (!hasCooling && (temp === 'comfortable' || temp === 'cold')) {
-        nonPriorityMsg = 'Cooling is a lower priority for you — we\'re focused on feel and support.';
+        nonPriorityMsg = es ? 'El enfriamiento es menor prioridad para ti — nos enfocamos en sensación y soporte.' : 'Cooling is a lower priority for you — we\'re focused on feel and support.';
       } else if (!hasSupport && !hasPressure && !hasMotion && hasCooling) {
-        nonPriorityMsg = 'Temperature is your biggest need — feel and support come second.';
+        nonPriorityMsg = es ? 'La temperatura es tu mayor necesidad — sensación y soporte son secundarios.' : 'Temperature is your biggest need — feel and support come second.';
       } else if (!hasMotion && partnerSleep === 'solo') {
-        nonPriorityMsg = 'No partner, so we\'re not optimizing for motion isolation.';
+        nonPriorityMsg = es ? 'Sin pareja, así que no optimizamos para aislamiento de movimiento.' : 'No partner, so we\'re not optimizing for motion isolation.';
       }
       document.getElementById('profileNonPriority').textContent = nonPriorityMsg;
 
@@ -4947,8 +4948,8 @@
       var ctaBtn = document.getElementById('profileCtaBtn');
       var ctaText = document.getElementById('profileCtaText');
       if (ctaBtn && ctaText) {
-        var finalLabel = 'Show Me My Top 3 Picks →';
-        ctaText.textContent = 'Scoring mattresses against your profile…';
+        var finalLabel = es ? 'Muéstrame Mis 3 Mejores Opciones →' : 'Show Me My Top 3 Picks →';
+        ctaText.textContent = es ? 'Evaluando colchones según tu perfil…' : 'Scoring mattresses against your profile…';
         ctaBtn.classList.add('loading');
         setTimeout(function() {
           ctaBtn.classList.remove('loading');

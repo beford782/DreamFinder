@@ -23,5 +23,9 @@
   "review.title": "Quick review",
   "review.help": "Make sure everything looks right, then we'll build your match.",
   "review.looks_good": "Looks Good →",
-  "nav.back": "← Back"
+  "nav.back": "← Back",
+
+  "profile.badge": "Your Sleep DNA, Decoded",
+  "profile.perfect_match": "Your Perfect Match",
+  "profile.edit_answers": "← Edit my answers"
 }
