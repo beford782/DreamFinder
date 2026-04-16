@@ -4099,9 +4099,15 @@
 
     const ACCESSORIES = [
       // Bases & Foundations (shown first)
-      { id: 'base-bt3000', name: 'BT3000 Power Base', category: 'Foundations & Support', price: 899, 
-        image: 'images/accessories/base-bt3000.jpg',
-        description: 'Head & foot adjustment, wireless remote, USB ports, massage, under-bed LED lighting — 850lb capacity',
+      { id: 'base-good-adjustable', name: 'Good Adjustable Base', category: 'Foundations & Support', price: 0,
+        image: 'images/accessories/base-good-adjustable.webp',
+        description: 'Adjustable base with head and foot positioning for customized comfort and better sleep',
+        subType: 'adjustable',
+        matchTags: ['snoring', 'back_pain'], matchScores: { back_pain: 3, snoring: 3, default: 2 } },
+
+      { id: 'base-best-adjustable', name: 'Best Adjustable Base', category: 'Foundations & Support', price: 0,
+        image: 'images/accessories/base-best-adjustable.webp',
+        description: 'Premium adjustable base with advanced features for the ultimate in personalized comfort',
         subType: 'adjustable',
         matchTags: ['snoring', 'back_pain'], matchScores: { back_pain: 4, snoring: 4, premium: 3 } },
 
