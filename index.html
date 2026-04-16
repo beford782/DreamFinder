@@ -3355,7 +3355,7 @@
           <span class="moon-sm"><svg width="16" height="16" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="28" cy="28" r="26" fill="url(#moonGradSm)" opacity="0.9"/><path d="M38 12C33.5 16.5 31 23 31 28C31 33 33.5 39.5 38 44C34.5 46.5 30 48 26 48C14 48 4 38 4 26C4 14 14 4 26 4C30 4 34.5 5.5 38 8C37.5 9.2 37.5 10.8 38 12Z" fill="url(#shadowGradSm)" opacity="0.35"/><defs><radialGradient id="moonGradSm" cx="0.35" cy="0.35" r="0.65"><stop offset="0%" stop-color="#f0daa8"/><stop offset="60%" stop-color="#d4a84b"/><stop offset="100%" stop-color="#b8922f"/></radialGradient><radialGradient id="shadowGradSm" cx="0.7" cy="0.5" r="0.6"><stop offset="0%" stop-color="#0f1f33"/><stop offset="100%" stop-color="#0f1f33" stop-opacity="0"/></radialGradient></defs></svg></span>
           DreamFinder
         </div>
-        <div class="app-tagline">Personalized Sleep Consultation</div>
+        <div class="app-tagline" data-i18n="header.tagline">Personalized Sleep Consultation</div>
       </div>
     </div>
 
@@ -3397,17 +3397,22 @@
 
   <!-- SCREEN: Welcome / Landing -->
   <main class="main screen active" id="welcomeScreen">
+    <!-- Language Toggle -->
+    <div id="langToggle" style="position:absolute; top:1rem; right:1rem; z-index:20; display:flex; background:rgba(255,255,255,0.08); border-radius:8px; overflow:hidden; border:1px solid rgba(255,255,255,0.15);">
+      <button id="langBtnEn" onclick="switchLanguage('en')" ontouchend="event.preventDefault();switchLanguage('en');" style="padding:0.35rem 0.7rem; font-family:inherit; font-size:0.75rem; font-weight:700; border:none; cursor:pointer; touch-action:manipulation; background:#c9a84c; color:#0d1730; letter-spacing:0.5px;">EN</button>
+      <button id="langBtnEs" onclick="switchLanguage('es')" ontouchend="event.preventDefault();switchLanguage('es');" style="padding:0.35rem 0.7rem; font-family:inherit; font-size:0.75rem; font-weight:700; border:none; cursor:pointer; touch-action:manipulation; background:transparent; color:rgba(255,255,255,0.5); letter-spacing:0.5px;">ES</button>
+    </div>
     <div class="welcome">
       <!-- Large Store Logo -->
       <div class="hero-store-logo">
         <span class="hero-logo-main">bel</span>
         <span class="hero-logo-sub">furniture</span>
-        <p class="trust-signal">Proudly serving Texas families for over twenty-five years</p>
+        <p class="trust-signal" data-i18n="welcome.trust_signal">Proudly serving Texas families for over twenty-five years</p>
         <div class="made-badge">
           <svg viewBox="0 0 24 24" fill="currentColor">
             <polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9"/>
           </svg>
-          Made in Texas
+          <span data-i18n="welcome.made_badge">Made in Texas</span>
         </div>
       </div>
 
@@ -3449,23 +3454,23 @@
         </svg>
       </div>
 
-      <h1>Sleep Better <span class="gold">Tonight.</span></h1>
+      <h1><span data-i18n="welcome.hero">Sleep Better</span> <span class="gold" data-i18n="welcome.hero_accent">Tonight.</span></h1>
 
-      <p class="subtitle">
+      <p class="subtitle" data-i18n="welcome.subtitle">
         Tell us how you sleep — we'll find your perfect match.
       </p>
       
-      <div class="reward-hint">Your discount: <span class="discount-mystery"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span> <span style="opacity:0.5; font-weight:400; font-size:0.85rem; margin-left:0.3rem;">revealed after quiz</span></div>
+      <div class="reward-hint"><span data-i18n="welcome.reward_hint">Your discount:</span> <span class="discount-mystery"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span> <span style="opacity:0.5; font-weight:400; font-size:0.85rem; margin-left:0.3rem;" data-i18n="welcome.reward_revealed">revealed after quiz</span></div>
 
       <button class="cta-btn" id="startBtn" onclick="startQuiz()" ontouchend="event.preventDefault();startQuiz();" style="position:relative; z-index:10; touch-action:manipulation; -webkit-touch-callout:none; pointer-events:auto; cursor:pointer;">
-        <span class="cta-main">Find My Perfect Mattress</span>
-        <span class="cta-time">Quick quiz. Perfect match. Plus your discount.</span>
+        <span class="cta-main" data-i18n="welcome.cta_main">Find My Perfect Mattress</span>
+        <span class="cta-time" data-i18n="welcome.cta_sub">Quick quiz. Perfect match. Plus your discount.</span>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M5 12h14"/><path d="M12 5l7 7-7 7"/>
         </svg>
       </button>
 
-      <p class="social-proof" data-store="social-proof">Recommended by your Bel Furniture sleep team</p>
+      <p class="social-proof" data-store="social-proof" data-i18n="welcome.social_proof">Recommended by your Bel Furniture sleep team</p>
 
 
 
@@ -3857,6 +3862,83 @@
       return 'DREAM' + digits;
     }
 
+    // ===== i18n INFRASTRUCTURE =====
+    let currentLang = 'en';
+    let DICT = {};
+
+    // Lookup a dictionary key, with optional {placeholder} interpolation
+    function t(key, replacements) {
+      var str = DICT[key] || key;
+      if (replacements) {
+        Object.keys(replacements).forEach(function(k) {
+          str = str.replace(new RegExp('\\{' + k + '\\}', 'g'), replacements[k]);
+        });
+      }
+      return str;
+    }
+
+    // Lookup a bilingual inline object: {en: "...", es: "..."}
+    function L(obj) {
+      if (typeof obj === 'object' && obj !== null && obj[currentLang]) return obj[currentLang];
+      if (typeof obj === 'string') return obj;
+      return (obj && obj.en) || '';
+    }
+
+    // Load a dictionary file
+    async function loadDictionary(lang) {
+      try {
+        var res = await fetch('./data/dict-' + lang + '.json');
+        DICT = await res.json();
+      } catch (e) {
+        console.warn('[DreamFinder] Could not load dictionary for ' + lang + ', falling back to en');
+        if (lang !== 'en') {
+          try {
+            var fallback = await fetch('./data/dict-en.json');
+            DICT = await fallback.json();
+          } catch (e2) {
+            console.error('[DreamFinder] Failed to load any dictionary:', e2);
+            DICT = {};
+          }
+        }
+      }
+    }
+
+    // Apply data-i18n attributes to all tagged elements
+    function applyTranslations() {
+      document.querySelectorAll('[data-i18n]').forEach(function(el) {
+        var key = el.getAttribute('data-i18n');
+        var val = t(key, { storeName: (STORE_CONFIG && STORE_CONFIG.storeName) || '' });
+        if (val !== key) {
+          if (el.getAttribute('data-i18n-html') === 'true') {
+            el.innerHTML = val;
+          } else {
+            el.textContent = val;
+          }
+        }
+      });
+    }
+
+    // Switch language: reload dictionary, update toggle UI, re-apply text
+    async function switchLanguage(lang) {
+      currentLang = lang;
+      document.documentElement.lang = lang;
+      await loadDictionary(lang);
+      applyTranslations();
+      // Update toggle button styles
+      var btnEn = document.getElementById('langBtnEn');
+      var btnEs = document.getElementById('langBtnEs');
+      if (btnEn) {
+        btnEn.style.background = lang === 'en' ? '#c9a84c' : 'transparent';
+        btnEn.style.color = lang === 'en' ? '#0d1730' : 'rgba(255,255,255,0.5)';
+      }
+      if (btnEs) {
+        btnEs.style.background = lang === 'es' ? '#c9a84c' : 'transparent';
+        btnEs.style.color = lang === 'es' ? '#0d1730' : 'rgba(255,255,255,0.5)';
+      }
+      // Re-apply store config text for current language
+      applyStoreConfig();
+    }
+
     // ===== SVG ICON LIBRARY =====
     function icon(name, size) {
       size = size || 24;
@@ -4071,7 +4153,9 @@
       } catch (e) {
         console.error('Failed to load app data:', e);
       }
+      await loadDictionary(currentLang);
       applyStoreConfig();
+      applyTranslations();
     })();
 
     function applyStoreConfig() {
@@ -6028,7 +6112,10 @@
         analytics.log('session_ended', analytics.getSummary());
         console.log('[DreamFinder] Session Summary:', JSON.stringify(analytics.getSummary(), null, 2));
       } catch(e) { console.warn('Analytics log failed:', e); }
-      
+
+      // Reset language to English
+      if (currentLang !== 'en') switchLanguage('en');
+
       // Reset cart
       window._accCart = {};
       const bar = document.getElementById('accCartBar');
