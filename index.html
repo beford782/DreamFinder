@@ -3603,13 +3603,13 @@
 
         <!-- Phase 1: intro label -->
         <div id="revealIntro" style="opacity:0; text-align:center;">
-          <div style="font-size:0.65rem; text-transform:uppercase; letter-spacing:3px; color:var(--gold); font-weight:600; margin-bottom:0.6rem;">Your Exclusive Discount</div>
-          <div style="font-size:1rem; color:var(--cream-dim); font-weight:400;">Calculating your savings...</div>
+          <div style="font-size:0.65rem; text-transform:uppercase; letter-spacing:3px; color:var(--gold); font-weight:600; margin-bottom:0.6rem;" data-i18n="discount.title">Your Exclusive Discount</div>
+          <div style="font-size:1rem; color:var(--cream-dim); font-weight:400;" data-i18n="discount.calculating">Calculating your savings...</div>
         </div>
 
         <!-- Phase 2: DREAM code slot machine -->
         <div id="revealSlotWrap" style="display:none; text-align:center;">
-          <div style="font-size:0.55rem; text-transform:uppercase; letter-spacing:3px; color:var(--gold); font-weight:600; margin-bottom:1rem;">Your Discount Code</div>
+          <div style="font-size:0.55rem; text-transform:uppercase; letter-spacing:3px; color:var(--gold); font-weight:600; margin-bottom:1rem;" data-i18n="discount.code_label">Your Discount Code</div>
           <div id="revealSlotRow" style="display:flex; align-items:center; justify-content:center; gap:6px; margin-bottom:1.5rem;">
             <!-- D R E A M letters -->
             <div class="slot-letter" id="sl0">D</div>
@@ -3625,12 +3625,12 @@
           </div>
           <!-- Percentage counter -->
           <div id="revealPctWrap" style="opacity:0; transition:opacity 0.4s ease;">
-            <div style="font-size:0.55rem; text-transform:uppercase; letter-spacing:3px; color:var(--gold); font-weight:600; margin-bottom:0.5rem;">Discount Unlocked</div>
+            <div style="font-size:0.55rem; text-transform:uppercase; letter-spacing:3px; color:var(--gold); font-weight:600; margin-bottom:0.5rem;" data-i18n="discount.unlocked">Discount Unlocked</div>
             <div style="display:flex; align-items:baseline; justify-content:center; gap:4px;">
               <span id="revealCounter" style="font-size:5rem; font-weight:900; color:var(--gold); line-height:1; text-shadow:0 0 40px rgba(212,168,75,0.6);">0</span>
-              <span style="font-size:2.5rem; font-weight:800; color:var(--cream); line-height:1;">% OFF</span>
+              <span style="font-size:2.5rem; font-weight:800; color:var(--cream); line-height:1;" data-i18n="discount.off">% OFF</span>
             </div>
-            <div id="revealSubtitle" style="font-size:0.85rem; color:var(--cream-dim); margin-top:0.6rem; opacity:0; transition:opacity 0.4s ease;">Show this screen to your sleep specialist</div>
+            <div id="revealSubtitle" style="font-size:0.85rem; color:var(--cream-dim); margin-top:0.6rem; opacity:0; transition:opacity 0.4s ease;" data-i18n="discount.show_specialist">Show this screen to your sleep specialist</div>
           </div>
         </div>
 
@@ -3640,7 +3640,7 @@
     </div>
 
     <div class="results-header">
-      <h2>Your perfect matches are ready</h2>
+      <h2 data-i18n="results.header">Your perfect matches are ready</h2>
       <!-- Salesperson handoff cue -->
       <div style="display:flex; align-items:center; gap:0.5rem; background:linear-gradient(135deg,rgba(212,168,75,0.1),rgba(212,168,75,0.04)); border:1px solid rgba(212,168,75,0.35); border-radius:8px; padding:0.45rem 0.75rem; margin-top:0.5rem;">
         <span style="font-size:1rem;">🛏️</span>
