@@ -2,138 +2,937 @@
   "gold": [
     {
       "id": "g1",
-      "name": "Placeholder Gold Plush",
-      "brand": "Restonic",
-      "subBrand": "",
+      "name": "The St. Pierre",
+      "brand": "Spring Air",
+      "subBrand": "Chattam & Wells",
       "firmness": 3,
       "firmnessLabel": "Plush",
-      "locallyMade": false,
-      "features": ["plush", "cooling", "pressureRelief", "hybrid", "motionIsolation"],
-      "tags": ["Hybrid", "Cooling"],
-      "highlight": "Placeholder — replace with real mattress data",
-      "imageUrl": "",
+      "locallyMade": true,
+      "features": [
+        "plush",
+        "cooling",
+        "pressureRelief",
+        "hybrid",
+        "motionIsolation",
+        "cashmere",
+        "camelhair",
+        "latex",
+        "microcoils",
+        "handTufting",
+        "soft",
+        "zoned",
+        "durability",
+        "hypoallergenic",
+        "quality"
+      ],
+      "tags": [
+        "Hybrid",
+        "Luxury",
+        "Cooling",
+        "Natural Materials"
+      ],
+      "highlight": "Handcrafted luxury sleep with premium materials like natural latex, cashmere, and individually wrapped coils — engineered to cradle your body in luxurious comfort night after night.",
+      "imageUrl": "images/mattresses/the st. pierre.webp",
       "reasons": {
-        "cooling": "Advanced cooling technology",
-        "pressureRelief": "Premium comfort foam layers",
-        "motionIsolation": "Pocketed coil system reduces motion transfer",
-        "support": "Reinforced edge support system",
-        "plush": "Soft plush feel for side sleepers",
-        "durability": "Quality materials built to last",
-        "default": "Premium hybrid with cooling comfort and motion isolation"
+        "cooling": "Natural cashmere and camelhair cover wicks heat and moisture away",
+        "pressureRelief": "Natural latex, plush comfort layers, and microcoils contour gently to shoulders and hips",
+        "motionIsolation": "Individually wrapped coils with microcoil transition layer minimize partner disturbance",
+        "support": "Individually wrapped coil system with zoned support for proper spinal alignment",
+        "plush": "Welcoming, soft plush feel for side sleepers and those with pressure-point pain",
+        "durability": "Handcrafted luxury construction with premium natural materials built to last",
+        "default": "Handcrafted luxury sleep with premium materials like natural latex, cashmere, and individually wrapped coils — engineered to cradle your body in luxurious comfort night after night."
       }
     },
     {
       "id": "g2",
-      "name": "Placeholder Gold Medium",
-      "brand": "Restonic",
-      "subBrand": "",
+      "name": "The Roma",
+      "brand": "Spring Air",
+      "subBrand": "Chattam & Wells",
       "firmness": 5,
       "firmnessLabel": "Medium",
-      "locallyMade": false,
-      "features": ["medium", "support", "hybrid", "cooling", "pressureRelief"],
-      "tags": ["Hybrid", "Support"],
-      "highlight": "Placeholder — replace with real mattress data",
-      "imageUrl": "",
+      "locallyMade": true,
+      "features": [
+        "medium",
+        "cooling",
+        "pressureRelief",
+        "hybrid",
+        "motionIsolation",
+        "cashmere",
+        "camelhair",
+        "latex",
+        "microcoils",
+        "handTufting",
+        "zoned",
+        "durability",
+        "hypoallergenic",
+        "quality"
+      ],
+      "tags": [
+        "Hybrid",
+        "Luxury",
+        "Cooling",
+        "Natural Materials"
+      ],
+      "highlight": "Handcrafted luxury sleep with premium materials like natural latex, cashmere, and individually wrapped coils — engineered to cradle your body in luxurious comfort night after night.",
+      "imageUrl": "images/mattresses/the roma.webp",
       "reasons": {
-        "cooling": "Breathable cover technology",
-        "pressureRelief": "Comfort foam pressure relief",
-        "motionIsolation": "Individually wrapped coils",
-        "support": "Zoned support system",
-        "medium": "Balanced medium feel for all sleep positions",
-        "durability": "Durable construction",
-        "default": "Versatile hybrid mattress for most sleepers"
+        "cooling": "Natural cashmere and camelhair cover wicks heat and moisture away",
+        "pressureRelief": "Natural latex, balanced comfort layers, and microcoils provide responsive pressure relief",
+        "motionIsolation": "Individually wrapped coils with microcoil transition layer minimize partner disturbance",
+        "support": "Individually wrapped coil system with zoned support for proper spinal alignment",
+        "medium": "Perfect medium feel for most sleepers and all sleep positions",
+        "durability": "Handcrafted luxury construction with premium natural materials built to last",
+        "default": "Handcrafted luxury sleep with premium materials like natural latex, cashmere, and individually wrapped coils — engineered to cradle your body in luxurious comfort night after night."
+      }
+    },
+    {
+      "id": "g3",
+      "name": "The Palermo",
+      "brand": "Spring Air",
+      "subBrand": "Chattam & Wells",
+      "firmness": 8,
+      "firmnessLabel": "Firm",
+      "locallyMade": true,
+      "features": [
+        "firm",
+        "cooling",
+        "pressureRelief",
+        "hybrid",
+        "motionIsolation",
+        "cashmere",
+        "camelhair",
+        "latex",
+        "microcoils",
+        "handTufting",
+        "zoned",
+        "durability",
+        "hypoallergenic",
+        "quality"
+      ],
+      "tags": [
+        "Hybrid",
+        "Luxury",
+        "Cooling",
+        "Natural Materials"
+      ],
+      "highlight": "Handcrafted luxury sleep with premium materials like natural latex, cashmere, and individually wrapped coils — engineered to cradle your body in luxurious comfort night after night.",
+      "imageUrl": "images/mattresses/the palermo.webp",
+      "reasons": {
+        "cooling": "Natural cashmere and camelhair cover wicks heat and moisture away",
+        "pressureRelief": "Natural latex and microcoils deliver responsive pressure relief without sacrificing firmness",
+        "motionIsolation": "Individually wrapped coils with microcoil transition layer minimize partner disturbance",
+        "support": "Individually wrapped coil system with zoned support for proper spinal alignment",
+        "firm": "Firm feel for back and stomach sleepers and larger builds",
+        "durability": "Handcrafted luxury construction with premium natural materials built to last",
+        "default": "Handcrafted luxury sleep with premium materials like natural latex, cashmere, and individually wrapped coils — engineered to cradle your body in luxurious comfort night after night."
+      }
+    },
+    {
+      "id": "g4",
+      "name": "Vail Latex Euro Top Firm",
+      "brand": "Spring Air",
+      "subBrand": "Chattam & Wells",
+      "firmness": 7,
+      "firmnessLabel": "Medium-Firm",
+      "locallyMade": true,
+      "features": [
+        "medium",
+        "firm",
+        "cooling",
+        "support",
+        "hybrid",
+        "responsive",
+        "quality",
+        "handTufting",
+        "lifetimeWarranty",
+        "latex",
+        "zoned",
+        "durability",
+        "hypoallergenic",
+        "adjustable"
+      ],
+      "tags": [
+        "All Latex",
+        "Cooling",
+        "Durability",
+        "Support"
+      ],
+      "highlight": "Experience handcrafted luxury and the naturally cool, buoyant feel of pure latex — Chattam & Wells sets a new standard for premium sleep.",
+      "imageUrl": "images/mattresses/vail latex euro top firm.webp",
+      "reasons": {
+        "cooling": "Phase change technology - cool-to-the-touch fabrics that adjust to temperature",
+        "pressureRelief": "Talalay latex for natural and durable pressure-relieving comfort layer. Breathable, antimicrobial, and hypo-allergenic",
+        "motionIsolation": "Pocketed coils minimize partner disturbance",
+        "support": "QUANTUM ENCASED COIL UNIT with 1575 individually encased 17 gauge coils",
+        "firm": "Medium-firm euro top feel ideal for back sleepers who want surface comfort with solid support",
+        "durability": "Hand-tufted, lifetime warranty",
+        "default": "Experience handcrafted luxury and the naturally cool, buoyant feel of pure latex — Chattam & Wells sets a new standard for premium sleep."
+      }
+    },
+    {
+      "id": "g5",
+      "name": "Vail Latex Euro Top Plush",
+      "brand": "Spring Air",
+      "subBrand": "Chattam & Wells",
+      "firmness": 2,
+      "firmnessLabel": "Plush",
+      "locallyMade": true,
+      "features": [
+        "plush",
+        "cooling",
+        "support",
+        "hybrid",
+        "responsive",
+        "quality",
+        "handTufting",
+        "lifetimeWarranty",
+        "latex",
+        "soft",
+        "zoned",
+        "durability",
+        "hypoallergenic",
+        "adjustable"
+      ],
+      "tags": [
+        "All Latex",
+        "Cooling",
+        "Durability",
+        "Support"
+      ],
+      "highlight": "Experience handcrafted luxury and the naturally cool, buoyant feel of pure latex — Chattam & Wells sets a new standard for premium sleep.",
+      "imageUrl": "images/mattresses/vail latex euro top plush.webp",
+      "reasons": {
+        "cooling": "Phase change technology - cool-to-the-touch fabrics that adjust to temperature",
+        "pressureRelief": "Talalay latex for natural and durable pressure-relieving comfort layer. Breathable, antimicrobial, and hypo-allergenic",
+        "motionIsolation": "Pocketed coils minimize partner disturbance",
+        "support": "QUANTUM ENCASED COIL UNIT with 1575 individually encased 17 gauge coils",
+        "plush": "Cloud-like plush euro top feel for side sleepers",
+        "durability": "Hand-tufted, lifetime warranty",
+        "default": "Experience handcrafted luxury and the naturally cool, buoyant feel of pure latex — Chattam & Wells sets a new standard for premium sleep."
+      }
+    },
+    {
+      "id": "g6",
+      "name": "Belmont Euro Top Plush",
+      "brand": "Spring Air",
+      "subBrand": "Reserve",
+      "firmness": 2,
+      "firmnessLabel": "Plush",
+      "locallyMade": true,
+      "features": [
+        "plush",
+        "cooling",
+        "pressureRelief",
+        "hybrid",
+        "motionIsolation",
+        "latex",
+        "wool",
+        "tencel",
+        "handTufting",
+        "soft",
+        "zoned",
+        "durability",
+        "hypoallergenic",
+        "quality",
+        "edgeSupport",
+        "memory"
+      ],
+      "tags": [
+        "Hybrid",
+        "Luxury",
+        "Cooling",
+        "Natural Materials"
+      ],
+      "highlight": "Handcrafted luxury from Spring Air Reserve — Belmont pairs natural Talalay latex, New Zealand wool, and individually-pocketed zoned coils with a hand-tufted Tencel cooling cover for a premium, temperature-neutral sleep experience.",
+      "imageUrl": "images/mattresses/belmont euro top plush.webp",
+      "reasons": {
+        "cooling": "Tencel cooling cover with phase-change foam and New Zealand wool for a temperature-neutral sleep surface",
+        "pressureRelief": "Talalay latex and Serene Specialty Foam deliver 30% more pressure relief with responsive contouring",
+        "motionIsolation": "Individually-pocketed zoned coils plus Nano micro-coils minimize partner disturbance",
+        "support": "Individually-pocketed zoned coils with 25% more support through the middle third, plus Deluxe Edge Support foam encasement",
+        "plush": "Cloud-like plush euro top feel with Talalay latex and New Zealand wool — ideal for side sleepers and pressure-point relief",
+        "durability": "Hand-tufted construction, Talalay latex, and tempered zoned coils (2015 in Queen) built to last a lifetime",
+        "default": "Handcrafted luxury from Spring Air Reserve — Belmont pairs natural Talalay latex, New Zealand wool, and individually-pocketed zoned coils with a hand-tufted Tencel cooling cover for a premium, temperature-neutral sleep experience."
+      }
+    },
+    {
+      "id": "g7",
+      "name": "Belmont Medium",
+      "brand": "Spring Air",
+      "subBrand": "Reserve",
+      "firmness": 5,
+      "firmnessLabel": "Medium",
+      "locallyMade": true,
+      "features": [
+        "medium",
+        "cooling",
+        "pressureRelief",
+        "hybrid",
+        "motionIsolation",
+        "latex",
+        "wool",
+        "tencel",
+        "handTufting",
+        "zoned",
+        "durability",
+        "hypoallergenic",
+        "quality",
+        "edgeSupport",
+        "memory"
+      ],
+      "tags": [
+        "Hybrid",
+        "Luxury",
+        "Cooling",
+        "Natural Materials"
+      ],
+      "highlight": "Handcrafted luxury from Spring Air Reserve — Belmont pairs natural Talalay latex, New Zealand wool, and individually-pocketed zoned coils with a hand-tufted Tencel cooling cover for a premium, temperature-neutral sleep experience.",
+      "imageUrl": "images/mattresses/belmont medium.webp",
+      "reasons": {
+        "cooling": "Tencel cooling cover with phase-change foam and New Zealand wool for a temperature-neutral sleep surface",
+        "pressureRelief": "Talalay latex and Serene Specialty Foam deliver 30% more pressure relief with responsive contouring",
+        "motionIsolation": "Individually-pocketed zoned coils plus Nano micro-coils minimize partner disturbance",
+        "support": "Individually-pocketed zoned coils with 25% more support through the middle third, plus Deluxe Edge Support foam encasement",
+        "medium": "Perfect medium feel for most sleepers and all sleep positions, with balanced Talalay latex responsiveness",
+        "durability": "Hand-tufted construction, Talalay latex, and tempered zoned coils (2015 in Queen) built to last a lifetime",
+        "default": "Handcrafted luxury from Spring Air Reserve — Belmont pairs natural Talalay latex, New Zealand wool, and individually-pocketed zoned coils with a hand-tufted Tencel cooling cover for a premium, temperature-neutral sleep experience."
       }
     }
   ],
   "silver": [
     {
       "id": "s1",
-      "name": "Placeholder Silver Plush",
-      "brand": "Restonic",
-      "subBrand": "",
-      "firmness": 3,
-      "firmnessLabel": "Plush",
-      "locallyMade": false,
-      "features": ["plush", "cooling", "pressureRelief", "hybrid", "soft"],
-      "tags": ["Hybrid", "Value"],
-      "highlight": "Placeholder — replace with real mattress data",
-      "imageUrl": "",
+      "name": "Copper ET Quilted Cushion Firm",
+      "brand": "Spring Air",
+      "subBrand": "Copper by Spring Air",
+      "firmness": 7,
+      "firmnessLabel": "Firm",
+      "locallyMade": true,
+      "features": [
+        "firm",
+        "cooling",
+        "pressureRelief",
+        "hybrid",
+        "motionIsolation",
+        "copper",
+        "antiViral",
+        "antiBacterial",
+        "antiMicrobial",
+        "antiInflammatory",
+        "memory",
+        "hypoallergenic"
+      ],
+      "tags": [
+        "Hybrid",
+        "Copper",
+        "Cooling"
+      ],
+      "highlight": "Infused with natural copper to draw heat away, soothe pressure points, and help reduce inflammation, Copper by Spring Air delivers cooler, deeper, more restorative sleep",
+      "imageUrl": "images/mattresses/copper et quilted cushion firm.webp",
       "reasons": {
-        "cooling": "Cooling gel memory foam",
-        "pressureRelief": "Contouring pressure relief",
+        "cooling": "NatuVerex copper infusion draws heat away",
+        "pressureRelief": "Copper Memory Foam and Hyper-Gel Foam",
         "motionIsolation": "Pocketed coils minimize partner disturbance",
-        "support": "Supportive coil system",
-        "plush": "Welcoming plush feel",
-        "durability": "Quality build at a great price",
-        "default": "Great value hybrid with plush comfort"
+        "support": "Five-zone, 948 coil-count pocketed coils",
+        "firm": "Extra firm for stomach sleepers and larger builds",
+        "durability": "Premium foams and premium spring",
+        "default": "Infused with natural copper to draw heat away, soothe pressure points, and help reduce inflammation, Copper by Spring Air delivers cooler, deeper, more restorative sleep"
       }
     },
     {
       "id": "s2",
-      "name": "Placeholder Silver Medium",
-      "brand": "Restonic",
-      "subBrand": "",
+      "name": "Copper ET Quilted Euro Top Plush",
+      "brand": "Spring Air",
+      "subBrand": "Copper by Spring Air",
+      "firmness": 2,
+      "firmnessLabel": "Plush",
+      "locallyMade": true,
+      "features": [
+        "plush",
+        "cooling",
+        "pressureRelief",
+        "hybrid",
+        "motionIsolation",
+        "copper",
+        "antiViral",
+        "antiBacterial",
+        "antiMicrobial",
+        "antiInflammatory",
+        "soft",
+        "memory",
+        "hypoallergenic"
+      ],
+      "tags": [
+        "Hybrid",
+        "Copper",
+        "Cooling"
+      ],
+      "highlight": "Infused with natural copper to draw heat away, soothe pressure points, and help reduce inflammation, Copper by Spring Air delivers cooler, deeper, more restorative sleep",
+      "imageUrl": "images/mattresses/copper et quilted euro top plush.webp",
+      "reasons": {
+        "cooling": "NatuVerex copper infusion draws heat away",
+        "pressureRelief": "Copper Memory Foam and Hyper-Gel Foam",
+        "motionIsolation": "Pocketed coils minimize partner disturbance",
+        "support": "Five-zone, 948 coil-count pocketed coils",
+        "plush": "Welcoming, soft plush feel for side sleepers",
+        "durability": "Premium foams and premium spring",
+        "default": "Infused with natural copper to draw heat away, soothe pressure points, and help reduce inflammation, Copper by Spring Air delivers cooler, deeper, more restorative sleep"
+      }
+    },
+    {
+      "id": "s3",
+      "name": "Copper Hybrid Smooth Top Firm",
+      "brand": "Spring Air",
+      "subBrand": "Copper by Spring Air",
+      "firmness": 9,
+      "firmnessLabel": "Firm",
+      "locallyMade": true,
+      "features": [
+        "firm",
+        "cooling",
+        "pressureRelief",
+        "hybrid",
+        "motionIsolation",
+        "copper",
+        "antiViral",
+        "antiBacterial",
+        "antiMicrobial",
+        "antiInflammatory",
+        "memory",
+        "hypoallergenic"
+      ],
+      "tags": [
+        "Hybrid",
+        "Copper",
+        "Cooling"
+      ],
+      "highlight": "Infused with natural copper to draw heat away, soothe pressure points, and help reduce inflammation, Copper by Spring Air delivers cooler, deeper, more restorative sleep",
+      "imageUrl": "images/mattresses/copper hybrid smooth top firm.webp",
+      "reasons": {
+        "cooling": "NatuVerex copper infusion draws heat away",
+        "pressureRelief": "Copper Memory Foam and Hyper-Gel Foam",
+        "motionIsolation": "Pocketed coils minimize partner disturbance",
+        "support": "Five-zone, 948 coil-count pocketed coils",
+        "firm": "Extra firm for stomach sleepers and larger builds",
+        "durability": "Premium foams and premium spring",
+        "default": "Infused with natural copper to draw heat away, soothe pressure points, and help reduce inflammation, Copper by Spring Air delivers cooler, deeper, more restorative sleep"
+      }
+    },
+    {
+      "id": "s4",
+      "name": "Copper Hybrid Smooth Top Medium",
+      "brand": "Spring Air",
+      "subBrand": "Copper by Spring Air",
       "firmness": 5,
       "firmnessLabel": "Medium",
-      "locallyMade": false,
-      "features": ["medium", "support", "hybrid", "pressureRelief"],
-      "tags": ["Hybrid", "Support"],
-      "highlight": "Placeholder — replace with real mattress data",
-      "imageUrl": "",
+      "locallyMade": true,
+      "features": [
+        "medium",
+        "cooling",
+        "pressureRelief",
+        "hybrid",
+        "motionIsolation",
+        "copper",
+        "antiViral",
+        "antiBacterial",
+        "antiMicrobial",
+        "antiInflammatory",
+        "memory",
+        "hypoallergenic"
+      ],
+      "tags": [
+        "Hybrid",
+        "Copper",
+        "Cooling"
+      ],
+      "highlight": "Infused with natural copper to draw heat away, soothe pressure points, and help reduce inflammation, Copper by Spring Air delivers cooler, deeper, more restorative sleep",
+      "imageUrl": "images/mattresses/copper hybrid smooth top medium.webp",
       "reasons": {
-        "cooling": "Breathable foam layers",
-        "pressureRelief": "Balanced pressure relief",
-        "motionIsolation": "Motion isolating coils",
-        "support": "Firm edge support",
-        "medium": "Comfortable medium feel",
-        "durability": "Built to last",
-        "default": "Dependable hybrid mattress with balanced comfort"
+        "cooling": "NatuVerex copper infusion draws heat away",
+        "pressureRelief": "Copper Memory Foam and Hyper-Gel Foam",
+        "motionIsolation": "Pocketed coils minimize partner disturbance",
+        "support": "Five-zone, 948 coil-count pocketed coils",
+        "medium": "Perfect medium feel for most sleepers",
+        "durability": "Premium foams and premium spring",
+        "default": "Infused with natural copper to draw heat away, soothe pressure points, and help reduce inflammation, Copper by Spring Air delivers cooler, deeper, more restorative sleep"
+      }
+    },
+    {
+      "id": "s5",
+      "name": "Copper Flex Head Smoot Top Medium",
+      "brand": "Spring Air",
+      "subBrand": "Copper by Spring Air",
+      "firmness": 5,
+      "firmnessLabel": "Medium",
+      "locallyMade": true,
+      "features": [
+        "medium",
+        "cooling",
+        "pressureRelief",
+        "hybrid",
+        "motionIsolation",
+        "copper",
+        "antiViral",
+        "antiBacterial",
+        "antiMicrobial",
+        "antiInflammatory",
+        "memory",
+        "hypoallergenic"
+      ],
+      "tags": [
+        "Hybrid",
+        "Copper",
+        "Cooling"
+      ],
+      "highlight": "Infused with natural copper to draw heat away, soothe pressure points, and help reduce inflammation, Copper by Spring Air delivers cooler, deeper, more restorative sleep",
+      "imageUrl": "images/mattresses/copper flex head smoot top medium.webp",
+      "reasons": {
+        "cooling": "NatuVerex copper infusion draws heat away",
+        "pressureRelief": "Copper Memory Foam and Hyper-Gel Foam",
+        "motionIsolation": "Pocketed coils minimize partner disturbance",
+        "support": "Five-zone, 948 coil-count pocketed coils",
+        "medium": "Perfect medium feel for most sleepers",
+        "durability": "Premium foams and premium spring",
+        "default": "Infused with natural copper to draw heat away, soothe pressure points, and help reduce inflammation, Copper by Spring Air delivers cooler, deeper, more restorative sleep"
+      }
+    },
+    {
+      "id": "s6",
+      "name": "Marie BT Plush",
+      "brand": "Spring Air",
+      "subBrand": "Fleur de Lis",
+      "firmness": 2,
+      "firmnessLabel": "Plush",
+      "locallyMade": true,
+      "features": [
+        "plush",
+        "cooling",
+        "handTufting",
+        "latex",
+        "pressureRelief",
+        "backSupporterTechnology",
+        "hybrid",
+        "motionIsolation",
+        "quality",
+        "soft",
+        "zoned",
+        "durability",
+        "hypoallergenic",
+        "memory"
+      ],
+      "tags": [
+        "Hybrid",
+        "Latex",
+        "Back Supporter"
+      ],
+      "highlight": "Timeless elegance meets modern sleep science — Fleur de Lis by Spring Air pairs hand-tufted craftsmanship and luxurious comfort layers with precision coil support for indulgent, restorative sleep",
+      "imageUrl": "images/mattresses/marie bt plush.webp",
+      "reasons": {
+        "cooling": "Cool, silk and wool damask cover helps regulate temperature",
+        "pressureRelief": "Full layers of Serene Foam and Cool-Gel Memory Foam",
+        "motionIsolation": "Pocketed coils minimize partner disturbance",
+        "support": "Hand-tufted, Back Supporter dual gauge spring - firmer center coils for lumbar support",
+        "plush": "Welcoming, soft plush feel for side sleepers",
+        "durability": "Hand-tufted",
+        "default": "Timeless elegance meets modern sleep science — Fleur de Lis by Spring Air pairs hand-tufted craftsmanship and luxurious comfort layers with precision coil support for indulgent, restorative sleep"
+      }
+    },
+    {
+      "id": "s7",
+      "name": "Marie BT Firm",
+      "brand": "Spring Air",
+      "subBrand": "Fleur de Lis",
+      "firmness": 5,
+      "firmnessLabel": "Medium",
+      "locallyMade": true,
+      "features": [
+        "medium",
+        "cooling",
+        "handTufting",
+        "latex",
+        "pressureRelief",
+        "backSupporterTechnology",
+        "hybrid",
+        "motionIsolation",
+        "quality",
+        "zoned",
+        "durability",
+        "hypoallergenic",
+        "memory"
+      ],
+      "tags": [
+        "Hybrid",
+        "Latex",
+        "Back Supporter"
+      ],
+      "highlight": "Timeless elegance meets modern sleep science — Fleur de Lis by Spring Air pairs hand-tufted craftsmanship and luxurious comfort layers with precision coil support for indulgent, restorative sleep",
+      "imageUrl": "images/mattresses/marie bt firm.webp",
+      "reasons": {
+        "cooling": "Cool, silk and wool damask cover helps regulate temperature",
+        "pressureRelief": "Full layers of Serene Foam and Cool-Gel Memory Foam",
+        "motionIsolation": "Pocketed coils minimize partner disturbance",
+        "support": "Hand-tufted, Back Supporter dual gauge spring - firmer center coils for lumbar support",
+        "medium": "Perfect medium feel for most sleepers",
+        "durability": "Hand-tufted",
+        "default": "Timeless elegance meets modern sleep science — Fleur de Lis by Spring Air pairs hand-tufted craftsmanship and luxurious comfort layers with precision coil support for indulgent, restorative sleep"
+      }
+    },
+    {
+      "id": "s8",
+      "name": "Marie Firm",
+      "brand": "Spring Air",
+      "subBrand": "Fleur de Lis",
+      "firmness": 9,
+      "firmnessLabel": "Firm",
+      "locallyMade": true,
+      "features": [
+        "firm",
+        "cooling",
+        "handTufting",
+        "latex",
+        "pressureRelief",
+        "backSupporterTechnology",
+        "hybrid",
+        "motionIsolation",
+        "quality",
+        "zoned",
+        "durability",
+        "hypoallergenic",
+        "memory"
+      ],
+      "tags": [
+        "Hybrid",
+        "Latex",
+        "Back Supporter"
+      ],
+      "highlight": "Timeless elegance meets modern sleep science — Fleur de Lis by Spring Air pairs hand-tufted craftsmanship and luxurious comfort layers with precision coil support for indulgent, restorative sleep",
+      "imageUrl": "images/mattresses/marie firm.webp",
+      "reasons": {
+        "cooling": "Cool, silk and wool damask cover helps regulate temperature",
+        "pressureRelief": "Full layers of Serene Foam and Cool-Gel Memory Foam",
+        "motionIsolation": "Pocketed coils minimize partner disturbance",
+        "support": "Hand-tufted, Back Supporter dual gauge spring - firmer center coils for lumbar support",
+        "firm": "Extra firm for stomach sleepers and larger builds",
+        "durability": "Hand-tufted",
+        "default": "Timeless elegance meets modern sleep science — Fleur de Lis by Spring Air pairs hand-tufted craftsmanship and luxurious comfort layers with precision coil support for indulgent, restorative sleep"
+      }
+    },
+    {
+      "id": "s9",
+      "name": "Makayla Plush",
+      "brand": "Spring Air",
+      "subBrand": "Back Supporter Hybrid",
+      "firmness": 2,
+      "firmnessLabel": "Plush",
+      "locallyMade": true,
+      "features": [
+        "medium",
+        "cooling",
+        "sereneFoam",
+        "gelMemoryFoam",
+        "motionIsolation",
+        "backSupporterTechnology",
+        "quality",
+        "comfort",
+        "hybrid",
+        "soft",
+        "zoned",
+        "durability",
+        "memory"
+      ],
+      "tags": [
+        "Hybrid",
+        "Cooling",
+        "Back Supporter"
+      ],
+      "highlight": "Experience 90+ years of back-support innovation — the Makayla Back Supporter Hybrid pairs zoned coil technology with premium hybrid comfort for proper alignment, pressure relief, and deeper, more restorative sleep",
+      "imageUrl": "images/mattresses/makayla plush.webp",
+      "reasons": {
+        "cooling": "Maximum cooling phase-change cover",
+        "pressureRelief": "Hyper Soft Memory Foam + Serene Foam + Gel Memory Foam for exceptional pressure relief",
+        "motionIsolation": "Pocketed coils minimize partner disturbance",
+        "support": "Back Supporter dual gauge spring - firmer center coils for lumbar support",
+        "plush": "True cloud-like plush feel for side sleepers",
+        "default": "Experience 90+ years of back-support innovation — the Makayla Back Supporter Hybrid pairs zoned coil technology with premium hybrid comfort for proper alignment, pressure relief, and deeper, more restorative sleep"
+      }
+    },
+    {
+      "id": "s10",
+      "name": "Makayla Firm",
+      "brand": "Spring Air",
+      "subBrand": "Back Supporter Hybrid",
+      "firmness": 8,
+      "firmnessLabel": "Firm",
+      "locallyMade": true,
+      "features": [
+        "medium",
+        "cooling",
+        "sereneFoam",
+        "gelMemoryFoam",
+        "motionIsolation",
+        "backSupporterTechnology",
+        "quality",
+        "comfort",
+        "foamEncasement",
+        "hybrid",
+        "zoned",
+        "durability",
+        "memory"
+      ],
+      "tags": [
+        "Hybrid",
+        "Cooling",
+        "Back Supporter"
+      ],
+      "highlight": "Experience 90+ years of back-support innovation — the Makayla Back Supporter Hybrid pairs zoned coil technology with premium hybrid comfort for proper alignment, pressure relief, and deeper, more restorative sleep",
+      "imageUrl": "images/mattresses/makayla firm.webp",
+      "reasons": {
+        "cooling": "Maximum cooling phase-change cover",
+        "pressureRelief": "Hyper Soft Memory Foam + Serene Foam + Gel Memory Foam for pressure relief",
+        "motionIsolation": "Pocketed coils minimize partner disturbance",
+        "support": "Back Supporter dual gauge spring - firmer center coils for lumbar support",
+        "firm": "Extra firm for stomach sleepers and larger builds",
+        "default": "Experience 90+ years of back-support innovation — the Makayla Back Supporter Hybrid pairs zoned coil technology with premium hybrid comfort for proper alignment, pressure relief, and deeper, more restorative sleep"
       }
     }
   ],
   "bronze": [
     {
       "id": "b1",
-      "name": "Placeholder Bronze Plush",
-      "brand": "Restonic",
-      "subBrand": "",
-      "firmness": 3,
+      "name": "Kent Euro Top Plush",
+      "brand": "Spring Air",
+      "subBrand": "Back Supporter Hybrid",
+      "firmness": 2,
       "firmnessLabel": "Plush",
-      "locallyMade": false,
-      "features": ["plush", "soft", "value", "innerspring"],
-      "tags": ["Innerspring", "Value"],
-      "highlight": "Placeholder — replace with real mattress data",
-      "imageUrl": "",
+      "locallyMade": true,
+      "features": [
+        "plush",
+        "cooling",
+        "gelMemoryFoam",
+        "motionIsolation",
+        "quality",
+        "comfort",
+        "hybrid",
+        "foamEncasement",
+        "soft",
+        "zoned",
+        "durability",
+        "memory"
+      ],
+      "tags": [
+        "Hybrid",
+        "Cooling",
+        "PCM Cover"
+      ],
+      "highlight": "90+ years of back-support innovation — the Kent pairs zoned coils with premium hybrid comfort for alignment, pressure relief, and deeper sleep",
+      "imageUrl": "images/mattresses/kent euro top plush.webp",
       "reasons": {
-        "cooling": "Breathable quilted cover",
-        "pressureRelief": "Cushioning comfort layers",
-        "motionIsolation": "Continuous coil support",
-        "support": "Full body support",
-        "plush": "Soft comfortable feel",
-        "durability": "Reliable construction",
-        "default": "Affordable comfort with a soft plush feel"
+        "cooling": "Phase Change Material cover actively cools the surface",
+        "pressureRelief": "Gel Memory Foam reduces pressure + comfort foam layers",
+        "motionIsolation": "Pocketed coils minimize partner disturbance",
+        "support": "Back Supporter dual gauge spring - firmer center coils for lumbar support",
+        "plush": "Supportive yet soft, plush feel for side sleepers",
+        "default": "90+ years of back-support innovation — the Kent pairs zoned coils with premium hybrid comfort for alignment, pressure relief, and deeper sleep"
       }
     },
     {
       "id": "b2",
-      "name": "Placeholder Bronze Firm",
-      "brand": "Restonic",
-      "subBrand": "",
-      "firmness": 8,
-      "firmnessLabel": "Firm",
-      "locallyMade": false,
-      "features": ["firm", "support", "value", "innerspring", "durability"],
-      "tags": ["Innerspring", "Support"],
-      "highlight": "Placeholder — replace with real mattress data",
-      "imageUrl": "",
+      "name": "Kent Medium",
+      "brand": "Spring Air",
+      "subBrand": "Back Supporter Hybrid",
+      "firmness": 5,
+      "firmnessLabel": "Medium",
+      "locallyMade": true,
+      "features": [
+        "medium",
+        "cooling",
+        "gelMemoryFoam",
+        "motionIsolation",
+        "quality",
+        "comfort",
+        "hybrid",
+        "foamEncasement",
+        "zoned",
+        "durability",
+        "memory"
+      ],
+      "tags": [
+        "Hybrid",
+        "Cooling",
+        "PCM Cover"
+      ],
+      "highlight": "90+ years of back-support innovation — the Kent pairs zoned coils with premium hybrid comfort for alignment, pressure relief, and deeper sleep",
+      "imageUrl": "images/mattresses/kent medium.webp",
       "reasons": {
-        "cooling": "Ventilated design for airflow",
-        "pressureRelief": "Firm comfort layers",
-        "motionIsolation": "Sturdy coil system",
-        "support": "Extra firm support",
-        "firm": "Firm feel for back and stomach sleepers",
-        "durability": "Durable innerspring construction",
-        "default": "Solid value mattress with firm support"
+        "cooling": "Phase Change Material cover actively cools the surface",
+        "pressureRelief": "Gel Memory Foam reduces pressure + comfort foam layers",
+        "motionIsolation": "Pocketed coils minimize partner disturbance",
+        "support": "Back Supporter dual gauge spring - firmer center coils for lumbar support",
+        "medium": "Perfect medium feel for most sleepers",
+        "default": "90+ years of back-support innovation — the Kent pairs zoned coils with premium hybrid comfort for alignment, pressure relief, and deeper sleep"
+      }
+    },
+    {
+      "id": "b3",
+      "name": "Kent Extra Firm",
+      "brand": "Spring Air",
+      "subBrand": "Back Supporter Hybrid",
+      "firmness": 9,
+      "firmnessLabel": "Firm",
+      "locallyMade": true,
+      "features": [
+        "firm",
+        "cooling",
+        "gelMemoryFoam",
+        "motionIsolation",
+        "quality",
+        "comfort",
+        "hybrid",
+        "foamEncasement",
+        "zoned",
+        "durability",
+        "memory"
+      ],
+      "tags": [
+        "Hybrid",
+        "Cooling",
+        "PCM Cover"
+      ],
+      "highlight": "90+ years of back-support innovation — the Kent pairs zoned coils with premium hybrid comfort for alignment, pressure relief, and deeper sleep",
+      "imageUrl": "images/mattresses/kent extra firm.webp",
+      "reasons": {
+        "cooling": "Phase Change Material cover actively cools the surface",
+        "pressureRelief": "Gel Memory Foam reduces pressure + comfort foam layers",
+        "motionIsolation": "Pocketed coils minimize partner disturbance",
+        "support": "Back Supporter dual gauge spring - firmer center coils for lumbar support",
+        "firm": "Extra firm for stomach sleepers and larger builds",
+        "default": "90+ years of back-support innovation — the Kent pairs zoned coils with premium hybrid comfort for alignment, pressure relief, and deeper sleep"
+      }
+    },
+    {
+      "id": "b4",
+      "name": "Phoenix Medium",
+      "brand": "Spring Air",
+      "subBrand": "Back Supporter Hybrid",
+      "firmness": 4,
+      "firmnessLabel": "Medium-Plush",
+      "locallyMade": true,
+      "features": [
+        "plush",
+        "cooling",
+        "gelInfusedFoam",
+        "motionIsolation",
+        "quality",
+        "comfort",
+        "hybrid",
+        "foamEncasement",
+        "zoned"
+      ],
+      "tags": [
+        "Hybrid",
+        "Cooling",
+        "Zoned Support"
+      ],
+      "highlight": "Cool gel foam with zoned coils for spinal alignment",
+      "imageUrl": "images/mattresses/phoenix medium.webp",
+      "reasons": {
+        "cooling": "Luxurious cooling cover wicks moisture and heat",
+        "pressureRelief": "Cool gel foam contours to body for pressure relief",
+        "motionIsolation": "Pocketed coils minimize partner disturbance",
+        "support": "Marvelous Middle gives 25% more center support",
+        "medium": "Perfect medium-plush feel for most sleepers",
+        "default": "Cool gel foam, zoned wrapped coils, targeted support and spinal alignment"
+      }
+    },
+    {
+      "id": "b5",
+      "name": "Phoenix Firm",
+      "brand": "Spring Air",
+      "subBrand": "Back Supporter Hybrid",
+      "firmness": 10,
+      "firmnessLabel": "Firm",
+      "locallyMade": true,
+      "features": [
+        "firm",
+        "cooling",
+        "gelInfusedFoam",
+        "motionIsolation",
+        "quality",
+        "comfort",
+        "hybrid",
+        "foamEncasement",
+        "zoned"
+      ],
+      "tags": [
+        "Hybrid",
+        "Cooling",
+        "Zoned Support"
+      ],
+      "highlight": "Cool gel foam with zoned coils for spinal alignment",
+      "imageUrl": "images/mattresses/phoenix firm.webp",
+      "reasons": {
+        "cooling": "Luxurious cooling cover wicks moisture and heat",
+        "pressureRelief": "Cool gel foam contours to body for pressure relief",
+        "motionIsolation": "Pocketed coils minimize partner disturbance",
+        "support": "Marvelous Middle gives 25% more center support",
+        "firm": "Extra firm feel for back and stomach sleepers",
+        "default": "Cool gel foam, zoned wrapped coils, targeted support and spinal alignment"
+      }
+    },
+    {
+      "id": "b6",
+      "name": "Auburn Ice Extra Firm",
+      "brand": "Spring Air",
+      "subBrand": "Back Supporter",
+      "firmness": 9,
+      "firmnessLabel": "Firm",
+      "locallyMade": true,
+      "features": [
+        "firm",
+        "comfort",
+        "support",
+        "innerspring",
+        "foamEncasement",
+        "zoned"
+      ],
+      "tags": [
+        "Innerspring",
+        "Back Supporter"
+      ],
+      "highlight": "Supportive innerspring with cool foam and lumbar zoning",
+      "imageUrl": "images/mattresses/auburn ice extra firm.webp",
+      "reasons": {
+        "motionIsolation": "Back Supporter dual gauge spring - firmer center coils for lumbar support",
+        "plush": "Perfect medium-plush feel for most sleepers",
+        "default": "Quality innerspring mattress with targeted center support and spinal alignment"
+      }
+    },
+    {
+      "id": "b7",
+      "name": "Auburn Ice",
+      "brand": "Spring Air",
+      "subBrand": "Back Supporter",
+      "firmness": 4,
+      "firmnessLabel": "Medium-Plush",
+      "locallyMade": true,
+      "features": [
+        "medium",
+        "comfort",
+        "support",
+        "innerspring",
+        "foamEncasement",
+        "zoned"
+      ],
+      "tags": [
+        "Innerspring",
+        "Back Supporter"
+      ],
+      "highlight": "Supportive innerspring with cool foam and lumbar zoning",
+      "imageUrl": "images/mattresses/auburn ice.webp",
+      "reasons": {
+        "motionIsolation": "Back Supporter dual gauge spring - firmer center coils for lumbar support",
+        "plush": "Perfect medium-plush feel for most sleepers",
+        "default": "Quality innerspring mattress with targeted center support and spinal alignment"
       }
     }
   ]
