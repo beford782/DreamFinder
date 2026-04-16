@@ -3365,9 +3365,9 @@
       </svg>
       <span id="locationText">Texas</span>
     </div>
-    <button id="headerStartOverBtn" class="js-start-over" style="display:none; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:var(--cream); font-family:inherit; font-size:0.75rem; font-weight:600; padding:0.4rem 0.9rem; border-radius:8px; cursor:pointer; touch-action:manipulation; letter-spacing:0.2px;">↺ Restart Quiz</button>
+    <button id="headerStartOverBtn" class="js-start-over" style="display:none; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:var(--cream); font-family:inherit; font-size:0.75rem; font-weight:600; padding:0.4rem 0.9rem; border-radius:8px; cursor:pointer; touch-action:manipulation; letter-spacing:0.2px;" data-i18n="header.restart">↺ Restart Quiz</button>
     <button id="savedPicksBtn" onclick="window.showSavedPicks()" ontouchend="event.preventDefault();window.showSavedPicks();" style="display:none; background:linear-gradient(135deg,#c9a84c,#a8893d); color:#0d1730; font-family:inherit; font-size:0.75rem; font-weight:700; padding:0.4rem 0.9rem; border-radius:8px; cursor:pointer; touch-action:manipulation; border:none; gap:0.4rem; align-items:center;">
-      ⭐ Picks <span id="savedPicksCount" style="background:#0d1730; color:#c9a84c; border-radius:50%; width:18px; height:18px; display:inline-flex; align-items:center; justify-content:center; font-size:0.65rem; font-weight:700; margin-left:0.2rem;">0</span>
+      ⭐ <span data-i18n="header.picks">Picks</span> <span id="savedPicksCount" style="background:#0d1730; color:#c9a84c; border-radius:50%; width:18px; height:18px; display:inline-flex; align-items:center; justify-content:center; font-size:0.65rem; font-weight:700; margin-left:0.2rem;">0</span>
     </button>
   </header>
 
@@ -3644,7 +3644,7 @@
       <!-- Salesperson handoff cue -->
       <div style="display:flex; align-items:center; gap:0.5rem; background:linear-gradient(135deg,rgba(212,168,75,0.1),rgba(212,168,75,0.04)); border:1px solid rgba(212,168,75,0.35); border-radius:8px; padding:0.45rem 0.75rem; margin-top:0.5rem;">
         <span style="font-size:1rem;">🛏️</span>
-        <span style="font-size:0.72rem; color:var(--cream-dim); line-height:1.3;"><span style="color:var(--gold); font-weight:700;">Ask your sleep specialist</span> to walk you through each option below.</span>
+        <span style="font-size:0.72rem; color:var(--cream-dim); line-height:1.3;" data-i18n="results.specialist_cue" data-i18n-html="true"><span style="color:var(--gold); font-weight:700;">Ask your sleep specialist</span> to walk you through each option below.</span>
       </div>
     </div>
     
@@ -3652,16 +3652,16 @@
     <div class="sleep-profile" id="sleepProfile"></div>
     
     <div class="tier-tabs" id="tierTabs">
-      <button class="tier-tab gold active" onclick="showTier('gold')">⭐ Gold</button>
-      <button class="tier-tab silver" onclick="showTier('silver')">🥈 Silver</button>
-      <button class="tier-tab bronze" onclick="showTier('bronze')">🥉 Bronze</button>
+      <button class="tier-tab gold active" onclick="showTier('gold')">⭐ <span data-i18n="results.tier_gold">Gold</span></button>
+      <button class="tier-tab silver" onclick="showTier('silver')">🥈 <span data-i18n="results.tier_silver">Silver</span></button>
+      <button class="tier-tab bronze" onclick="showTier('bronze')">🥉 <span data-i18n="results.tier_bronze">Bronze</span></button>
     </div>
-    <div id="tierExplainer" style="text-align:center; font-size:0.7rem; color:var(--cream-dim); padding:0.4rem 1rem 0.6rem; line-height:1.4;">
+    <div id="tierExplainer" style="text-align:center; font-size:0.7rem; color:var(--cream-dim); padding:0.4rem 1rem 0.6rem; line-height:1.4;" data-i18n="results.tier_explainer" data-i18n-html="true">
       <span style="color:#d4a84b; font-weight:700;">Gold</span> · premium materials &nbsp;·&nbsp;
       <span style="color:#c0c7ce; font-weight:700;">Silver</span> · mid-range value &nbsp;·&nbsp;
       <span style="color:#cd7f32; font-weight:700;">Bronze</span> · entry-level
     </div>
-    <div style="text-align:center; font-size:0.68rem; color:var(--cream-dim); margin:-0.25rem 0 0.4rem; opacity:0.85;">Tap any mattress card to explore details &amp; features</div>
+    <div style="text-align:center; font-size:0.68rem; color:var(--cream-dim); margin:-0.25rem 0 0.4rem; opacity:0.85;" data-i18n="results.tap_hint">Tap any mattress card to explore details &amp; features</div>
     
     <!-- Carousel container -->
     <div class="carousel-container">
@@ -3676,8 +3676,8 @@
     <!-- Bottom section with CTA -->
     <div class="bottom-section">
       <div style="text-align:center; margin-top:0.4rem; display:flex; flex-direction:column; gap:0.5rem; align-items:center;">
-        <button class="cta-btn" onclick="showAccessories()" style="background:linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 100%); color:var(--navy); box-shadow:0 4px 0 #9a7a2e, 0 6px 20px rgba(212,168,75,0.25); font-size:0.85rem; padding:0.7rem 1.75rem; border:2px solid var(--gold-pale); font-weight:700; border-radius:14px; transition:all 0.15s ease;">Complete Your Setup — Pillows, Protectors & More →</button>
-        <div style="font-size:0.68rem; color:var(--cream-dim);">Your <span id="bannerPct" style="color:var(--gold); font-weight:700;"></span> discount applies to everything</div>
+        <button class="cta-btn" onclick="showAccessories()" style="background:linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 100%); color:var(--navy); box-shadow:0 4px 0 #9a7a2e, 0 6px 20px rgba(212,168,75,0.25); font-size:0.85rem; padding:0.7rem 1.75rem; border:2px solid var(--gold-pale); font-weight:700; border-radius:14px; transition:all 0.15s ease;" data-i18n="results.complete_setup">Complete Your Setup — Pillows, Protectors & More →</button>
+        <div style="font-size:0.68rem; color:var(--cream-dim);" data-i18n="results.discount_applies" data-i18n-html="true">Your <span id="bannerPct" style="color:var(--gold); font-weight:700;"></span> discount applies to everything</div>
       </div>
     </div>
   </div>
@@ -3698,9 +3698,9 @@
         </div>
         <div class="drawer-match-badge" id="drawerMatch"></div>
       </div>
-      <div class="drawer-section-label">Why it matches you</div>
+      <div class="drawer-section-label" data-i18n="drawer.why_matches">Why it matches you</div>
       <div class="drawer-feats" id="drawerFeats"></div>
-      <div class="drawer-section-label">About this mattress</div>
+      <div class="drawer-section-label" data-i18n="drawer.about">About this mattress</div>
       <div class="drawer-reason-box" id="drawerReason"></div>
       <div class="drawer-firmness-row">
         <span class="drawer-firm-label" id="drawerFirmLabel">Firmness</span>
@@ -3709,16 +3709,16 @@
       </div>
       <div class="drawer-tags-row" id="drawerTags"></div>
       <div class="drawer-cta-row">
-        <button id="drawerInterestedBtn" class="drawer-btn drawer-btn-primary" onclick="window.saveDrawerPick()" ontouchend="event.preventDefault();window.saveDrawerPick();" style="touch-action:manipulation;">⭐ I'm Interested In This One</button>
+        <button id="drawerInterestedBtn" class="drawer-btn drawer-btn-primary" onclick="window.saveDrawerPick()" ontouchend="event.preventDefault();window.saveDrawerPick();" style="touch-action:manipulation;" data-i18n="drawer.interested">⭐ I'm Interested In This One</button>
       </div>
       <!-- Mattress navigation -->
       <div style="display:flex; align-items:center; justify-content:space-between; padding:0.75rem 1rem 0.5rem; border-top:1px solid rgba(255,255,255,0.08); margin-top:0.5rem;">
-        <button id="drawerPrevBtn" onclick="window.drawerNav(-1)" ontouchend="event.preventDefault();window.drawerNav(-1);" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color:var(--cream); border-radius:10px; padding:0.5rem 1rem; font-size:0.78rem; cursor:pointer; font-family:inherit; touch-action:manipulation;">← Prev</button>
+        <button id="drawerPrevBtn" onclick="window.drawerNav(-1)" ontouchend="event.preventDefault();window.drawerNav(-1);" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color:var(--cream); border-radius:10px; padding:0.5rem 1rem; font-size:0.78rem; cursor:pointer; font-family:inherit; touch-action:manipulation;" data-i18n="drawer.prev">← Prev</button>
         <span id="drawerNavLabel" style="font-size:0.72rem; color:var(--cream-dim);"></span>
-        <button id="drawerNextBtn" onclick="window.drawerNav(1)" ontouchend="event.preventDefault();window.drawerNav(1);" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color:var(--cream); border-radius:10px; padding:0.5rem 1rem; font-size:0.78rem; cursor:pointer; font-family:inherit; touch-action:manipulation;">Next →</button>
+        <button id="drawerNextBtn" onclick="window.drawerNav(1)" ontouchend="event.preventDefault();window.drawerNav(1);" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color:var(--cream); border-radius:10px; padding:0.5rem 1rem; font-size:0.78rem; cursor:pointer; font-family:inherit; touch-action:manipulation;" data-i18n="drawer.next">Next →</button>
       </div>
       <div style="text-align:center; padding-bottom:1rem;">
-        <button onclick="window.closeMattressDrawer()" style="background:none; border:none; color:var(--gold); font-size:0.72rem; cursor:pointer; font-family:inherit; text-decoration:underline;">← Back to all matches</button>
+        <button onclick="window.closeMattressDrawer()" style="background:none; border:none; color:var(--gold); font-size:0.72rem; cursor:pointer; font-family:inherit; text-decoration:underline;" data-i18n="results.back_to_results">← Back to all matches</button>
       </div>
     </div>
   </div>
@@ -3726,16 +3726,16 @@
   <!-- SCREEN: Saved Picks (Salesperson View) -->
   <div class="screen" id="savedPicksScreen" style="flex-direction:column; height:calc(100vh - var(--header-height) - var(--accent-bar-height)); overflow-y:auto; padding:1.25rem;">
     <div style="text-align:center; margin-bottom:1rem;">
-      <div style="font-size:0.65rem; text-transform:uppercase; letter-spacing:2px; color:var(--gold); font-weight:600; margin-bottom:0.3rem;">Salesperson Summary</div>
-      <h3 style="font-size:1.1rem; font-weight:700; color:var(--cream); margin-bottom:0.2rem;">Customer's Interested Picks</h3>
-      <p style="font-size:0.75rem; color:var(--cream-dim);">Mattresses the customer marked as interested</p>
+      <div style="font-size:0.65rem; text-transform:uppercase; letter-spacing:2px; color:var(--gold); font-weight:600; margin-bottom:0.3rem;" data-i18n="handoff.summary_label">Salesperson Summary</div>
+      <h3 style="font-size:1.1rem; font-weight:700; color:var(--cream); margin-bottom:0.2rem;" data-i18n="handoff.title">Customer's Interested Picks</h3>
+      <p style="font-size:0.75rem; color:var(--cream-dim);" data-i18n="handoff.subtitle">Mattresses the customer marked as interested</p>
     </div>
     <!-- Customer context card (built in showSavedPicks) -->
     <div id="customerContextCard" style="margin-bottom:1rem;"></div>
     <div id="savedPicksList" style="display:flex; flex-direction:column; gap:0.75rem; margin-bottom:1.5rem;"></div>
     <div style="text-align:center; display:flex; flex-direction:column; gap:0.6rem; align-items:center;">
-      <button onclick="showScreen('resultsScreen')" ontouchend="event.preventDefault();showScreen('resultsScreen');" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:var(--cream); font-family:inherit; font-size:0.82rem; font-weight:600; padding:0.6rem 1.5rem; border-radius:10px; cursor:pointer; touch-action:manipulation;">← Back to Results</button>
-      <button onclick="showEmailCapture()" ontouchend="event.preventDefault();showEmailCapture();" style="background:linear-gradient(180deg,var(--gold-light),var(--gold)); color:var(--navy); font-family:inherit; font-size:0.82rem; font-weight:700; padding:0.6rem 1.5rem; border-radius:10px; cursor:pointer; touch-action:manipulation; border:2px solid var(--gold-pale);">Send Results to Customer →</button>
+      <button onclick="showScreen('resultsScreen')" ontouchend="event.preventDefault();showScreen('resultsScreen');" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:var(--cream); font-family:inherit; font-size:0.82rem; font-weight:600; padding:0.6rem 1.5rem; border-radius:10px; cursor:pointer; touch-action:manipulation;" data-i18n="handoff.back_to_results">← Back to Results</button>
+      <button onclick="showEmailCapture()" ontouchend="event.preventDefault();showEmailCapture();" style="background:linear-gradient(180deg,var(--gold-light),var(--gold)); color:var(--navy); font-family:inherit; font-size:0.82rem; font-weight:700; padding:0.6rem 1.5rem; border-radius:10px; cursor:pointer; touch-action:manipulation; border:2px solid var(--gold-pale);" data-i18n="handoff.send_results">Send Results to Customer →</button>
     </div>
   </div>
 
@@ -3746,8 +3746,8 @@
         <div class="email-badge-icon">✉</div>
         <div class="email-badge-ring"></div>
       </div>
-      <h3 class="email-title">Don't forget your results</h3>
-      <p class="email-subtitle">Get your sleep profile, mattress matches, and discount sent straight to you — so you can review at home or share with your partner.</p>
+      <h3 class="email-title" data-i18n="email.title">Don't forget your results</h3>
+      <p class="email-subtitle" data-i18n="email.subtitle">Get your sleep profile, mattress matches, and discount sent straight to you — so you can review at home or share with your partner.</p>
       
       <div class="email-preview" id="emailPreview">
         <!-- Dynamically shows a summary of what they'll receive -->
@@ -3755,23 +3755,23 @@
 
       <div class="email-form">
         <div class="email-form-group">
-          <label class="email-label">Your Name</label>
-          <input type="text" id="emailNameInput" class="email-input" placeholder="First name" autocomplete="given-name" />
+          <label class="email-label" data-i18n="email.name_label">Your Name</label>
+          <input type="text" id="emailNameInput" class="email-input" placeholder="First name" data-i18n-placeholder="email.name_placeholder" autocomplete="given-name" />
         </div>
 
         <div class="email-form-group">
-          <label class="email-label">Email Address <span style="color:var(--gold);">*</span></label>
-          <input type="email" id="emailInput" class="email-input" placeholder="your@email.com" autocomplete="email" />
+          <label class="email-label" data-i18n="email.email_label" data-i18n-html="true">Email Address <span style="color:var(--gold);">*</span></label>
+          <input type="email" id="emailInput" class="email-input" placeholder="your@email.com" data-i18n-placeholder="email.email_placeholder" autocomplete="email" />
           <div class="email-error" id="emailError"></div>
         </div>
 
         <div class="email-form-group">
-          <label class="email-label">Phone <span style="font-weight:400; color:var(--cream-dim); font-size:0.6rem;">(optional)</span></label>
+          <label class="email-label" data-i18n="email.phone_label" data-i18n-html="true">Phone <span style="font-weight:400; color:var(--cream-dim); font-size:0.6rem;">(optional)</span></label>
           <input type="tel" id="emailPhoneInput" class="email-input" placeholder="(555) 555-5555" autocomplete="tel" />
         </div>
       </div>
 
-      <button class="email-send-btn" id="emailSendBtn" onclick="sendResults()">
+      <button class="email-send-btn" id="emailSendBtn" onclick="sendResults()" data-i18n="email.send_btn">
         Send My Results
       </button>
       
@@ -3779,22 +3779,22 @@
         <div class="email-sent-icon">
           <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="20" fill="#6ecf9a" opacity="0.15"/><circle cx="20" cy="20" r="14" stroke="#6ecf9a" stroke-width="2" fill="none"/><path d="M13 20l4 4 10-10" stroke="#6ecf9a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
-        <div class="email-sent-text">You're all set!</div>
-        <div class="email-sent-subtext">Check your inbox for your personalized results.</div>
+        <div class="email-sent-text" data-i18n="email.sent_title">You're all set!</div>
+        <div class="email-sent-subtext" data-i18n="email.sent_subtitle">Check your inbox for your personalized results.</div>
       </div>
 
       <div class="email-privacy"><span data-store="email-privacy">We'll send your results and may occasionally follow up with sleep tips and offers from Bel Furniture.</span> Your info is never sold to third parties. Unsubscribe anytime. <a href="#" onclick="event.preventDefault();document.getElementById('privacyOverlay').classList.add('visible');" style="color:var(--gold); text-decoration:underline; font-weight:500;">Privacy & Terms</a></div>
 
       <div id="dreamCodeBox" style="width:100%; margin:1rem 0 0.5rem; border:2px dashed rgba(212,168,75,0.5); border-radius:14px; padding:1rem 1.25rem; text-align:center; background:rgba(212,168,75,0.05);">
-        <div style="font-size:0.6rem; text-transform:uppercase; letter-spacing:2px; color:var(--gold); font-weight:600; margin-bottom:0.4rem;">Your Discount Code</div>
+        <div style="font-size:0.6rem; text-transform:uppercase; letter-spacing:2px; color:var(--gold); font-weight:600; margin-bottom:0.4rem;" data-i18n="email.discount_label">Your Discount Code</div>
         <div id="dreamCodeValue" style="font-size:1.8rem; font-weight:800; letter-spacing:0.12em; color:var(--cream); font-family:monospace;"></div>
-        <div style="font-size:0.62rem; color:var(--cream-dim); margin-top:0.35rem;">Show this code to your sleep specialist · <span style="color:var(--gold); font-weight:600;" id="dreamCodePct"></span> OFF</div>
+        <div style="font-size:0.62rem; color:var(--cream-dim); margin-top:0.35rem;" data-i18n="email.discount_hint" data-i18n-html="true">Show this code to your sleep specialist · <span style="color:var(--gold); font-weight:600;" id="dreamCodePct"></span> OFF</div>
       </div>
       
 
       
       <div class="email-actions">
-        <button class="email-skip-btn js-start-over" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); color:var(--cream); font-family:inherit; font-size:0.8rem; font-weight:600; padding:0.6rem 1.5rem; border-radius:10px; cursor:pointer; touch-action:manipulation;">↺ Start New Customer</button>
+        <button class="email-skip-btn js-start-over" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); color:var(--cream); font-family:inherit; font-size:0.8rem; font-weight:600; padding:0.6rem 1.5rem; border-radius:10px; cursor:pointer; touch-action:manipulation;" data-i18n="email.start_new">↺ Start New Customer</button>
       </div>
     </div>
   </div>
@@ -3802,9 +3802,9 @@
   <!-- SCREEN: Accessories Upsell -->
   <div class="screen" id="accessoriesScreen" style="flex-direction:column; height:calc(100vh - var(--header-height) - var(--accent-bar-height)); overflow-y:auto; padding:1rem;">
     <div id="accHeader" style="text-align:center; margin-bottom:0.75rem; opacity:0; transform:translateY(10px); transition:all 0.5s ease-out;">
-      <div style="font-size:0.65rem; text-transform:uppercase; letter-spacing:2px; color:var(--gold); font-weight:600; margin-bottom:0.25rem;">Sleep Profile Analysis</div>
-      <h3 style="font-size:1.1rem; font-weight:700; color:var(--cream); margin-bottom:0.2rem;">Everything else you need for better sleep</h3>
-      <p style="font-size:0.78rem; color:var(--cream-dim); line-height:1.3;" id="accessoriesSubhead">Based on your sleep profile, our algorithm identified these accessories to optimize your sleep.</p>
+      <div style="font-size:0.65rem; text-transform:uppercase; letter-spacing:2px; color:var(--gold); font-weight:600; margin-bottom:0.25rem;" data-i18n="accessories.analysis_label">Sleep Profile Analysis</div>
+      <h3 style="font-size:1.1rem; font-weight:700; color:var(--cream); margin-bottom:0.2rem;" data-i18n="accessories.title">Everything else you need for better sleep</h3>
+      <p style="font-size:0.78rem; color:var(--cream-dim); line-height:1.3;" id="accessoriesSubhead" data-i18n="accessories.subtitle">Based on your sleep profile, our algorithm identified these accessories to optimize your sleep.</p>
       <div id="accDiscountBanner" style="display:inline-flex; align-items:center; gap:0.5rem; margin-top:0.6rem; background:linear-gradient(135deg,rgba(212,168,75,0.15),rgba(212,168,75,0.07)); border:1px solid rgba(212,168,75,0.4); border-radius:50px; padding:0.35rem 1rem;">
         <span style="font-size:0.9rem;">🏷️</span>
         <span id="accDiscountText" style="font-size:0.75rem; font-weight:600; color:var(--gold);">Your 5% discount applies to everything on this page</span>
@@ -3814,7 +3814,7 @@
     <div id="accAnalyzing" style="text-align:center; margin:1.5rem 0; opacity:0; transition:opacity 0.3s ease;">
       <div style="display:inline-flex; align-items:center; gap:0.6rem; background:var(--navy-mid); border:1px solid rgba(212,168,75,0.15); border-radius:50px; padding:0.5rem 1.25rem;">
         <div id="accSpinner" style="width:16px; height:16px; border:2px solid rgba(212,168,75,0.2); border-top-color:var(--gold); border-radius:50%; animation:accSpin 0.8s linear infinite;"></div>
-        <span id="accStatus" style="font-size:0.75rem; color:var(--cream-dim); font-weight:500;">Analyzing your sleep profile...</span>
+        <span id="accStatus" style="font-size:0.75rem; color:var(--cream-dim); font-weight:500;" data-i18n="accessories.analyzing">Analyzing your sleep profile...</span>
       </div>
     </div>
     <style>
@@ -3828,11 +3828,11 @@
         <span style="font-size:1.1rem;">🛒</span>
         <span id="accCartCount" style="font-size:0.85rem; color:var(--cream); font-weight:600;">0 items added to your list</span>
       </div>
-      <div style="font-size:0.7rem; color:var(--gold); font-style:italic;">Tap a card to add or remove</div>
+      <div style="font-size:0.7rem; color:var(--gold); font-style:italic;" data-i18n="accessories.tap_hint">Tap a card to add or remove</div>
     </div>
     <div id="accFooter" style="text-align:center; margin-top:1.25rem; padding-bottom:1rem; opacity:0; transform:translateY(10px); transition:all 0.5s ease-out; display:flex; flex-direction:column; gap:0.5rem; align-items:center;">
-      <button class="cta-btn" onclick="showEmailCapture()" style="background:linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 100%); color:var(--navy); border:2px solid var(--gold-pale); padding:0.75rem 2rem; border-radius:14px; font-family:inherit; font-size:0.95rem; font-weight:700; cursor:pointer; box-shadow:0 4px 0 #9a7a2e, 0 6px 20px rgba(212,168,75,0.25);">Send Me My Results</button>
-      <button class="cta-btn js-start-over" style="background:transparent; color:var(--cream-dim); font-size:0.72rem; padding:0.4rem 1rem; border:1px solid rgba(255,255,255,0.1); font-weight:500; border-radius:8px; cursor:pointer; font-family:inherit; touch-action:manipulation;">Start Over</button>
+      <button class="cta-btn" onclick="showEmailCapture()" style="background:linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 100%); color:var(--navy); border:2px solid var(--gold-pale); padding:0.75rem 2rem; border-radius:14px; font-family:inherit; font-size:0.95rem; font-weight:700; cursor:pointer; box-shadow:0 4px 0 #9a7a2e, 0 6px 20px rgba(212,168,75,0.25);" data-i18n="accessories.send_results">Send Me My Results</button>
+      <button class="cta-btn js-start-over" style="background:transparent; color:var(--cream-dim); font-size:0.72rem; padding:0.4rem 1rem; border:1px solid rgba(255,255,255,0.1); font-weight:500; border-radius:8px; cursor:pointer; font-family:inherit; touch-action:manipulation;" data-i18n="accessories.start_over">Start Over</button>
     </div>
   </div>
 
@@ -3907,13 +3907,21 @@
     function applyTranslations() {
       document.querySelectorAll('[data-i18n]').forEach(function(el) {
         var key = el.getAttribute('data-i18n');
-        var val = t(key, { storeName: (STORE_CONFIG && STORE_CONFIG.storeName) || '' });
+        var val = t(key, { storeName: (STORE_CONFIG && STORE_CONFIG.storeName) || '', discount: STORE_DISCOUNT });
         if (val !== key) {
           if (el.getAttribute('data-i18n-html') === 'true') {
             el.innerHTML = val;
           } else {
             el.textContent = val;
           }
+        }
+      });
+      // Handle placeholder translations
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
+        var key = el.getAttribute('data-i18n-placeholder');
+        var val = t(key);
+        if (val !== key) {
+          el.setAttribute('placeholder', val);
         }
       });
     }
@@ -4201,46 +4209,46 @@
 
     const ACCESSORIES = [
       // Bases & Foundations (shown first)
-      { id: 'base-bt3000', name: 'BT3000 Power Base', category: 'Foundations & Support', price: 899, 
+      { id: 'base-bt3000', name: {en: 'BT3000 Power Base', es: 'Base Eléctrica BT3000'}, category: {en: 'Foundations & Support', es: 'Bases y Soportes'}, price: 899,
         image: 'https://beford782.github.io/DreamFinder/images/accessories/base-bt3000.jpg',
-        description: 'Head & foot adjustment, wireless remote, USB ports, massage, under-bed LED lighting — 850lb capacity',
+        description: {en: 'Head & foot adjustment, wireless remote, USB ports, massage, under-bed LED lighting — 850lb capacity', es: 'Ajuste de cabeza y pies, control inalámbrico, puertos USB, masaje, luces LED — capacidad de 850 lbs'},
         subType: 'adjustable',
         matchTags: ['snoring', 'back_pain'], matchScores: { back_pain: 4, snoring: 4, premium: 3 } },
 
-      { id: 'base-foundation', name: 'Better Than A Boxspring', category: 'Foundations & Support', price: 111, 
+      { id: 'base-foundation', name: {en: 'Better Than A Boxspring', es: 'Mejor Que Un Box Spring'}, category: {en: 'Foundations & Support', es: 'Bases y Soportes'}, price: 111,
         image: 'https://beford782.github.io/DreamFinder/images/accessories/base-foundation.webp',
-        description: 'Standard-height foundation — sturdy platform support that replaces a traditional box spring',
+        description: {en: 'Standard-height foundation — sturdy platform support that replaces a traditional box spring', es: 'Base de altura estándar — soporte de plataforma resistente que reemplaza un box spring tradicional'},
         subType: 'foundation',
         matchTags: ['all'], matchScores: { default: 2 } },
-      { id: 'base-lowprofile', name: 'Low Profile Foundation', category: 'Foundations & Support', price: 142, 
+      { id: 'base-lowprofile', name: {en: 'Low Profile Foundation', es: 'Base de Perfil Bajo'}, category: {en: 'Foundations & Support', es: 'Bases y Soportes'}, price: 142,
         image: 'https://beford782.github.io/DreamFinder/images/accessories/base-lowprofile.webp',
-        description: 'Reduced height foundation — ideal for taller mattresses or platform-style bed frames',
+        description: {en: 'Reduced height foundation — ideal for taller mattresses or platform-style bed frames', es: 'Base de altura reducida — ideal para colchones altos o marcos de cama estilo plataforma'},
         subType: 'low_profile',
         matchTags: ['all'], matchScores: { default: 2 } },
-      { id: 'base-bunkie', name: 'Eckard Bunkie Board', category: 'Foundations & Support', price: 76, 
+      { id: 'base-bunkie', name: {en: 'Eckard Bunkie Board', es: 'Tabla Eckard Bunkie'}, category: {en: 'Foundations & Support', es: 'Bases y Soportes'}, price: 76,
         image: 'https://beford782.github.io/DreamFinder/images/accessories/base-bunkie.webp',
-        description: 'Ultra-slim 2" support board — distributes weight evenly, perfect for platform beds & bunk beds',
+        description: {en: 'Ultra-slim 2" support board — distributes weight evenly, perfect for platform beds & bunk beds', es: 'Tabla de soporte ultra delgada de 2" — distribuye el peso uniformemente, perfecta para camas de plataforma y literas'},
         subType: 'bunkie',
         matchTags: ['all'], matchScores: { default: 1 } },
 
       // Pillows (shown second)
-      { id: 'pillow-activedry', name: 'Active Dry Pillow', category: 'Pillows', price: 120, 
+      { id: 'pillow-activedry', name: {en: 'Active Dry Pillow', es: 'Almohada Active Dry'}, category: {en: 'Pillows', es: 'Almohadas'}, price: 120,
         image: 'https://beford782.github.io/DreamFinder/images/accessories/pillow-activedry.webp',
-        description: 'Moisture-wicking memory foam blend with knife-edge multi-level support — all sleep positions',
+        description: {en: 'Moisture-wicking memory foam blend with knife-edge multi-level support — all sleep positions', es: 'Tela que absorbe la humedad con espuma de memoria transpirable — mantiene la cabeza y el cuello frescos y secos'},
         matchTags: ['cooling', 'all_positions'], matchScores: { default: 2, cooling: 2, hot: 2, position_side: 1, position_back: 2, position_stomach: 1 } },
-      { id: 'pillow-activecool', name: 'Active Cool Pillow', category: 'Pillows', price: 160, 
+      { id: 'pillow-activecool', name: {en: 'Active Cool Pillow', es: 'Almohada Active Cool'}, category: {en: 'Pillows', es: 'Almohadas'}, price: 160,
         image: 'https://beford782.github.io/DreamFinder/images/accessories/pillow-activecool.webp',
-        description: 'Advanced active cooling fabric with premium memory foam clusters — conforms to head, neck & shoulders',
+        description: {en: 'Advanced active cooling fabric with premium memory foam clusters — conforms to head, neck & shoulders', es: 'Gel de enfriamiento con ventilación — disipa el calor activamente para un sueño fresco toda la noche'},
         matchTags: ['hot_sleeper', 'cooling'], matchScores: { cooling: 4, hot: 4, position_side: 2, position_back: 2 } },
-      
+
       // Mattress Protectors (shown last)
-      { id: 'protector-activedry', name: 'Active Dry Protector', category: 'Protectors', price: 100, 
+      { id: 'protector-activedry', name: {en: 'Active Dry Protector', es: 'Protector Active Dry'}, category: {en: 'Protectors', es: 'Protectores'}, price: 100,
         image: 'https://beford782.github.io/DreamFinder/images/accessories/protector-activedry.jpg',
-        description: 'Waterproof & breathable — wicks moisture so you stay cool and dry, extends mattress life',
+        description: {en: 'Waterproof & breathable — wicks moisture so you stay cool and dry, extends mattress life', es: 'Barrera impermeable con tela transpirable — protege contra derrames y alérgenos sin retener calor'},
         matchTags: ['all'], matchScores: { default: 3, cooling: 1 } },
-      { id: 'protector-activecool', name: 'Active Cool Protector', category: 'Protectors', price: 200, 
+      { id: 'protector-activecool', name: {en: 'Active Cool Protector', es: 'Protector Active Cool'}, category: {en: 'Protectors', es: 'Protectores'}, price: 200,
         image: 'https://beford782.github.io/DreamFinder/images/accessories/protector-activecool.webp',
-        description: 'Advanced cooling + waterproof protection — hypoallergenic, helps you stay in deeper sleep stages longer',
+        description: {en: 'Advanced cooling + waterproof protection — hypoallergenic, helps you stay in deeper sleep stages longer', es: 'Capa impermeable con enfriamiento — combina protección del colchón con regulación de temperatura'},
         matchTags: ['hot_sleeper', 'cooling'], matchScores: { cooling: 4, hot: 4, default: 2 } },
     ];
 
@@ -5062,17 +5070,22 @@
 
       // Build "top pick why" one-liner from profile
       const topPickReasons = [];
-      if (temp === 'hot') topPickReasons.push('hot sleepers');
-      if (position === 'side') topPickReasons.push('side sleeping');
-      else if (position === 'back') topPickReasons.push('back sleeping');
-      else if (position === 'stomach') topPickReasons.push('stomach sleeping');
-      if (issues.includes('back_pain')) topPickReasons.push('back support');
-      if (issues.includes('partner')) topPickReasons.push('motion isolation');
-      if (firmness <= 3) topPickReasons.push('plush feel');
-      else if (firmness >= 7) topPickReasons.push('firm support');
-      const topPickWhy = topPickReasons.length > 0 
-        ? 'Best match for ' + topPickReasons.slice(0, 2).join(' & ')
-        : 'Highest overall match for your sleep profile';
+      const topPickReasonsEs = [];
+      if (temp === 'hot') { topPickReasons.push('hot sleepers'); topPickReasonsEs.push('durmientes calurosos'); }
+      if (position === 'side') { topPickReasons.push('side sleeping'); topPickReasonsEs.push('dormir de lado'); }
+      else if (position === 'back') { topPickReasons.push('back sleeping'); topPickReasonsEs.push('dormir boca arriba'); }
+      else if (position === 'stomach') { topPickReasons.push('stomach sleeping'); topPickReasonsEs.push('dormir boca abajo'); }
+      if (issues.includes('back_pain')) { topPickReasons.push('back support'); topPickReasonsEs.push('soporte lumbar'); }
+      if (issues.includes('partner')) { topPickReasons.push('motion isolation'); topPickReasonsEs.push('aislamiento de movimiento'); }
+      if (firmness <= 3) { topPickReasons.push('plush feel'); topPickReasonsEs.push('sensación suave'); }
+      else if (firmness >= 7) { topPickReasons.push('firm support'); topPickReasonsEs.push('soporte firme'); }
+      const topPickWhy = currentLang === 'es'
+        ? (topPickReasonsEs.length > 0
+            ? 'Mejor opción para ' + topPickReasonsEs.slice(0, 2).join(' y ')
+            : 'Mayor compatibilidad general con tu perfil de sueño')
+        : (topPickReasons.length > 0
+            ? 'Best match for ' + topPickReasons.slice(0, 2).join(' & ')
+            : 'Highest overall match for your sleep profile');
 
       // Find the TRUE top pick across all tiers
       let globalTopPick = null;
@@ -5097,7 +5110,7 @@
         const top3 = qualified.slice(0, 3);
 
         if (top3.length === 0) {
-          document.getElementById(tier + 'Content').innerHTML = '<div class="no-matches">No strong matches in this tier.</div>';
+          document.getElementById(tier + 'Content').innerHTML = '<div class="no-matches">' + (currentLang === 'es' ? 'No hay coincidencias fuertes en este nivel.' : 'No strong matches in this tier.') + '</div>';
           return;
         }
         
@@ -5112,28 +5125,29 @@
           var feats=[], pos=answers.sleep_position, tmp=answers.temperature;
           var iss=answers.sleep_issues||[], hlt=answers.health_conditions||[];
           var prtnr=answers.partner_sleep, firm=answers.firmness||5;
+          var es = currentLang === 'es';
           if(m.features.some(function(f){return f.includes('cooling')||f.includes('copper');})){
             var isCN=(tmp==='hot'||iss.includes('hot'));
-            feats.push({emoji:'&#10052;',name:'Cooling Technology',why:isCN?'You sleep hot - keeps you cool all night':'Regulates temperature for deeper sleep',matched:isCN});
+            feats.push({emoji:'&#10052;',name:es?'Tecnología de Enfriamiento':'Cooling Technology',why:isCN?(es?'Duermes caliente — te mantiene fresco toda la noche':'You sleep hot - keeps you cool all night'):(es?'Regula la temperatura para un sueño más profundo':'Regulates temperature for deeper sleep'),matched:isCN});
           }
           if(m.features.some(function(f){return f.includes('pressure')||f.includes('plush');})){
             var isPN=(pos==='side'||iss.includes('hip_pain')||iss.includes('stiff'));
-            feats.push({emoji:'&#127919;',name:'Pressure Relief',why:isPN?(pos==='side'?'Side sleepers need cushioning at hips and shoulders':'Eases your sore spots'):'Contours to your body',matched:isPN});
+            feats.push({emoji:'&#127919;',name:es?'Alivio de Presión':'Pressure Relief',why:isPN?(pos==='side'?(es?'Los que duermen de lado necesitan amortiguación en caderas y hombros':'Side sleepers need cushioning at hips and shoulders'):(es?'Alivia tus puntos de dolor':'Eases your sore spots')):(es?'Se adapta a tu cuerpo':'Contours to your body'),matched:isPN});
           }
           if(m.features.some(function(f){return f.includes('motion')||f.includes('hybrid');})){
             var isMN=(answers.partner_disturbance==='yes_often'||answers.partner_disturbance==='sometimes'||prtnr==='partner'||prtnr==='family');
-            feats.push({emoji:'&#127754;',name:'Motion Isolation',why:isMN?"Won't disturb your partner":'Pocketed coils absorb movement',matched:isMN});
+            feats.push({emoji:'&#127754;',name:es?'Aislamiento de Movimiento':'Motion Isolation',why:isMN?(es?'No molestará a tu pareja':"Won't disturb your partner"):(es?'Los resortes encapsulados absorben el movimiento':'Pocketed coils absorb movement'),matched:isMN});
           }
           if(m.features.some(function(f){return f.includes('support')||f.includes('back-supporter');})){
             var isSN=(iss.includes('back_pain')||hlt.includes('extra_support')||pos==='stomach');
-            feats.push({emoji:'&#128170;',name:'Back Support',why:isSN?(iss.includes('back_pain')?'Reinforced center zone for back pain':'Extra support where needed'):'Lumbar zone keeps spine aligned',matched:isSN});
+            feats.push({emoji:'&#128170;',name:es?'Soporte Espinal':'Back Support',why:isSN?(iss.includes('back_pain')?(es?'Zona central reforzada para dolor de espalda':'Reinforced center zone for back pain'):(es?'Soporte extra donde lo necesitas':'Extra support where needed')):(es?'La zona lumbar mantiene tu columna alineada':'Lumbar zone keeps spine aligned'),matched:isSN});
           }
-          if(m.firmness<=3&&firm<=3) feats.push({emoji:'&#9729;',name:'Plush Feel',why:'Matches your soft preference',matched:true});
-          else if(m.firmness>=7&&firm>=7) feats.push({emoji:'&#9899;',name:'Firm Feel',why:'Matches your firm preference',matched:true});
-          if(m.features.some(function(f){return f.includes('hand-tufting');})) feats.push({emoji:'&#127942;',name:'Lifetime Warranty',why:'Hand-tufted, built to last',matched:false});
+          if(m.firmness<=3&&firm<=3) feats.push({emoji:'&#9729;',name:es?'Sensación Suave':'Plush Feel',why:es?'Coincide con tu preferencia suave':'Matches your soft preference',matched:true});
+          else if(m.firmness>=7&&firm>=7) feats.push({emoji:'&#9899;',name:es?'Sensación Firme':'Firm Feel',why:es?'Coincide con tu preferencia firme':'Matches your firm preference',matched:true});
+          if(m.features.some(function(f){return f.includes('hand-tufting');})) feats.push({emoji:'&#127942;',name:es?'Garantía de por Vida':'Lifetime Warranty',why:es?'Acolchado a mano, hecho para durar':'Hand-tufted, built to last',matched:false});
           if(m.features.some(function(f){return f.includes('copper')||f.includes('anti-viral');})){
             var isAN=hlt.includes('allergies');
-            feats.push({emoji:'&#128310;',name:'Antimicrobial',why:isAN?'Resists dust mites':'Fresh sleep surface',matched:isAN});
+            feats.push({emoji:'&#128310;',name:es?'Antimicrobiano':'Antimicrobial',why:isAN?(es?'Resiste los ácaros del polvo':'Resists dust mites'):(es?'Superficie de sueño fresca':'Fresh sleep surface'),matched:isAN});
           }
           feats.sort(function(a,b){return (b.matched?1:0)-(a.matched?1:0);});
           return feats;
@@ -5143,7 +5157,7 @@
         window._drawerData = window._drawerData || {};
         top3.forEach(function(m){
           var pct=Math.round((scores[m.id]/maxScore)*100);
-          var ff=m.firmness<=3?'Plush':m.firmness<=5?'Medium':m.firmness<=7?'Firm':'Extra Firm';
+          var ff=currentLang==='es'?(m.firmness<=3?'Suave':m.firmness<=5?'Medio':m.firmness<=7?'Firme':'Extra Firme'):(m.firmness<=3?'Plush':m.firmness<=5?'Medium':m.firmness<=7?'Firm':'Extra Firm');
           window._drawerData[m.id]={m:m,tier:tier,pct:pct,feats:buildFeats(m),firmFeel:ff};
         });
 
@@ -5152,17 +5166,22 @@
           const isTopPick = m.id === globalTopPick;
           const feats = buildFeats(m);
           const topChips = feats.slice(0, 3);
-          const firmFeel = m.firmness<=3?'Plush':m.firmness<=5?'Medium':m.firmness<=7?'Firm':'Extra Firm';
+          const firmFeel = currentLang==='es'?(m.firmness<=3?'Suave':m.firmness<=5?'Medio':m.firmness<=7?'Firme':'Extra Firme'):(m.firmness<=3?'Plush':m.firmness<=5?'Medium':m.firmness<=7?'Firm':'Extra Firm');
+          const _needBadge = currentLang === 'es' ? 'TU NECESIDAD' : 'YOUR NEED';
           const chipHtml = topChips.map(f =>
             '<div class="card-feat-chip'+(f.matched?' chip-matched':'')+'">'+
             '<span class="card-feat-chip-icon">'+f.emoji+'</span>'+f.name+
-            (f.matched?'<span class="card-feat-chip-badge">YOUR NEED</span>':'')+
+            (f.matched?'<span class="card-feat-chip-badge">'+_needBadge+'</span>':'')+
             '</div>'
           ).join('');
+          const _topPickLabel = currentLang === 'es' ? 'Mejor Opción Para Ti' : 'Top Pick For You';
+          const _compareLabel = currentLang === 'es' ? '+ Comparar' : '+ Compare';
+          const _tapHint = currentLang === 'es' ? '👆 Toca para ver más' : '👆 Tap to learn more';
+          const _matchLabel = currentLang === 'es' ? 'Compatibilidad' : 'Match';
           return `
             <div class="mattress-card" data-id="${m.id}" data-tier="${tier}" style="touch-action:manipulation; cursor:pointer;">
-              <button class="compare-btn ${(window._compareSelected || []).indexOf(m.id) > -1 ? 'selected' : ''}" data-id="${m.id}">+ Compare</button>
-              ${isTopPick?`<div class="top-pick-badge"><div class="top-pick-icon">${icon('target',28)}</div><div><div class="top-pick-label">Top Pick For You</div><div class="top-pick-why">${topPickWhy}</div></div></div>`:''}
+              <button class="compare-btn ${(window._compareSelected || []).indexOf(m.id) > -1 ? 'selected' : ''}" data-id="${m.id}">${_compareLabel}</button>
+              ${isTopPick?`<div class="top-pick-badge"><div class="top-pick-icon">${icon('target',28)}</div><div><div class="top-pick-label">${_topPickLabel}</div><div class="top-pick-why">${topPickWhy}</div></div></div>`:''}
               ${m.imageUrl?`<div class="card-image"><img src="${m.imageUrl}" alt="${m.name}"></div>`:''}
               <div class="card-header">
                 <div>
@@ -5180,7 +5199,7 @@
                 <div class="card-stock-icon"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.5l2 2 4-4" stroke="#66bb6a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
                 <span class="card-stock-text">${(STORE_CONFIG.text && STORE_CONFIG.text.inStockText) || "In Stock at Bel Furniture"}</span>
               </div>
-              <div class="card-tap-hint">👆 Tap to learn more</div>
+              <div class="card-tap-hint">${_tapHint}</div>
             </div>`;
         }).join('')}</div>`;
 
@@ -5411,12 +5430,13 @@
       const topPick = analytics.topPick;
       
       const preview = document.getElementById('emailPreview');
+      var _esE = currentLang === 'es';
       preview.innerHTML = `
-        <div class="email-preview-label">Your Personalized Report Includes</div>
-        <div class="email-preview-item"><span>${icon('moon', 14)}</span> Sleep profile: <strong style="color:var(--cream);margin-left:0.2rem;">${emailProfileName}</strong></div>
-        <div class="email-preview-item"><span>${icon('target', 14)}</span> Top mattress match${topPick ? ': <strong style="color:var(--cream);margin-left:0.2rem;">' + topPick.name + '</strong> (' + topPick.matchPct + '%)' : ' & scores'}</div>
-        <div class="email-preview-item"><span>${icon('support', 14)}</span> Priority breakdown & why each mattress fits you</div>
-        <div class="email-preview-item"><span>${icon('cloud', 14)}</span> Recommended accessories for your sleep style</div>
+        <div class="email-preview-label">${_esE ? 'Tu Reporte Personalizado Incluye' : 'Your Personalized Report Includes'}</div>
+        <div class="email-preview-item"><span>${icon('moon', 14)}</span> ${_esE ? 'Perfil de sueño' : 'Sleep profile'}: <strong style="color:var(--cream);margin-left:0.2rem;">${emailProfileName}</strong></div>
+        <div class="email-preview-item"><span>${icon('target', 14)}</span> ${_esE ? 'Mejor colchón' : 'Top mattress match'}${topPick ? ': <strong style="color:var(--cream);margin-left:0.2rem;">' + topPick.name + '</strong> (' + topPick.matchPct + '%)' : (_esE ? ' y puntuaciones' : ' & scores')}</div>
+        <div class="email-preview-item"><span>${icon('support', 14)}</span> ${_esE ? 'Desglose de prioridades y por qué cada colchón te conviene' : 'Priority breakdown & why each mattress fits you'}</div>
+        <div class="email-preview-item"><span>${icon('cloud', 14)}</span> ${_esE ? 'Accesorios recomendados para tu estilo de sueño' : 'Recommended accessories for your sleep style'}</div>
       `;
       
       // Reset form state
@@ -5424,7 +5444,7 @@
       document.getElementById('emailInput').value = '';
       document.getElementById('emailPhoneInput').value = '';
       document.getElementById('emailError').textContent = '';
-      document.getElementById('emailSendBtn').textContent = 'Send My Results';
+      document.getElementById('emailSendBtn').textContent = currentLang === 'es' ? 'Enviar Mis Resultados' : 'Send My Results';
       document.getElementById('emailSendBtn').className = 'email-send-btn';
       document.getElementById('emailSendBtn').style.display = '';
       document.getElementById('emailConfirmation').className = 'email-sent-confirmation';
@@ -5470,18 +5490,18 @@
       
       // Validate
       if (!email) {
-        errorEl.textContent = 'Please enter your email address.';
+        errorEl.textContent = currentLang === 'es' ? 'Por favor ingresa tu correo electrónico.' : 'Please enter your email address.';
         emailInput.focus();
         return;
       }
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        errorEl.textContent = 'Please enter a valid email address.';
+        errorEl.textContent = currentLang === 'es' ? 'Por favor ingresa un correo electrónico válido.' : 'Please enter a valid email address.';
         emailInput.focus();
         return;
       }
       
       errorEl.textContent = '';
-      sendBtn.textContent = 'Sending...';
+      sendBtn.textContent = currentLang === 'es' ? 'Enviando...' : 'Sending...';
       sendBtn.classList.add('sending');
       
       // Use stored profile name
@@ -5602,7 +5622,7 @@
       analytics.log('email_submitted', { email: email, name: name, phone: phone });
       
       function showSuccess() {
-        sendBtn.textContent = '✓ Sent!';
+        sendBtn.textContent = currentLang === 'es' ? '✓ ¡Enviado!' : '✓ Sent!';
         sendBtn.classList.remove('sending');
         sendBtn.classList.add('sent');
         confirmation.classList.add('visible');
@@ -5614,9 +5634,9 @@
       }
       
       function showError(msg) {
-        sendBtn.textContent = 'Send My Results';
+        sendBtn.textContent = currentLang === 'es' ? 'Enviar Mis Resultados' : 'Send My Results';
         sendBtn.classList.remove('sending');
-        errorEl.textContent = msg || 'Something went wrong. Please try again.';
+        errorEl.textContent = msg || (currentLang === 'es' ? 'Algo salió mal. Por favor intenta de nuevo.' : 'Something went wrong. Please try again.');
       }
       
       if (GOOGLE_SCRIPT_URL) {
@@ -5638,12 +5658,12 @@
           } else {
             var msg = (data && data.error) ? data.error : 'Email could not be sent.';
             console.error('[DreamFinder] GAS returned failure:', msg);
-            showError('We couldn\'t send your email — please ask your sales specialist to re-send it.');
+            showError(currentLang === 'es' ? 'No pudimos enviar tu correo — por favor pide a tu especialista de sueño que lo reenvíe.' : 'We couldn\'t send your email — please ask your sales specialist to re-send it.');
           }
         })
         .catch(function(err) {
           console.error('[DreamFinder] Email error:', err);
-          showError('Network error. Please try again.');
+          showError(currentLang === 'es' ? 'Error de red. Por favor intenta de nuevo.' : 'Network error. Please try again.');
         });
       } else {
         // Simulated send (no Google Script URL configured)
@@ -5663,17 +5683,18 @@
       var profileSub = analytics.profileSubtitle || 'Sleeper';
       
       // Reason mapping
+      var _es = currentLang === 'es';
       const reasonMap = {
-        'position_side': 'Matched to your side sleeping position',
-        'position_back': 'Optimized for back sleepers',
-        'position_stomach': 'Designed for stomach sleepers',
-        'cooling': 'You reported sleeping hot',
-        'hot': 'Addresses your temperature concerns',
-        'back_pain': 'Targets the back pain you mentioned',
-        'snoring': 'Helps with the snoring you reported',
-        'allergies': 'Protects against the allergies you noted',
-        'premium': 'Matches your comfort preferences',
-        'default': 'Recommended for your sleep profile'
+        'position_side': _es ? 'Adaptado a tu posición de dormir de lado' : 'Matched to your side sleeping position',
+        'position_back': _es ? 'Optimizado para los que duermen boca arriba' : 'Optimized for back sleepers',
+        'position_stomach': _es ? 'Diseñado para los que duermen boca abajo' : 'Designed for stomach sleepers',
+        'cooling': _es ? 'Reportaste dormir caliente' : 'You reported sleeping hot',
+        'hot': _es ? 'Aborda tus preocupaciones de temperatura' : 'Addresses your temperature concerns',
+        'back_pain': _es ? 'Se enfoca en el dolor de espalda que mencionaste' : 'Targets the back pain you mentioned',
+        'snoring': _es ? 'Ayuda con los ronquidos que reportaste' : 'Helps with the snoring you reported',
+        'allergies': _es ? 'Protege contra las alergias que mencionaste' : 'Protects against the allergies you noted',
+        'premium': _es ? 'Coincide con tus preferencias de comodidad' : 'Matches your comfort preferences',
+        'default': _es ? 'Recomendado para tu perfil de sueño' : 'Recommended for your sleep profile'
       };
       
       // Score accessories
@@ -5693,17 +5714,18 @@
       accessoryData.sort((a, b) => b.score - a.score);
       // Bases: show all types in order (adjustable, foundation, low profile, bunkie)
       const baseOrder = ['adjustable', 'foundation', 'low_profile', 'bunkie'];
-      const bases = accessoryData.filter(a => a.category === 'Foundations & Support')
+      const _catEn = function(a) { return typeof a.category === 'object' ? a.category.en : a.category; };
+      const bases = accessoryData.filter(a => _catEn(a) === 'Foundations & Support')
         .sort((a, b) => baseOrder.indexOf(a.subType) - baseOrder.indexOf(b.subType));
-      const pillows = accessoryData.filter(a => a.category === 'Pillows').slice(0, 3);
-      const protectors = accessoryData.filter(a => a.category === 'Protectors').slice(0, 2);
+      const pillows = accessoryData.filter(a => _catEn(a) === 'Pillows').slice(0, 3);
+      const protectors = accessoryData.filter(a => _catEn(a) === 'Protectors').slice(0, 2);
       const toShow = [...bases, ...pillows, ...protectors];
       const maxScore = Math.max(...toShow.map(a => a.score), 1);
       
-      // Store accessory recommendations for email
+      // Store accessory recommendations for email (always English for analytics)
       analytics.recommendedAccessories = [...pillows, ...protectors].map(a => ({
-        name: a.name,
-        category: a.category,
+        name: typeof a.name === 'object' ? a.name.en : a.name,
+        category: typeof a.category === 'object' ? a.category.en : a.category,
         imageUrl: a.image || '',
         score: Math.min(Math.round((a.score / maxScore) * 100), 99)
       }));
@@ -5735,16 +5757,19 @@
       
       // Store grouped data for stepped reveal
       const categoryIcons = { 'Foundations & Support': icon('support', 20), 'Pillows': icon('cloud', 20), 'Protectors': icon('check', 20) };
-      const categorySubtitles = { 
-        'Foundations & Support': 'Every mattress needs the right foundation', 
-        'Pillows': 'Matched to your sleep position & temperature',
-        'Protectors': 'Extend mattress life & improve sleep quality'
+      const categorySubtitles = {
+        'Foundations & Support': _es ? 'Cada colchón necesita la base correcta' : 'Every mattress needs the right foundation',
+        'Pillows': _es ? 'Adaptadas a tu posición de sueño y temperatura' : 'Matched to your sleep position & temperature',
+        'Protectors': _es ? 'Extiende la vida del colchón y mejora la calidad de sueño' : 'Extend mattress life & improve sleep quality'
       };
-      const nextLabels = { 'Foundations & Support': 'Next: Pillows →', 'Pillows': 'Next: Mattress Protectors →' };
-      
+      const nextLabels = {
+        'Foundations & Support': _es ? 'Siguiente: Almohadas →' : 'Next: Pillows →',
+        'Pillows': _es ? 'Siguiente: Protectores de Colchón →' : 'Next: Mattress Protectors →'
+      };
+
       const grouped = ['Foundations & Support', 'Pillows', 'Protectors'].map(cat => ({
         category: cat,
-        items: toShow.filter(a => a.category === cat)
+        items: toShow.filter(a => _catEn(a) === cat)
       })).filter(g => g.items.length > 0);
       
       // Track which step we're on
@@ -5758,31 +5783,39 @@
         const oldBtn = document.getElementById('accNextBtn');
         if (oldBtn) { oldBtn.style.opacity = '0'; setTimeout(() => oldBtn.remove(), 300); }
         
-        // Add section header
+        // Add section header — g.category is the English key; translate for display
+        var _catDisplayNames = {'Foundations & Support': _es ? 'Bases y Soportes' : 'Foundations & Support', 'Pillows': _es ? 'Almohadas' : 'Pillows', 'Protectors': _es ? 'Protectores' : 'Protectors'};
         const headerHtml = `
           <div class="acc-section-header acc-card-animated">
             <span class="acc-section-icon">${categoryIcons[g.category] || '📦'}</span>
             <div>
-              <div class="acc-section-title">${g.category}</div>
+              <div class="acc-section-title">${_catDisplayNames[g.category] || g.category}</div>
               <div class="acc-section-sub">${categorySubtitles[g.category] || ''}</div>
             </div>
           </div>`;
         grid.insertAdjacentHTML('beforeend', headerHtml);
-        
+
+        var _matchWord = _es ? 'Compatibilidad' : 'Match';
         // Stagger cards in
         g.items.forEach((a, i) => {
           const matchPct = Math.min(Math.round((a.score / maxScore) * 100), 99);
           const isRec = a.score >= 3;
+          const _aName = L(a.name);
+          const _aCat = L(a.category);
+          const _aDesc = L(a.description);
+          // For _toggleAcc, pass English name/category for analytics
+          const _aNameEn = typeof a.name === 'object' ? a.name.en : a.name;
+          const _aCatEn = typeof a.category === 'object' ? a.category.en : a.category;
           const cardHtml = `
-            <div class="accessory-card acc-card-animated ${isRec ? 'recommended' : ''}" id="acc-${a.id}" onclick="window._toggleAcc('${a.id}','${a.name}','${a.category}')">
+            <div class="accessory-card acc-card-animated ${isRec ? 'recommended' : ''}" id="acc-${a.id}" onclick="window._toggleAcc('${a.id}','${_aNameEn.replace(/'/g,"\\'")}','${_aCatEn.replace(/'/g,"\\'")}')">
               <div class="accessory-image">
-                <img src="${a.image}" alt="${a.name}" style="width:100%;height:100%;object-fit:cover;">
-                ${isRec ? `<span class="accessory-match">${matchPct}% Match</span>` : ''}
+                <img src="${a.image}" alt="${_aName}" style="width:100%;height:100%;object-fit:cover;">
+                ${isRec ? `<span class="accessory-match">${matchPct}% ${_matchWord}</span>` : ''}
               </div>
               <div id="acc-check-${a.id}" style="display:none; position:absolute; top:0.5rem; right:0.5rem; background:var(--gold); border-radius:50%; width:26px; height:26px; align-items:center; justify-content:center; font-size:0.85rem; box-shadow:0 2px 8px rgba(0,0,0,0.4); animation:optBounce 0.3s ease;">✓</div>
-              <div class="accessory-category">${a.category}</div>
-              <div class="accessory-name">${a.name}</div>
-              <div class="accessory-description">${a.description}</div>
+              <div class="accessory-category">${_aCat}</div>
+              <div class="accessory-name">${_aName}</div>
+              <div class="accessory-description">${_aDesc}</div>
               <div style="font-size:0.65rem; color:var(--gold); margin-top:0.4rem; font-style:italic; line-height:1.3;">${a.reasons[0]}</div>
             </div>`;
           setTimeout(() => grid.insertAdjacentHTML('beforeend', cardHtml), (i + 1) * 200);
@@ -5797,7 +5830,7 @@
             const btnHtml = `
               <div id="accNextBtn" class="acc-next-wrapper acc-card-animated" style="grid-column:1/-1;">
                 <button class="acc-next-btn" onclick="window._accNext()">
-                  ${nextIcon} ${nextLabels[g.category] || 'Continue →'}
+                  ${nextIcon} ${nextLabels[g.category] || (_es ? 'Continuar →' : 'Continue →')}
                 </button>
               </div>`;
             grid.insertAdjacentHTML('beforeend', btnHtml);
@@ -5825,11 +5858,11 @@
       
       // SEQUENCE: Staggered reveal
       const discountEl = document.getElementById('accDiscountText');
-      if (discountEl) discountEl.textContent = `Your ${STORE_DISCOUNT}% discount applies to everything on this page`;
+      if (discountEl) discountEl.textContent = _es ? `Tu ${STORE_DISCOUNT}% de descuento aplica a todo en esta página` : `Your ${STORE_DISCOUNT}% discount applies to everything on this page`;
       setTimeout(() => { header.style.opacity = '1'; header.style.transform = 'translateY(0)'; }, 100);
       setTimeout(() => { badge.style.opacity = '1'; badge.style.transform = 'scale(1)'; }, 300);
       setTimeout(() => { analyzing.style.opacity = '1'; }, 500);
-      setTimeout(() => { status.textContent = 'Matching accessories to your profile...'; }, 1000);
+      setTimeout(() => { status.textContent = _es ? 'Combinando accesorios con tu perfil...' : 'Matching accessories to your profile...'; }, 1000);
       
       // After analyzing, show first category
       setTimeout(() => {
@@ -5882,7 +5915,7 @@
       // Update button state
       var btn = document.getElementById('drawerInterestedBtn');
       if (btn) {
-        btn.textContent = '✓ Saved!';
+        btn.textContent = currentLang === 'es' ? '✓ ¡Guardado!' : '✓ Saved!';
         btn.style.background = 'linear-gradient(180deg,#6ec79a,#4caf6e)';
       }
       // Update picks badge
@@ -5988,16 +6021,24 @@
 
     // Salesperson context labels (S6)
     const TRIGGER_LABELS = {
-      pain: 'Back or Body Pain',
-      worn_out: 'Old Mattress',
-      moving: 'Moving or New Space',
-      upgrade: 'Just Upgrading',
-      browsing: 'Just Looking'
+      pain: {en: 'Back or Body Pain', es: 'Dolor de Espalda o Cuerpo'},
+      worn_out: {en: 'Old Mattress', es: 'Colchón Viejo'},
+      moving: {en: 'Moving or New Space', es: 'Mudanza'},
+      upgrade: {en: 'Just Upgrading', es: 'Mejorando'},
+      browsing: {en: 'Just Looking', es: 'Solo Mirando'}
     };
-    const QUALITY_LABELS = { poor: 'Poorly', fair: 'Not Great', okay: 'Okay', well: 'Pretty Well' };
+    const QUALITY_LABELS = {
+      poor: {en: 'Poorly', es: 'Mal'},
+      fair: {en: 'Not Great', es: 'No Muy Bien'},
+      okay: {en: 'Okay', es: 'Más o Menos'},
+      well: {en: 'Pretty Well', es: 'Bastante Bien'}
+    };
     const AGE_LABELS = {
-      under_2: '< 2 yrs', three_seven: '3–7 yrs', eight_fifteen: '8–15 yrs',
-      fifteen_plus: '15+ yrs', not_sure: 'Not sure'
+      under_2: {en: '< 2 yrs', es: '< 2 años'},
+      three_seven: {en: '3–7 yrs', es: '3–7 años'},
+      eight_fifteen: {en: '8–15 yrs', es: '8–15 años'},
+      fifteen_plus: {en: '15+ yrs', es: '15+ años'},
+      not_sure: {en: 'Not sure', es: 'No sé'}
     };
     const SIZE_LABELS_SHORT = {
       twin: 'Twin', twin_xl: 'Twin XL', full: 'Full', queen: 'Queen', king: 'King', cal_king: 'Cal King'
@@ -6006,27 +6047,38 @@
     function renderCustomerContextCard() {
       var el = document.getElementById('customerContextCard');
       if (!el) return;
+      var _esC = currentLang === 'es';
       var profile = analytics.profileName ? (analytics.profileName + ' · ' + (analytics.profileSubtitle || '')) : '';
-      var triggerLbl = TRIGGER_LABELS[answers.trigger] || '';
-      var qualityLbl = QUALITY_LABELS[answers.sleep_quality] || '';
-      var ageLbl = AGE_LABELS[answers.current_mattress_age] || '';
+      var triggerLbl = TRIGGER_LABELS[answers.trigger] ? L(TRIGGER_LABELS[answers.trigger]) : '';
+      var qualityLbl = QUALITY_LABELS[answers.sleep_quality] ? L(QUALITY_LABELS[answers.sleep_quality]) : '';
+      var ageLbl = AGE_LABELS[answers.current_mattress_age] ? L(AGE_LABELS[answers.current_mattress_age]) : '';
       var sizeLbl = SIZE_LABELS_SHORT[answers.mattress_size] || '';
       var firmness = answers.firmness || 5;
-      var firmLbl = firmness <= 3 ? 'Plush' : firmness >= 7 ? 'Firm' : 'Medium';
-      var tempLbl = answers.temperature === 'hot' ? 'Hot' : answers.temperature === 'cold' ? 'Cold' :
-                    answers.temperature === 'opposite' ? 'Mixed' : 'Comfortable';
-      var partnerLbl = answers.partner_sleep === 'partner' ? 'Shared bed' :
-                       answers.partner_sleep === 'family' ? 'Family bed' : 'Solo';
+      var firmLbl = _esC
+        ? (firmness <= 3 ? 'Suave' : firmness >= 7 ? 'Firme' : 'Medio')
+        : (firmness <= 3 ? 'Plush' : firmness >= 7 ? 'Firm' : 'Medium');
+      var tempLbl = _esC
+        ? (answers.temperature === 'hot' ? 'Caliente' : answers.temperature === 'cold' ? 'Frío' :
+           answers.temperature === 'opposite' ? 'Mixto' : 'Cómodo')
+        : (answers.temperature === 'hot' ? 'Hot' : answers.temperature === 'cold' ? 'Cold' :
+           answers.temperature === 'opposite' ? 'Mixed' : 'Comfortable');
+      var partnerLbl = _esC
+        ? (answers.partner_sleep === 'partner' ? 'Cama compartida' :
+           answers.partner_sleep === 'family' ? 'Cama familiar' : 'Solo')
+        : (answers.partner_sleep === 'partner' ? 'Shared bed' :
+           answers.partner_sleep === 'family' ? 'Family bed' : 'Solo');
       var issues = (answers.sleep_issues || []).filter(function(x){ return x !== 'none'; });
-      var issuesLbl = issues.length ? issues.length + ' issue' + (issues.length>1?'s':'') : 'No issues';
+      var issuesLbl = _esC
+        ? (issues.length ? issues.length + ' problema' + (issues.length>1?'s':'') : 'Sin problemas')
+        : (issues.length ? issues.length + ' issue' + (issues.length>1?'s':'') : 'No issues');
 
       var pills = [];
       if (sizeLbl) pills.push(sizeLbl);
-      pills.push(firmLbl + ' feel');
-      if (tempLbl !== 'Comfortable') pills.push(tempLbl + ' sleeper');
+      pills.push(firmLbl + (_esC ? '' : ' feel'));
+      if ((_esC ? 'Cómodo' : 'Comfortable') !== tempLbl) pills.push(tempLbl + (_esC ? '' : ' sleeper'));
       pills.push(partnerLbl);
-      if (ageLbl) pills.push('Mattress ' + ageLbl);
-      if (qualityLbl) pills.push('Sleeps ' + qualityLbl);
+      if (ageLbl) pills.push((_esC ? 'Colchón ' : 'Mattress ') + ageLbl);
+      if (qualityLbl) pills.push((_esC ? 'Duerme ' : 'Sleeps ') + qualityLbl);
       pills.push(issuesLbl);
 
       // Sales cheat sheet for this profile archetype
@@ -6035,7 +6087,7 @@
       if (notes) {
         notesHtml =
           '<div style="margin-top:0.75rem; padding-top:0.75rem; border-top:1px dashed rgba(212,168,75,0.3);">'
-          + '<div style="font-size:0.6rem; text-transform:uppercase; letter-spacing:1.8px; color:var(--gold); font-weight:700; margin-bottom:0.5rem;">Sales Cheat Sheet</div>'
+          + '<div style="font-size:0.6rem; text-transform:uppercase; letter-spacing:1.8px; color:var(--gold); font-weight:700; margin-bottom:0.5rem;">' + (_esC ? 'Guía de Ventas' : 'Sales Cheat Sheet') + '</div>'
           + '<div style="display:flex; flex-direction:column; gap:0.4rem;">'
           + '<div><span style="font-size:0.6rem; color:var(--gold); font-weight:700; letter-spacing:1px; text-transform:uppercase;">Lead with</span><div style="font-size:0.78rem; color:var(--cream); line-height:1.4; margin-top:0.15rem;">' + notes.lead + '</div></div>'
           + '<div><span style="font-size:0.6rem; color:var(--gold); font-weight:700; letter-spacing:1px; text-transform:uppercase;">Demo hook</span><div style="font-size:0.78rem; color:var(--cream); line-height:1.4; margin-top:0.15rem;">' + notes.demo + '</div></div>'
@@ -6046,9 +6098,9 @@
 
       el.innerHTML =
         '<div style="background:linear-gradient(135deg, rgba(212,168,75,0.12), rgba(212,168,75,0.04)); border:1px solid rgba(212,168,75,0.35); border-radius:14px; padding:0.85rem 1rem;">'
-        + (triggerLbl ? '<div style="font-size:0.6rem; text-transform:uppercase; letter-spacing:1.8px; color:var(--gold); font-weight:700; margin-bottom:0.25rem;">Came in for</div>'
+        + (triggerLbl ? '<div style="font-size:0.6rem; text-transform:uppercase; letter-spacing:1.8px; color:var(--gold); font-weight:700; margin-bottom:0.25rem;">' + (_esC ? 'Vino por' : 'Came in for') + '</div>'
             + '<div style="font-size:1.05rem; font-weight:700; color:var(--cream); margin-bottom:0.55rem;">' + triggerLbl + '</div>' : '')
-        + (profile ? '<div style="font-size:0.7rem; color:var(--cream-dim); margin-bottom:0.5rem;">Profile: <span style="color:var(--gold); font-weight:600;">' + profile + '</span></div>' : '')
+        + (profile ? '<div style="font-size:0.7rem; color:var(--cream-dim); margin-bottom:0.5rem;">' + (_esC ? 'Perfil' : 'Profile') + ': <span style="color:var(--gold); font-weight:600;">' + profile + '</span></div>' : '')
         + '<div style="display:flex; flex-wrap:wrap; gap:0.35rem;">'
         + pills.map(function(p) {
             return '<span style="font-size:0.65rem; color:var(--cream); background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); padding:0.25rem 0.55rem; border-radius:999px;">' + p + '</span>';
@@ -6065,15 +6117,16 @@
       var html = '';
 
       // Mattresses
+      var _esH = currentLang === 'es';
       if (window._savedPicks.length === 0) {
-        html += '<div style="text-align:center; color:var(--cream-dim); font-size:0.82rem; padding:1rem 0;">No mattresses saved yet — tap "I\'m Interested" on any mattress.</div>';
+        html += '<div style="text-align:center; color:var(--cream-dim); font-size:0.82rem; padding:1rem 0;">' + (_esH ? 'No hay colchones guardados — toca "Me Interesa" en cualquier colchón.' : 'No mattresses saved yet — tap "I\'m Interested" on any mattress.') + '</div>';
       } else {
-        html += '<div style="font-size:0.65rem; text-transform:uppercase; letter-spacing:2px; color:var(--gold); font-weight:600; margin-bottom:0.5rem;">Mattresses</div>';
+        html += '<div style="font-size:0.65rem; text-transform:uppercase; letter-spacing:2px; color:var(--gold); font-weight:600; margin-bottom:0.5rem;">' + (_esH ? 'Colchones' : 'Mattresses') + '</div>';
         html += window._savedPicks.map(function(p, i) {
           return '<div style="display:flex; align-items:center; gap:0.75rem; background:linear-gradient(135deg,#1d3352,#162845); border:1.5px solid rgba(212,168,75,0.4); border-radius:12px; padding:0.75rem; position:relative; margin-bottom:0.5rem;">'
             + (p.imageUrl ? '<img src="' + p.imageUrl + '" style="width:70px; height:60px; object-fit:cover; border-radius:8px; flex-shrink:0;">' : '')
             + '<div style="flex:1;">'
-            + '<div style="font-size:0.65rem; color:var(--gold); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:0.15rem;">Pick #' + (i+1) + '</div>'
+            + '<div style="font-size:0.65rem; color:var(--gold); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:0.15rem;">' + (_esH ? 'Selección #' : 'Pick #') + (i+1) + '</div>'
             + '<div style="font-size:1rem; font-weight:700; color:var(--cream);">' + p.name + (p.tier ? ' <span class="price-tier">' + priceTierSymbol(p.tier) + '</span>' : '') + '</div>'
             + '<div style="font-size:0.72rem; color:var(--cream-dim);">' + p.brand + '</div>'
             + '<div style="font-size:0.72rem; color:var(--gold); margin-top:0.2rem;">' + p.pct + '% Match · ' + p.firmFeel + '</div>'
@@ -6086,7 +6139,7 @@
       // Accessories from cart
       var accs = Object.values(window._accCart || {});
       if (accs.length > 0) {
-        html += '<div style="font-size:0.65rem; text-transform:uppercase; letter-spacing:2px; color:var(--gold); font-weight:600; margin-top:0.75rem; margin-bottom:0.5rem;">Accessories</div>';
+        html += '<div style="font-size:0.65rem; text-transform:uppercase; letter-spacing:2px; color:var(--gold); font-weight:600; margin-top:0.75rem; margin-bottom:0.5rem;">' + (_esH ? 'Accesorios' : 'Accessories') + '</div>';
         html += '<div style="display:flex; flex-wrap:wrap; gap:0.5rem;">';
         html += accs.map(function(a) {
           return '<div style="display:flex; align-items:center; gap:0.5rem; background:rgba(255,255,255,0.05); border:1px solid rgba(212,168,75,0.25); border-radius:8px; padding:0.4rem 0.75rem;">'
@@ -6132,7 +6185,9 @@
       const bar = document.getElementById('accCartBar');
       const countEl = document.getElementById('accCartCount');
       if (bar) bar.style.display = count > 0 ? 'flex' : 'none';
-      if (countEl) countEl.textContent = count + (count === 1 ? ' item added to your list' : ' items added to your list');
+      if (countEl) countEl.textContent = currentLang === 'es'
+        ? count + (count === 1 ? ' artículo agregado a tu lista' : ' artículos agregados a tu lista')
+        : count + (count === 1 ? ' item added to your list' : ' items added to your list');
       if (typeof analytics !== 'undefined') {
         analytics.recommendedAccessories = Object.entries(window._accCart).map(([k,v]) => ({ name: v.name, category: v.category, imageUrl: v.imageUrl || '' }));
         window._updatePicksBadge && window._updatePicksBadge();
@@ -6245,7 +6300,7 @@
         return;
       }
       tray.style.display = 'block';
-      count.textContent = arr.length + ' of 2 selected';
+      count.textContent = currentLang === 'es' ? arr.length + ' de 2 seleccionados' : arr.length + ' of 2 selected';
       slots.innerHTML = arr.map(function(id) {
         var d = (window._drawerData && window._drawerData[id]) || null;
         var name = d ? d.m.name : id;
@@ -6281,16 +6336,18 @@
           return '<span class="compare-col-chip">' + (f.emoji || '') + ' ' + f.name + '</span>';
         }).join('');
         var isWinner = pctWinner === i;
+        var _esCmp = currentLang === 'es';
+        var _tierNames = _esCmp ? {gold:'Oro',silver:'Plata',bronze:'Bronce'} : {gold:'Gold',silver:'Silver',bronze:'Bronze'};
         return '<div class="compare-col' + (isWinner ? ' winner' : '') + '">'
           + (m.imageUrl ? '<div class="compare-col-img"><img src="' + m.imageUrl + '" alt="' + m.name + '"></div>' : '')
           + '<div>'
           +   '<div class="compare-col-name">' + m.name + ' <span class="price-tier">' + priceTierSymbol(tier) + '</span></div>'
           +   '<div class="compare-col-brand">' + m.brand + (m.subBrand ? ' · ' + m.subBrand : '') + '</div>'
           + '</div>'
-          + '<div class="compare-col-stat"><span class="compare-col-stat-label">Match</span><span class="compare-col-stat-val ' + (isWinner ? 'highlight' : '') + '">' + data.pct + '%</span></div>'
-          + '<div class="compare-col-stat"><span class="compare-col-stat-label">Firmness</span><span class="compare-col-stat-val">' + m.firmness + '/10 · ' + firmLabel + '</span></div>'
-          + '<div class="compare-col-stat"><span class="compare-col-stat-label">Tier</span><span class="compare-col-stat-val">' + (tier.charAt(0).toUpperCase() + tier.slice(1)) + '</span></div>'
-          + '<div class="compare-col-stat"><span class="compare-col-stat-label">Local?</span><span class="compare-col-stat-val">' + (m.locallyMade ? 'Made locally' : '—') + '</span></div>'
+          + '<div class="compare-col-stat"><span class="compare-col-stat-label">' + (_esCmp ? 'Compatibilidad' : 'Match') + '</span><span class="compare-col-stat-val ' + (isWinner ? 'highlight' : '') + '">' + data.pct + '%</span></div>'
+          + '<div class="compare-col-stat"><span class="compare-col-stat-label">' + (_esCmp ? 'Firmeza' : 'Firmness') + '</span><span class="compare-col-stat-val">' + m.firmness + '/10 · ' + firmLabel + '</span></div>'
+          + '<div class="compare-col-stat"><span class="compare-col-stat-label">' + (_esCmp ? 'Nivel' : 'Tier') + '</span><span class="compare-col-stat-val">' + (_tierNames[tier] || (tier.charAt(0).toUpperCase() + tier.slice(1))) + '</span></div>'
+          + '<div class="compare-col-stat"><span class="compare-col-stat-label">' + (_esCmp ? '¿Local?' : 'Local?') + '</span><span class="compare-col-stat-val">' + (m.locallyMade ? (_esCmp ? 'Hecho localmente' : 'Made locally') : '—') + '</span></div>'
           + '<div class="compare-col-chips">' + chips + '</div>'
           + '</div>';
       }
@@ -6402,7 +6459,7 @@
       var intBtn = document.getElementById('drawerInterestedBtn');
       if (intBtn) {
         var alreadySaved = window._savedPicks && window._savedPicks.some(function(p) { return p.id === mattressId; });
-        intBtn.textContent = alreadySaved ? '✓ Already Saved' : '⭐ I\'m Interested In This One';
+        intBtn.textContent = alreadySaved ? (currentLang === 'es' ? '✓ Ya Guardado' : '✓ Already Saved') : (currentLang === 'es' ? '⭐ Me Interesa Este' : '⭐ I\'m Interested In This One');
         intBtn.style.background = alreadySaved ? 'linear-gradient(180deg,#6ec79a,#4caf6e)' : '';
       }
 
@@ -6411,7 +6468,7 @@
       var prevBtn = document.getElementById('drawerPrevBtn');
       var nextBtn = document.getElementById('drawerNextBtn');
       if (navLabel && window._drawerOrder.length > 1) {
-        navLabel.textContent = (window._drawerCurrentIndex + 1) + ' of ' + window._drawerOrder.length;
+        navLabel.textContent = (window._drawerCurrentIndex + 1) + (currentLang === 'es' ? ' de ' : ' of ') + window._drawerOrder.length;
         prevBtn.style.opacity = window._drawerCurrentIndex > 0 ? '1' : '0.3';
         prevBtn.style.pointerEvents = window._drawerCurrentIndex > 0 ? 'auto' : 'none';
         nextBtn.style.opacity = window._drawerCurrentIndex < window._drawerOrder.length - 1 ? '1' : '0.3';
@@ -6445,8 +6502,9 @@
       var priceSym = priceTierSymbol(d.tier || '');
       document.getElementById('drawerName').innerHTML = m.name + (priceSym ? ' <span class="price-tier">' + priceSym + '</span>' : '');
       document.getElementById('drawerSub').textContent = (m.tags||[]).join(' - ');
-      document.getElementById('drawerMatch').textContent = d.pct + '% Match';
+      document.getElementById('drawerMatch').textContent = d.pct + '% ' + (currentLang === 'es' ? 'Compatibilidad' : 'Match');
 
+      var _drawerNeedBadge = currentLang === 'es' ? 'TU NECESIDAD' : 'YOUR NEED';
       document.getElementById('drawerFeats').innerHTML = d.feats.slice(0,5).map(function(f){
         return '<div class="drawer-feat-row'+(f.matched?' drawer-matched':'')+'">'+
           '<span class="drawer-feat-icon">'+f.emoji+'</span>'+
@@ -6454,13 +6512,13 @@
           '<div class="drawer-feat-name">'+f.name+'</div>'+
           '<div class="drawer-feat-why">'+f.why+'</div>'+
           '</div>'+
-          (f.matched?'<span class="drawer-feat-badge">YOUR NEED</span>':'')+
+          (f.matched?'<span class="drawer-feat-badge">'+_drawerNeedBadge+'</span>':'')+
           '</div>';
       }).join('');
 
       var r = m.reasons || {};
       document.getElementById('drawerReason').textContent = r['default'] || r.cooling || r.pressureRelief || r.support || 'A great match for your sleep profile.';
-      document.getElementById('drawerFirmLabel').textContent = 'Firmness ' + m.firmness + '/10';
+      document.getElementById('drawerFirmLabel').textContent = (currentLang === 'es' ? 'Firmeza ' : 'Firmness ') + m.firmness + '/10';
       document.getElementById('drawerFirmFeel').textContent = d.firmFeel;
       document.getElementById('drawerFirmFill').style.width = '0%';
       setTimeout(function(){document.getElementById('drawerFirmFill').style.width=(m.firmness*10)+'%';},100);

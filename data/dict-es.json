@@ -14,7 +14,7 @@
   "welcome.social_proof": "Recomendado por tu equipo de descanso de {storeName}",
 
   "header.tagline": "Consulta Personalizada de Sueño",
-  "header.restart": "Reiniciar",
+  "header.restart": "↺ Reiniciar",
   "header.picks": "Favoritos",
 
   "footer.powered": "Desarrollado por <strong>DreamFinder</strong>",
@@ -27,5 +27,57 @@
 
   "profile.badge": "Tu ADN de Sueño, Decodificado",
   "profile.perfect_match": "Tu Combinación Perfecta",
-  "profile.edit_answers": "← Editar mis respuestas"
+  "profile.edit_answers": "← Editar mis respuestas",
+
+  "results.header": "Tus combinaciones perfectas están listas",
+  "results.specialist_cue": "<span style=\"color:var(--gold); font-weight:700;\">Pide a tu especialista de sueño</span> que te explique cada opción a continuación.",
+  "results.tier_gold": "Oro",
+  "results.tier_silver": "Plata",
+  "results.tier_bronze": "Bronce",
+  "results.tier_explainer": "<span style=\"color:#d4a84b; font-weight:700;\">Oro</span> · materiales premium &nbsp;·&nbsp; <span style=\"color:#c0c7ce; font-weight:700;\">Plata</span> · valor intermedio &nbsp;·&nbsp; <span style=\"color:#cd7f32; font-weight:700;\">Bronce</span> · nivel de entrada",
+  "results.tap_hint": "Toca cualquier tarjeta de colchón para explorar detalles y características",
+  "results.complete_setup": "Completa Tu Configuración — Almohadas, Protectores y Más →",
+  "results.discount_applies": "Tu <span id=\"bannerPct\" style=\"color:var(--gold); font-weight:700;\"></span> descuento aplica a todo",
+  "results.back_to_results": "← Volver a los resultados",
+
+  "drawer.why_matches": "Por qué te conviene",
+  "drawer.about": "Acerca de este colchón",
+  "drawer.interested": "⭐ Me Interesa Este",
+  "drawer.prev": "← Anterior",
+  "drawer.next": "Siguiente →",
+
+  "discount.title": "Tu Descuento Exclusivo",
+  "discount.calculating": "Calculando tus ahorros...",
+  "discount.code_label": "Tu Código de Descuento",
+  "discount.unlocked": "Descuento Desbloqueado",
+  "discount.off": "% DE DESC.",
+  "discount.show_specialist": "Muestra esta pantalla a tu especialista de sueño",
+
+  "handoff.summary_label": "Resumen para el Vendedor",
+  "handoff.title": "Selecciones del Cliente",
+  "handoff.subtitle": "Colchones que el cliente marcó como interesado",
+  "handoff.back_to_results": "← Volver a Resultados",
+  "handoff.send_results": "Enviar Resultados al Cliente →",
+
+  "email.title": "No olvides tus resultados",
+  "email.subtitle": "Recibe tu perfil de sueño, colchones recomendados y descuento directamente — para que puedas revisarlos en casa o compartirlos con tu pareja.",
+  "email.name_label": "Tu Nombre",
+  "email.name_placeholder": "Nombre",
+  "email.email_label": "Correo Electrónico <span style=\"color:var(--gold);\">*</span>",
+  "email.email_placeholder": "tu@correo.com",
+  "email.phone_label": "Teléfono <span style=\"font-weight:400; color:var(--cream-dim); font-size:0.6rem;\">(opcional)</span>",
+  "email.send_btn": "Enviar Mis Resultados",
+  "email.sent_title": "¡Todo listo!",
+  "email.sent_subtitle": "Revisa tu bandeja de entrada para tus resultados personalizados.",
+  "email.discount_label": "Tu Código de Descuento",
+  "email.discount_hint": "Muestra este código a tu especialista de sueño · <span style=\"color:var(--gold); font-weight:600;\" id=\"dreamCodePct\"></span> DE DESC.",
+  "email.start_new": "↺ Iniciar Nuevo Cliente",
+
+  "accessories.analysis_label": "Análisis de Perfil de Sueño",
+  "accessories.title": "Todo lo demás que necesitas para dormir mejor",
+  "accessories.subtitle": "Basado en tu perfil de sueño, nuestro algoritmo identificó estos accesorios para optimizar tu descanso.",
+  "accessories.analyzing": "Analizando tu perfil de sueño...",
+  "accessories.send_results": "Envíame Mis Resultados",
+  "accessories.start_over": "Empezar de Nuevo",
+  "accessories.tap_hint": "Toca una tarjeta para agregar o quitar"
 }
