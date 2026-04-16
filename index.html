@@ -3821,7 +3821,7 @@
   <script>
     // ===== DOMAIN LOCK =====
     (function() {
-      var allowed = ['localhost', '127.0.0.1'];
+      var allowed = ['beford782.github.io', 'localhost', '127.0.0.1'];
       var host = location.hostname;
       if (!allowed.some(function(d) { return host === d || host.endsWith('.' + d); })) {
         document.documentElement.innerHTML = '<body style="background:#0d1730;color:#d4a84b;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;text-align:center;"><div><div style="font-size:2rem;margin-bottom:1rem;">🌙</div><div style="font-size:1.1rem;font-weight:600;">DreamFinder</div><div style="font-size:0.8rem;margin-top:0.5rem;opacity:0.6;">Unauthorized domain</div></div></body>';
@@ -5363,7 +5363,7 @@
       // Email clients (Gmail etc.) can't resolve relative image paths, so
       // convert any relative URLs (e.g. "images/mattresses/caitlin.png")
       // into absolute URLs rooted at the GitHub Pages deployment.
-      const PUBLIC_ASSET_ROOT = '';  // TODO: Set to TFM's GitHub Pages URL (e.g. 'https://tfm-texarkana.github.io/DreamFinder/')
+      const PUBLIC_ASSET_ROOT = 'https://beford782.github.io/TheFurnitureMarket/';
       function toAbsoluteImageUrl(u) {
         if (!u) return '';
         if (/^https?:\/\//i.test(u) || u.startsWith('//')) return u;

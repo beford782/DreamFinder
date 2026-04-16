@@ -23,8 +23,8 @@ specific retailer. Each store gets its own fully customized deployment.
 ---
 
 ## This Repo — The Furniture Market of Texarkana (TFM) Deployment
-Deployed at: TBD (GitHub Pages URL pending repo setup)
-Repo: TBD (new repo for TFM)
+Deployed at: https://beford782.github.io/TheFurnitureMarket/
+Repo: https://github.com/beford782/TheFurnitureMarket
 
 This is The Furniture Market's instance. Everything in `data/` is TFM-specific.
 Do not treat any TFM-specific content (mattress models, branding, discount codes,
