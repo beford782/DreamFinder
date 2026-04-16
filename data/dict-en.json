@@ -17,5 +17,11 @@
   "header.restart": "Restart Quiz",
   "header.picks": "Picks",
 
-  "footer.powered": "Powered by <strong>DreamFinder</strong>"
+  "footer.powered": "Powered by <strong>DreamFinder</strong>",
+
+  "review.category": "Almost There",
+  "review.title": "Quick review",
+  "review.help": "Make sure everything looks right, then we'll build your match.",
+  "review.looks_good": "Looks Good →",
+  "nav.back": "← Back"
 }

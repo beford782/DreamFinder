@@ -17,5 +17,11 @@
   "header.restart": "Reiniciar",
   "header.picks": "Favoritos",
 
-  "footer.powered": "Desarrollado por <strong>DreamFinder</strong>"
+  "footer.powered": "Desarrollado por <strong>DreamFinder</strong>",
+
+  "review.category": "Casi Listo",
+  "review.title": "Revisión rápida",
+  "review.help": "Asegúrate de que todo esté bien, luego crearemos tu combinación.",
+  "review.looks_good": "Se Ve Bien →",
+  "nav.back": "← Atrás"
 }

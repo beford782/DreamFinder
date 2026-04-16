@@ -3520,13 +3520,13 @@
   <!-- SCREEN: Review Answers (before profile reveal) -->
   <div class="screen" id="reviewScreen">
     <div class="question-container" style="max-width:620px; margin:0 auto; padding:1.5rem 1rem 2rem;">
-      <div class="question-category" style="margin-bottom:0.4rem;">Almost There</div>
-      <div class="question-text" style="font-size:1.4rem; margin-bottom:0.4rem;">Quick review</div>
-      <div class="question-help" style="margin-bottom:1.25rem;">Make sure everything looks right, then we'll build your match.</div>
+      <div class="question-category" style="margin-bottom:0.4rem;" data-i18n="review.category">Almost There</div>
+      <div class="question-text" style="font-size:1.4rem; margin-bottom:0.4rem;" data-i18n="review.title">Quick review</div>
+      <div class="question-help" style="margin-bottom:1.25rem;" data-i18n="review.help">Make sure everything looks right, then we'll build your match.</div>
       <div id="reviewList"></div>
       <div class="question-nav" style="margin-top:1.5rem;">
-        <button class="nav-btn back" onclick="prevQuestion()" ontouchend="event.preventDefault();prevQuestion();">← Back</button>
-        <button class="nav-btn next" onclick="window.showProfileScreen()" ontouchend="event.preventDefault();window.showProfileScreen();">Looks Good →</button>
+        <button class="nav-btn back" onclick="prevQuestion()" ontouchend="event.preventDefault();prevQuestion();" data-i18n="nav.back">← Back</button>
+        <button class="nav-btn next" onclick="window.showProfileScreen()" ontouchend="event.preventDefault();window.showProfileScreen();" data-i18n="review.looks_good">Looks Good →</button>
       </div>
     </div>
   </div>
@@ -4008,132 +4008,132 @@
     // ----- QUESTIONS -----
     const QUESTIONS = [
       {
-        id: 'trigger', category: 'Getting Started', question: "What brought you in today?",
-        helpText: "Helps your sleep specialist tailor the visit", type: 'single',
+        id: 'trigger', category: {en: 'Getting Started', es: 'Para Empezar'}, question: {en: "What brought you in today?", es: "\u00bfQu\u00e9 te trae hoy?"},
+        helpText: {en: "Helps your sleep specialist tailor the visit", es: "Ayuda a tu especialista de sue\u00f1o a personalizar la visita"}, type: 'single',
         options: [
-          { id: 'pain', label: 'Back or Body Pain', icon: 'spine', sublabel: 'Current mattress is hurting me', scores: {} },
-          { id: 'worn_out', label: 'Old Mattress', icon: 'sagging', sublabel: 'Time for an upgrade', scores: {} },
-          { id: 'moving', label: 'Moving or New Space', icon: 'family', sublabel: 'New home, new bed', scores: {} },
-          { id: 'upgrade', label: 'Just Upgrading', icon: 'cloud', sublabel: 'Ready for something better', scores: {} },
-          { id: 'browsing', label: 'Just Looking', icon: 'smile', sublabel: 'Exploring options', scores: {} }
+          { id: 'pain', label: {en: 'Back or Body Pain', es: 'Dolor de Espalda o Cuerpo'}, icon: 'spine', sublabel: {en: 'Current mattress is hurting me', es: 'Mi colch\u00f3n actual me lastima'}, scores: {} },
+          { id: 'worn_out', label: {en: 'Old Mattress', es: 'Colch\u00f3n Viejo'}, icon: 'sagging', sublabel: {en: 'Time for an upgrade', es: 'Es hora de un cambio'}, scores: {} },
+          { id: 'moving', label: {en: 'Moving or New Space', es: 'Mudanza o Espacio Nuevo'}, icon: 'family', sublabel: {en: 'New home, new bed', es: 'Casa nueva, cama nueva'}, scores: {} },
+          { id: 'upgrade', label: {en: 'Just Upgrading', es: 'Mejorando'}, icon: 'cloud', sublabel: {en: 'Ready for something better', es: 'Listo para algo mejor'}, scores: {} },
+          { id: 'browsing', label: {en: 'Just Looking', es: 'Solo Mirando'}, icon: 'smile', sublabel: {en: 'Exploring options', es: 'Explorando opciones'}, scores: {} }
         ]
       },
       {
-        id: 'mattress_size', category: 'Getting Started', question: "What size mattress are you looking for?",
-        helpText: "We'll make sure recommendations fit your space", type: 'single',
+        id: 'mattress_size', category: {en: 'Getting Started', es: 'Para Empezar'}, question: {en: "What size mattress are you looking for?", es: "\u00bfQu\u00e9 tama\u00f1o de colch\u00f3n buscas?"},
+        helpText: {en: "We'll make sure recommendations fit your space", es: "Nos aseguraremos de que las recomendaciones se ajusten a tu espacio"}, type: 'single',
         options: [
-          { id: 'twin', label: 'Twin', icon: 'solo', sublabel: 'Kids or tight spaces', scores: {} },
-          { id: 'twin_xl', label: 'Twin XL', icon: 'solo', sublabel: 'Extra length, single sleeper', scores: {} },
-          { id: 'full', label: 'Full', icon: 'solo', sublabel: 'Solo or cozy pair', scores: {} },
-          { id: 'queen', label: 'Queen', icon: 'partner', sublabel: 'Most popular size', scores: {} },
-          { id: 'king', label: 'King', icon: 'family', sublabel: 'Maximum space', scores: {} },
-          { id: 'cal_king', label: 'Cal King', icon: 'family', sublabel: 'Extra length', scores: {} }
+          { id: 'twin', label: {en: 'Twin', es: 'Twin'}, icon: 'solo', sublabel: {en: 'Kids or tight spaces', es: 'Ni\u00f1os o espacios peque\u00f1os'}, scores: {} },
+          { id: 'twin_xl', label: {en: 'Twin XL', es: 'Twin XL'}, icon: 'solo', sublabel: {en: 'Extra length, single sleeper', es: 'Largo extra, una persona'}, scores: {} },
+          { id: 'full', label: {en: 'Full', es: 'Full'}, icon: 'solo', sublabel: {en: 'Solo or cozy pair', es: 'Solo o pareja c\u00f3moda'}, scores: {} },
+          { id: 'queen', label: {en: 'Queen', es: 'Queen'}, icon: 'partner', sublabel: {en: 'Most popular size', es: 'El tama\u00f1o m\u00e1s popular'}, scores: {} },
+          { id: 'king', label: {en: 'King', es: 'King'}, icon: 'family', sublabel: {en: 'Maximum space', es: 'Espacio m\u00e1ximo'}, scores: {} },
+          { id: 'cal_king', label: {en: 'Cal King', es: 'Cal King'}, icon: 'family', sublabel: {en: 'Extra length', es: 'Largo extra'}, scores: {} }
         ]
       },
       {
-        id: 'sleep_position', category: 'About You', question: "How do you usually sleep?",
-        helpText: "Think about where you naturally end up", type: 'single',
+        id: 'sleep_position', category: {en: 'About You', es: 'Sobre Ti'}, question: {en: "How do you usually sleep?", es: "\u00bfC\u00f3mo duermes normalmente?"},
+        helpText: {en: "Think about where you naturally end up", es: "Piensa en c\u00f3mo terminas naturalmente"}, type: 'single',
         options: [
-          { id: 'side', label: 'Side Sleeper', icon: 'side', sublabel: 'Curled up', scores: { plush: 2, pressureRelief: 2, soft: 1 } },
-          { id: 'back', label: 'Back Sleeper', icon: 'back', sublabel: 'Flat on back', scores: { support: 2, medium: 2, zoned: 1 } },
-          { id: 'stomach', label: 'Stomach Sleeper', icon: 'stomach', sublabel: 'Face down', scores: { firm: 2, support: 1 } },
-          { id: 'combo', label: 'Combination', icon: 'combo', sublabel: 'Move around', scores: { medium: 2, responsive: 2 } },
-          { id: 'no_idea', label: 'Not Sure', icon: 'question', sublabel: 'I wake up in weird positions', scores: { medium: 2, responsive: 2 } }
+          { id: 'side', label: {en: 'Side Sleeper', es: 'De Lado'}, icon: 'side', sublabel: {en: 'Curled up', es: 'Acurrucado'}, scores: { plush: 2, pressureRelief: 2, soft: 1 } },
+          { id: 'back', label: {en: 'Back Sleeper', es: 'Boca Arriba'}, icon: 'back', sublabel: {en: 'Flat on back', es: 'Acostado de espalda'}, scores: { support: 2, medium: 2, zoned: 1 } },
+          { id: 'stomach', label: {en: 'Stomach Sleeper', es: 'Boca Abajo'}, icon: 'stomach', sublabel: {en: 'Face down', es: 'Boca abajo'}, scores: { firm: 2, support: 1 } },
+          { id: 'combo', label: {en: 'Combination', es: 'Combinaci\u00f3n'}, icon: 'combo', sublabel: {en: 'Move around', es: 'Me muevo mucho'}, scores: { medium: 2, responsive: 2 } },
+          { id: 'no_idea', label: {en: 'Not Sure', es: 'No Estoy Seguro'}, icon: 'question', sublabel: {en: 'I wake up in weird positions', es: 'Me despierto en posiciones raras'}, scores: { medium: 2, responsive: 2 } }
         ]
       },
       {
-        id: 'body_type', category: 'About You', question: "What weight range should we match for?",
-        helpText: "This helps us pick the right support level", type: 'single',
+        id: 'body_type', category: {en: 'About You', es: 'Sobre Ti'}, question: {en: "What weight range should we match for?", es: "\u00bfPara qu\u00e9 rango de peso debemos buscar?"},
+        helpText: {en: "This helps us pick the right support level", es: "Esto nos ayuda a elegir el nivel de soporte correcto"}, type: 'single',
         options: [
-          { id: 'petite', label: 'Under 130 lbs', icon: 'cloud', sublabel: 'Light support', scores: { plush: 2, soft: 1 } },
-          { id: 'average', label: '130 to 200 lbs', icon: 'weight', sublabel: 'Standard support', scores: { medium: 2 } },
-          { id: 'athletic', label: '200 to 230 lbs', icon: 'support', sublabel: 'Medium-firm support', scores: { support: 2, medium: 1, responsive: 1 } },
-          { id: 'plus', label: 'Over 230 lbs', icon: 'support', sublabel: 'Maximum support', scores: { firm: 2, support: 3, hybrid: 2, durability: 2 } },
-          { id: 'different', label: 'Different Weights', icon: 'partner', sublabel: 'Mixed support needs', scores: { medium: 2, support: 1, motionIsolation: 2 }, hideIf: { question: 'partner_sleep', answer: 'solo' } }
+          { id: 'petite', label: {en: 'Under 130 lbs', es: 'Menos de 130 lbs'}, icon: 'cloud', sublabel: {en: 'Light support', es: 'Soporte ligero'}, scores: { plush: 2, soft: 1 } },
+          { id: 'average', label: {en: '130 to 200 lbs', es: '130 a 200 lbs'}, icon: 'weight', sublabel: {en: 'Standard support', es: 'Soporte est\u00e1ndar'}, scores: { medium: 2 } },
+          { id: 'athletic', label: {en: '200 to 230 lbs', es: '200 a 230 lbs'}, icon: 'support', sublabel: {en: 'Medium-firm support', es: 'Soporte medio-firme'}, scores: { support: 2, medium: 1, responsive: 1 } },
+          { id: 'plus', label: {en: 'Over 230 lbs', es: 'M\u00e1s de 230 lbs'}, icon: 'support', sublabel: {en: 'Maximum support', es: 'Soporte m\u00e1ximo'}, scores: { firm: 2, support: 3, hybrid: 2, durability: 2 } },
+          { id: 'different', label: {en: 'Different Weights', es: 'Pesos Diferentes'}, icon: 'partner', sublabel: {en: 'Mixed support needs', es: 'Necesidades mixtas de soporte'}, scores: { medium: 2, support: 1, motionIsolation: 2 }, hideIf: { question: 'partner_sleep', answer: 'solo' } }
         ]
       },
       {
-        id: 'partner_sleep', category: "Who's With You", question: "Who's sharing the bed with you?",
-        helpText: "This shapes which features matter most", type: 'single',
+        id: 'partner_sleep', category: {en: "Who's With You", es: "Qui\u00e9n Est\u00e1 Contigo"}, question: {en: "Who's sharing the bed with you?", es: "\u00bfQui\u00e9n comparte la cama contigo?"},
+        helpText: {en: "This shapes which features matter most", es: "Esto determina qu\u00e9 caracter\u00edsticas importan m\u00e1s"}, type: 'single',
         options: [
-          { id: 'solo', label: 'Solo Sleeper', icon: 'solo', sublabel: 'Just me', scores: {} },
-          { id: 'partner', label: 'With a Partner', icon: 'partner', sublabel: 'Sharing the bed', scores: { motionIsolation: 2 } },
-          { id: 'family', label: 'Family Bed', icon: 'family', sublabel: 'Kids, pets, or both', scores: { durability: 2, motionIsolation: 1 } }
+          { id: 'solo', label: {en: 'Solo Sleeper', es: 'Duermo Solo'}, icon: 'solo', sublabel: {en: 'Just me', es: 'Solo yo'}, scores: {} },
+          { id: 'partner', label: {en: 'With a Partner', es: 'Con Pareja'}, icon: 'partner', sublabel: {en: 'Sharing the bed', es: 'Compartimos la cama'}, scores: { motionIsolation: 2 } },
+          { id: 'family', label: {en: 'Family Bed', es: 'Cama Familiar'}, icon: 'family', sublabel: {en: 'Kids, pets, or both', es: 'Ni\u00f1os, mascotas, o ambos'}, scores: { durability: 2, motionIsolation: 1 } }
         ]
       },
       {
-        id: 'partner_disturbance', category: "Who's With You", question: "Does your partner's movement wake you up?",
-        helpText: "Motion isolation is one of the biggest upgrades in a new mattress", type: 'single',
+        id: 'partner_disturbance', category: {en: "Who's With You", es: "Qui\u00e9n Est\u00e1 Contigo"}, question: {en: "Does your partner's movement wake you up?", es: "\u00bfEl movimiento de tu pareja te despierta?"},
+        helpText: {en: "Motion isolation is one of the biggest upgrades in a new mattress", es: "El aislamiento de movimiento es una de las mayores mejoras en un colch\u00f3n nuevo"}, type: 'single',
         skipIf: { question: 'partner_sleep', answer: 'solo' },
         options: [
-          { id: 'yes_often', label: 'Yes, Often', icon: 'motion', sublabel: 'Every movement wakes me', scores: { motionIsolation: 4, hybrid: 3, memory: 2 } },
-          { id: 'sometimes', label: 'Sometimes', icon: 'combo', sublabel: 'Bigger movements bother me', scores: { motionIsolation: 3, hybrid: 2 } },
-          { id: 'rarely', label: 'Rarely', icon: 'check', sublabel: 'Light sleeper but mostly fine', scores: { motionIsolation: 1 } },
-          { id: 'not_applicable', label: "Doesn't Apply", icon: 'solo', sublabel: 'I sleep alone', scores: {} }
+          { id: 'yes_often', label: {en: 'Yes, Often', es: 'S\u00ed, Seguido'}, icon: 'motion', sublabel: {en: 'Every movement wakes me', es: 'Cada movimiento me despierta'}, scores: { motionIsolation: 4, hybrid: 3, memory: 2 } },
+          { id: 'sometimes', label: {en: 'Sometimes', es: 'A Veces'}, icon: 'combo', sublabel: {en: 'Bigger movements bother me', es: 'Los movimientos grandes me molestan'}, scores: { motionIsolation: 3, hybrid: 2 } },
+          { id: 'rarely', label: {en: 'Rarely', es: 'Rara Vez'}, icon: 'check', sublabel: {en: 'Light sleeper but mostly fine', es: 'Sue\u00f1o ligero pero generalmente bien'}, scores: { motionIsolation: 1 } },
+          { id: 'not_applicable', label: {en: "Doesn't Apply", es: "No Aplica"}, icon: 'solo', sublabel: {en: 'I sleep alone', es: 'Duermo solo'}, scores: {} }
         ]
       },
       {
-        id: 'temperature', category: 'What You Like', question: "How do you sleep temperature-wise?",
-        helpText: "Temperature regulation is key to deep sleep", type: 'single',
+        id: 'temperature', category: {en: 'What You Like', es: 'Lo Que Te Gusta'}, question: {en: "How do you sleep temperature-wise?", es: "\u00bfC\u00f3mo duermes en cuanto a temperatura?"},
+        helpText: {en: "Temperature regulation is key to deep sleep", es: "La regulaci\u00f3n de temperatura es clave para un sue\u00f1o profundo"}, type: 'single',
         options: [
-          { id: 'hot', label: 'I Sleep Hot', icon: 'flame', sublabel: 'Night sweats, kick off covers', scores: { cooling: 3, hybrid: 2 } },
-          { id: 'comfortable', label: "I'm Comfortable", icon: 'smile', sublabel: 'No temperature issues', scores: {} },
-          { id: 'cold', label: 'I Sleep Cold', icon: 'snowflake', sublabel: 'Need blankets to warm up', scores: { memory: 1, plush: 1 } },
-          { id: 'opposite', label: "We're Opposite", icon: 'hotcold', sublabel: 'One hot, one cold', scores: { cooling: 2, hybrid: 1 }, hideIf: { question: 'partner_sleep', answer: 'solo' } }
+          { id: 'hot', label: {en: 'I Sleep Hot', es: 'Duermo con Calor'}, icon: 'flame', sublabel: {en: 'Night sweats, kick off covers', es: 'Sudores nocturnos, quito las cobijas'}, scores: { cooling: 3, hybrid: 2 } },
+          { id: 'comfortable', label: {en: "I'm Comfortable", es: "Estoy C\u00f3modo"}, icon: 'smile', sublabel: {en: 'No temperature issues', es: 'Sin problemas de temperatura'}, scores: {} },
+          { id: 'cold', label: {en: 'I Sleep Cold', es: 'Duermo con Fr\u00edo'}, icon: 'snowflake', sublabel: {en: 'Need blankets to warm up', es: 'Necesito cobijas para calentarme'}, scores: { memory: 1, plush: 1 } },
+          { id: 'opposite', label: {en: "We're Opposite", es: "Somos Opuestos"}, icon: 'hotcold', sublabel: {en: 'One hot, one cold', es: 'Uno con calor, otro con fr\u00edo'}, scores: { cooling: 2, hybrid: 1 }, hideIf: { question: 'partner_sleep', answer: 'solo' } }
         ]
       },
       {
-        id: 'firmness', category: 'What You Like', question: "What firmness level do you prefer?",
-        helpText: "Slide to your ideal comfort", type: 'slider',
+        id: 'firmness', category: {en: 'What You Like', es: 'Lo Que Te Gusta'}, question: {en: "What firmness level do you prefer?", es: "\u00bfQu\u00e9 nivel de firmeza prefieres?"},
+        helpText: {en: "Slide to your ideal comfort", es: "Desliza a tu comodidad ideal"}, type: 'slider',
         min: 1, max: 10, defaultValue: 5,
-        labels: ['Soft — Sink right in', 'Medium', 'Firm — Solid support']
+        labels: [{en: 'Soft \u2014 Sink right in', es: 'Suave \u2014 Hundirse'}, {en: 'Medium', es: 'Medio'}, {en: 'Firm \u2014 Solid support', es: 'Firme \u2014 Soporte s\u00f3lido'}]
       },
       {
-        id: 'current_mattress_age', category: "What You're Solving", question: "How old is your current mattress?",
-        helpText: "Most mattresses last 7–10 years", type: 'single',
+        id: 'current_mattress_age', category: {en: "What You're Solving", es: "Lo Que Buscas Resolver"}, question: {en: "How old is your current mattress?", es: "\u00bfCu\u00e1ntos a\u00f1os tiene tu colch\u00f3n actual?"},
+        helpText: {en: "Most mattresses last 7\u201310 years", es: "La mayor\u00eda de los colchones duran 7\u201310 a\u00f1os"}, type: 'single',
         options: [
-          { id: 'under_2', label: 'Less Than 2 Years', icon: 'check', sublabel: 'Pretty new', scores: {} },
-          { id: 'three_seven', label: '3 to 7 Years', icon: 'combo', sublabel: 'Middle of its life', scores: {} },
-          { id: 'eight_fifteen', label: '8 to 15 Years', icon: 'aging', sublabel: 'Past its prime', scores: {} },
-          { id: 'fifteen_plus', label: 'Over 15 Years', icon: 'sagging', sublabel: 'Long overdue', scores: {} },
-          { id: 'not_sure', label: 'Not Sure', icon: 'question', sublabel: "Can't remember", scores: {} }
+          { id: 'under_2', label: {en: 'Less Than 2 Years', es: 'Menos de 2 A\u00f1os'}, icon: 'check', sublabel: {en: 'Pretty new', es: 'Bastante nuevo'}, scores: {} },
+          { id: 'three_seven', label: {en: '3 to 7 Years', es: '3 a 7 A\u00f1os'}, icon: 'combo', sublabel: {en: 'Middle of its life', es: 'A mitad de su vida'}, scores: {} },
+          { id: 'eight_fifteen', label: {en: '8 to 15 Years', es: '8 a 15 A\u00f1os'}, icon: 'aging', sublabel: {en: 'Past its prime', es: 'Ya pas\u00f3 su mejor momento'}, scores: {} },
+          { id: 'fifteen_plus', label: {en: 'Over 15 Years', es: 'M\u00e1s de 15 A\u00f1os'}, icon: 'sagging', sublabel: {en: 'Long overdue', es: 'Ya era hora'}, scores: {} },
+          { id: 'not_sure', label: {en: 'Not Sure', es: 'No Estoy Seguro'}, icon: 'question', sublabel: {en: "Can't remember", es: "No recuerdo"}, scores: {} }
         ]
       },
       {
-        id: 'sleep_quality', category: "What You're Solving", question: "How well do you sleep right now?",
-        helpText: "Honest answer — we can help either way", type: 'single',
+        id: 'sleep_quality', category: {en: "What You're Solving", es: "Lo Que Buscas Resolver"}, question: {en: "How well do you sleep right now?", es: "\u00bfQu\u00e9 tan bien duermes actualmente?"},
+        helpText: {en: "Honest answer \u2014 we can help either way", es: "S\u00e9 honesto \u2014 podemos ayudarte de cualquier manera"}, type: 'single',
         options: [
-          { id: 'poor', label: 'Poorly', icon: 'stiff', sublabel: 'Restless, waking often', scores: {} },
-          { id: 'fair', label: 'Not Great', icon: 'combo', sublabel: 'Could be a lot better', scores: {} },
-          { id: 'okay', label: 'Okay', icon: 'smile', sublabel: 'Mostly fine', scores: {} },
-          { id: 'well', label: 'Pretty Well', icon: 'check', sublabel: 'Usually rested', scores: {} }
+          { id: 'poor', label: {en: 'Poorly', es: 'Mal'}, icon: 'stiff', sublabel: {en: 'Restless, waking often', es: 'Inquieto, despertando seguido'}, scores: {} },
+          { id: 'fair', label: {en: 'Not Great', es: 'No Muy Bien'}, icon: 'combo', sublabel: {en: 'Could be a lot better', es: 'Podr\u00eda ser mucho mejor'}, scores: {} },
+          { id: 'okay', label: {en: 'Okay', es: 'M\u00e1s o Menos'}, icon: 'smile', sublabel: {en: 'Mostly fine', es: 'Generalmente bien'}, scores: {} },
+          { id: 'well', label: {en: 'Pretty Well', es: 'Bastante Bien'}, icon: 'check', sublabel: {en: 'Usually rested', es: 'Generalmente descansado'}, scores: {} }
         ]
       },
       {
-        id: 'sleep_issues', category: "What You're Solving", question: "Any issues with your current mattress?",
-        helpText: "Pick your top 3", type: 'multiple',
+        id: 'sleep_issues', category: {en: "What You're Solving", es: "Lo Que Buscas Resolver"}, question: {en: "Any issues with your current mattress?", es: "\u00bfAlg\u00fan problema con tu colch\u00f3n actual?"},
+        helpText: {en: "Pick your top 3", es: "Elige los 3 principales"}, type: 'multiple',
         options: [
-          { id: 'back_pain', label: 'Back Pain', icon: 'spine', sublabel: 'Lower or upper back', scores: { support: 3, zoned: 2, firm: 1 } },
-          { id: 'hip_pain', label: 'Hip or Shoulder Pain', icon: 'pressure', sublabel: 'Pressure points', scores: { pressureRelief: 3, plush: 2 } },
-          { id: 'hot', label: 'Sleeping Too Hot', icon: 'flame', sublabel: 'Night sweats, overheating', scores: { cooling: 3, hybrid: 2 } },
-          { id: 'tossing', label: 'Tossing & Turning', icon: 'combo', sublabel: "Can't get comfortable", scores: { comfort: 2, medium: 1 } },
-          { id: 'stiff', label: 'Waking Up Stiff or Sore', icon: 'stiff', sublabel: 'Morning aches', scores: { pressureRelief: 2, comfort: 2 } },
-          { id: 'sagging', label: 'Mattress Sagging', icon: 'sagging', sublabel: 'Dips or indentations', scores: { durability: 2, quality: 2 } },
-          { id: 'too_soft', label: 'Mattress Too Soft', icon: 'couch', sublabel: 'Sinking in too much', scores: { firm: 3, support: 2 } },
-          { id: 'none', label: 'No Major Issues', icon: 'check', sublabel: 'Just time for an upgrade', scores: { comfort: 1, quality: 1, durable: 1 } }
+          { id: 'back_pain', label: {en: 'Back Pain', es: 'Dolor de Espalda'}, icon: 'spine', sublabel: {en: 'Lower or upper back', es: 'Espalda baja o alta'}, scores: { support: 3, zoned: 2, firm: 1 } },
+          { id: 'hip_pain', label: {en: 'Hip or Shoulder Pain', es: 'Dolor de Cadera u Hombro'}, icon: 'pressure', sublabel: {en: 'Pressure points', es: 'Puntos de presi\u00f3n'}, scores: { pressureRelief: 3, plush: 2 } },
+          { id: 'hot', label: {en: 'Sleeping Too Hot', es: 'Mucho Calor al Dormir'}, icon: 'flame', sublabel: {en: 'Night sweats, overheating', es: 'Sudores nocturnos, sobrecalentamiento'}, scores: { cooling: 3, hybrid: 2 } },
+          { id: 'tossing', label: {en: 'Tossing & Turning', es: 'Dando Vueltas'}, icon: 'combo', sublabel: {en: "Can't get comfortable", es: "No encuentro comodidad"}, scores: { comfort: 2, medium: 1 } },
+          { id: 'stiff', label: {en: 'Waking Up Stiff or Sore', es: 'Despertar R\u00edgido o Adolorido'}, icon: 'stiff', sublabel: {en: 'Morning aches', es: 'Dolores matutinos'}, scores: { pressureRelief: 2, comfort: 2 } },
+          { id: 'sagging', label: {en: 'Mattress Sagging', es: 'Colch\u00f3n Hundido'}, icon: 'sagging', sublabel: {en: 'Dips or indentations', es: 'Hundimientos'}, scores: { durability: 2, quality: 2 } },
+          { id: 'too_soft', label: {en: 'Mattress Too Soft', es: 'Colch\u00f3n Muy Suave'}, icon: 'couch', sublabel: {en: 'Sinking in too much', es: 'Me hundo demasiado'}, scores: { firm: 3, support: 2 } },
+          { id: 'none', label: {en: 'No Major Issues', es: 'Sin Problemas Grandes'}, icon: 'check', sublabel: {en: 'Just time for an upgrade', es: 'Solo es hora de un cambio'}, scores: { comfort: 1, quality: 1, durable: 1 } }
         ]
       },
       {
-        id: 'health_conditions', category: "What You're Solving", question: "Anything else going on that affects your sleep?",
-        helpText: "Pick your top 3", type: 'multiple',
+        id: 'health_conditions', category: {en: "What You're Solving", es: "Lo Que Buscas Resolver"}, question: {en: "Anything else going on that affects your sleep?", es: "\u00bfAlgo m\u00e1s que afecte tu sue\u00f1o?"},
+        helpText: {en: "Pick your top 3", es: "Elige los 3 principales"}, type: 'multiple',
         options: [
-          { id: 'nerve_pain', label: 'Nerve Pain or Tingling', icon: 'lightning', sublabel: 'Shooting pain, numbness', scores: { support: 3, firm: 2, zoned: 2 } },
-          { id: 'allergies', label: 'Allergies', icon: 'sneeze', sublabel: 'Dust, sneezing, stuffy', scores: { hypoallergenic: 3 } },
-          { id: 'snoring', label: 'Snoring or Sleep Apnea', icon: 'snore', sublabel: 'You or your partner', scores: { adjustable: 3 } },
-          { id: 'reflux', label: 'Acid Reflux / Heartburn', icon: 'flame', sublabel: 'Burns when lying down', scores: { adjustable: 3 } },
-          { id: 'extra_support', label: 'Need Extra Support', icon: 'weight', sublabel: 'Larger build or heavier weight', scores: { support: 3, firm: 2, durable: 3 } },
-          { id: 'getting_older', label: 'Changing Needs', icon: 'aging', sublabel: 'Looking for gentler support', scores: { support: 2, comfort: 2, pressureRelief: 1 } },
-          { id: 'none', label: 'None of These', icon: 'check', sublabel: "I'm good", scores: {} }
+          { id: 'nerve_pain', label: {en: 'Nerve Pain or Tingling', es: 'Dolor Nervioso u Hormigueo'}, icon: 'lightning', sublabel: {en: 'Shooting pain, numbness', es: 'Dolor punzante, entumecimiento'}, scores: { support: 3, firm: 2, zoned: 2 } },
+          { id: 'allergies', label: {en: 'Allergies', es: 'Alergias'}, icon: 'sneeze', sublabel: {en: 'Dust, sneezing, stuffy', es: 'Polvo, estornudos, congesti\u00f3n'}, scores: { hypoallergenic: 3 } },
+          { id: 'snoring', label: {en: 'Snoring or Sleep Apnea', es: 'Ronquidos o Apnea del Sue\u00f1o'}, icon: 'snore', sublabel: {en: 'You or your partner', es: 'T\u00fa o tu pareja'}, scores: { adjustable: 3 } },
+          { id: 'reflux', label: {en: 'Acid Reflux / Heartburn', es: 'Reflujo \u00c1cido / Acidez'}, icon: 'flame', sublabel: {en: 'Burns when lying down', es: 'Arde al acostarse'}, scores: { adjustable: 3 } },
+          { id: 'extra_support', label: {en: 'Need Extra Support', es: 'Necesito Soporte Extra'}, icon: 'weight', sublabel: {en: 'Larger build or heavier weight', es: 'Complexi\u00f3n grande o peso mayor'}, scores: { support: 3, firm: 2, durable: 3 } },
+          { id: 'getting_older', label: {en: 'Changing Needs', es: 'Necesidades Cambiantes'}, icon: 'aging', sublabel: {en: 'Looking for gentler support', es: 'Buscando soporte m\u00e1s suave'}, scores: { support: 2, comfort: 2, pressureRelief: 1 } },
+          { id: 'none', label: {en: 'None of These', es: 'Ninguno de Estos'}, icon: 'check', sublabel: {en: "I'm good", es: "Estoy bien"}, scores: {} }
         ]
       }
     ];
@@ -4289,11 +4289,11 @@
 
     // ----- RENDER QUESTION -----
     function getProgressPhrase(idx, total) {
-      if (idx === 0) return "Let's get started";
-      if (idx === total - 1) return "Last one!";
-      if (idx >= total - 2) return "Almost done!";
-      if (idx >= Math.floor(total / 2)) return "You're halfway there";
-      return "Great, keep going";
+      if (idx === 0) return currentLang === 'es' ? 'Comencemos' : "Let's get started";
+      if (idx === total - 1) return currentLang === 'es' ? '¡La última!' : "Last one!";
+      if (idx >= total - 2) return currentLang === 'es' ? '¡Casi listo!' : "Almost done!";
+      if (idx >= Math.floor(total / 2)) return currentLang === 'es' ? 'Ya vas a la mitad' : "You're halfway there";
+      return currentLang === 'es' ? 'Muy bien, sigue así' : "Great, keep going";
     }
 
     // Compute the list of questions visible given current answers (skip logic).
@@ -4324,22 +4324,24 @@
 
       if (q.type === 'slider') {
         const val = answers[q.id] !== undefined ? answers[q.id] : q.defaultValue;
+        const backLabel = currentLang === 'es' ? '← Atrás' : '← Back';
+        const nextLabel = currentLang === 'es' ? 'Siguiente →' : 'Next →';
         container.innerHTML = `
-          <div class="question-category">${q.category}</div>
+          <div class="question-category">${L(q.category)}</div>
           <div class="question-number">${getProgressPhrase(stepIdx, total)}</div>
-          <div class="question-text">${q.question}</div>
-          <div class="question-help">${q.helpText}</div>
+          <div class="question-text">${L(q.question)}</div>
+          <div class="question-help">${L(q.helpText)}</div>
           <div class="slider-container">
             <div class="slider-value" id="sliderVal">${val}</div>
             <div class="slider-value-label" id="sliderLabel">${getFirmnessLabel(val)}</div>
             <input type="range" class="firmness-slider" id="firmnessSlider" min="${q.min}" max="${q.max}" value="${val}">
             <div class="slider-labels">
-              ${q.labels.map(l => `<span>${l}</span>`).join('')}
+              ${q.labels.map(l => `<span>${L(l)}</span>`).join('')}
             </div>
           </div>
           <div class="question-nav">
-            ${currentQuestion > 0 ? '<button class="nav-btn back" onclick="prevQuestion()">← Back</button>' : ''}
-            <button class="nav-btn next" onclick="nextQuestion()">Next →</button>
+            ${currentQuestion > 0 ? '<button class="nav-btn back" onclick="prevQuestion()">' + backLabel + '</button>' : ''}
+            <button class="nav-btn next" onclick="nextQuestion()">${nextLabel}</button>
           </div>
         `;
         const slider = document.getElementById('firmnessSlider');
@@ -4355,25 +4357,30 @@
         const selected = isMulti ? (answers[q.id] || []) : answers[q.id];
         const colClass = displayOptions.length <= 3 ? 'single-col' : (displayOptions.length > 8 ? 'compact' : '');
 
+        const backLabel = currentLang === 'es' ? '← Atrás' : '← Back';
+        const nextLabel = currentQuestion === total - 1
+          ? (currentLang === 'es' ? 'Ver Mis Resultados →' : 'See My Results →')
+          : (currentLang === 'es' ? 'Siguiente →' : 'Next →');
+        const multiNote = currentLang === 'es' ? 'Elige los 3 principales' : 'Pick your top 3';
         container.innerHTML = `
-          <div class="question-category">${q.category}</div>
+          <div class="question-category">${L(q.category)}</div>
           <div class="question-number">${getProgressPhrase(stepIdx, total)}</div>
-          <div class="question-text">${q.question}</div>
-          <div class="question-help">${q.helpText}</div>
-          ${isMulti ? '<div class="multi-note" id="multiNote">Pick your top 3</div>' : ''}
+          <div class="question-text">${L(q.question)}</div>
+          <div class="question-help">${L(q.helpText)}</div>
+          ${isMulti ? '<div class="multi-note" id="multiNote">' + multiNote + '</div>' : ''}
           <div class="options-grid ${colClass}">
             ${displayOptions.map(opt => `
               <button class="option-btn ${isMulti ? (selected.includes(opt.id) ? 'selected' : '') : (selected === opt.id ? 'selected' : '')}"
                 onclick="selectOption('${q.id}', '${opt.id}', ${isMulti})">
                 <span class="opt-icon">${opt.icon ? icon(opt.icon, 28) : ''}</span>
-                <span class="opt-label">${opt.label}</span>
-                ${opt.sublabel && displayOptions.length <= 6 ? `<span class="opt-sub">${opt.sublabel}</span>` : ''}
+                <span class="opt-label">${L(opt.label)}</span>
+                ${opt.sublabel && displayOptions.length <= 6 ? `<span class="opt-sub">${L(opt.sublabel)}</span>` : ''}
               </button>
             `).join('')}
           </div>
           <div class="question-nav">
-            ${currentQuestion > 0 ? '<button class="nav-btn back" onclick="prevQuestion()">← Back</button>' : ''}
-            <button class="nav-btn next" id="nextBtn" onclick="nextQuestion()" ${!isMulti && !selected ? 'disabled' : ''}>${currentQuestion === total - 1 ? 'See My Results →' : 'Next →'}</button>
+            ${currentQuestion > 0 ? '<button class="nav-btn back" onclick="prevQuestion()">' + backLabel + '</button>' : ''}
+            <button class="nav-btn next" id="nextBtn" onclick="nextQuestion()" ${!isMulti && !selected ? 'disabled' : ''}>${nextLabel}</button>
           </div>
         `;
       }
@@ -4392,6 +4399,13 @@
     }
 
     function getFirmnessLabel(val) {
+      if (currentLang === 'es') {
+        if (val <= 2) return 'Muy Suave';
+        if (val <= 4) return 'Suave a Medio';
+        if (val <= 6) return 'Medio';
+        if (val <= 8) return 'Medio Firme a Firme';
+        return 'Extra Firme';
+      }
       if (val <= 2) return 'Very Soft';
       if (val <= 4) return 'Soft to Medium';
       if (val <= 6) return 'Medium';
@@ -4495,25 +4509,26 @@
         if (!v || !v.length) return '—';
         return v.map(function(id) {
           var o = q.options.find(function(x) { return x.id === id; });
-          return o ? o.label : id;
+          return o ? L(o.label) : id;
         }).join(', ');
       }
       var opt = q.options && q.options.find(function(x) { return x.id === v; });
-      return opt ? opt.label : '—';
+      return opt ? L(opt.label) : '—';
     }
 
     window.renderReview = function() {
       const list = document.getElementById('reviewList');
+      const editLabel = currentLang === 'es' ? 'Editar' : 'Edit';
       const items = visibleQuestions().map(function(q) {
         const val = formatAnswer(q, answers[q.id]);
         const idx = QUESTIONS.indexOf(q);
         return '<div class="review-row" style="display:flex; justify-content:space-between; align-items:center; gap:0.75rem; padding:0.75rem 0; border-bottom:1px solid rgba(255,255,255,0.08);">'
           + '<div style="flex:1; min-width:0;">'
-          +   '<div style="font-size:0.65rem; color:var(--gold); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:0.15rem;">' + q.category + '</div>'
-          +   '<div style="font-size:0.9rem; color:var(--cream); font-weight:500;">' + q.question + '</div>'
+          +   '<div style="font-size:0.65rem; color:var(--gold); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:0.15rem;">' + L(q.category) + '</div>'
+          +   '<div style="font-size:0.9rem; color:var(--cream); font-weight:500;">' + L(q.question) + '</div>'
           +   '<div style="font-size:0.85rem; color:var(--cream-dim); margin-top:0.2rem;">' + val + '</div>'
           + '</div>'
-          + '<button class="js-review-edit" data-idx="' + idx + '" onclick="window.editAnswer(' + idx + ')" ontouchend="event.preventDefault();window.editAnswer(' + idx + ');" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:var(--cream); font-size:0.72rem; font-family:inherit; font-weight:600; padding:0.4rem 0.85rem; border-radius:8px; touch-action:manipulation; cursor:pointer;">Edit</button>'
+          + '<button class="js-review-edit" data-idx="' + idx + '" onclick="window.editAnswer(' + idx + ')" ontouchend="event.preventDefault();window.editAnswer(' + idx + ');" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:var(--cream); font-size:0.72rem; font-family:inherit; font-weight:600; padding:0.4rem 0.85rem; border-radius:8px; touch-action:manipulation; cursor:pointer;">' + editLabel + '</button>'
           + '</div>';
       }).join('');
       list.innerHTML = items;
