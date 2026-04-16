@@ -3884,6 +3884,11 @@
       return (obj && obj.en) || '';
     }
 
+    // Language-aware mattress field accessor
+    function mField(m, field) {
+      return currentLang === 'es' ? (m[field + '_es'] || m[field]) : m[field];
+    }
+
     // Load a dictionary file
     async function loadDictionary(lang) {
       try {
@@ -6519,7 +6524,7 @@
       document.getElementById('drawerBrand').textContent = m.brand + (m.subBrand ? ' - ' + m.subBrand : '');
       var priceSym = priceTierSymbol(d.tier || '');
       document.getElementById('drawerName').innerHTML = m.name + (priceSym ? ' <span class="price-tier">' + priceSym + '</span>' : '');
-      document.getElementById('drawerSub').textContent = (m.tags||[]).join(' - ');
+      document.getElementById('drawerSub').textContent = (mField(m, 'tags')||[]).join(' - ');
       document.getElementById('drawerMatch').textContent = d.pct + '% ' + (currentLang === 'es' ? 'Compatibilidad' : 'Match');
 
       var _drawerNeedBadge = currentLang === 'es' ? 'TU NECESIDAD' : 'YOUR NEED';
@@ -6534,13 +6539,13 @@
           '</div>';
       }).join('');
 
-      var r = m.reasons || {};
-      document.getElementById('drawerReason').textContent = r['default'] || r.cooling || r.pressureRelief || r.support || 'A great match for your sleep profile.';
+      var r = currentLang === 'es' && m.reasons_es ? m.reasons_es : (m.reasons || {});
+      document.getElementById('drawerReason').textContent = r['default'] || r.cooling || r.pressureRelief || r.support || (currentLang === 'es' ? 'Una gran opción para tu perfil de sueño.' : 'A great match for your sleep profile.');
       document.getElementById('drawerFirmLabel').textContent = (currentLang === 'es' ? 'Firmeza ' : 'Firmness ') + m.firmness + '/10';
       document.getElementById('drawerFirmFeel').textContent = d.firmFeel;
       document.getElementById('drawerFirmFill').style.width = '0%';
       setTimeout(function(){document.getElementById('drawerFirmFill').style.width=(m.firmness*10)+'%';},100);
-      document.getElementById('drawerTags').innerHTML = (m.tags||[]).map(function(t){return '<span class="drawer-tag">'+t+'</span>';}).join('');
+      document.getElementById('drawerTags').innerHTML = (mField(m, 'tags')||[]).map(function(t){return '<span class="drawer-tag">'+t+'</span>';}).join('');
       document.getElementById('drawerScroll').scrollTop = 0;
       document.getElementById('drawerBackdrop').classList.add('open');
       drawer.classList.add('drawer-open');

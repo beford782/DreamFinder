@@ -3,6 +3,7 @@
 
 $csvPath = "data\mattresses.csv"
 $jsonPath = "data\mattresses.json"
+$esCsvPath = "data\mattresses-es.csv"
 
 if (-not (Test-Path $csvPath)) {
     Write-Error "CSV not found at $csvPath"
@@ -10,6 +11,18 @@ if (-not (Test-Path $csvPath)) {
 }
 
 $rows = Import-Csv -Path $csvPath
+
+# Load Spanish translation CSV if it exists
+$esLookup = @{}
+if (Test-Path $esCsvPath) {
+    $esRows = Import-Csv -Path $esCsvPath
+    foreach ($esRow in $esRows) {
+        $esLookup[$esRow.id.Trim()] = $esRow
+    }
+    Write-Host "Loaded $($esLookup.Count) Spanish translations from $esCsvPath"
+} else {
+    Write-Host "No Spanish CSV found at $esCsvPath - skipping Spanish fields"
+}
 
 $result = @{ gold = @(); silver = @(); bronze = @() }
 
@@ -94,6 +107,33 @@ foreach ($row in $rows) {
         }
     }
 
+    # Build Spanish fields if translation exists
+    $tags_es = @()
+    $highlight_es = ""
+    $reasons_es = @{}
+    $mattressId = $row.id.Trim()
+    if ($esLookup.ContainsKey($mattressId)) {
+        $esRow = $esLookup[$mattressId]
+
+        # Spanish display badges -> tags_es
+        if ($esRow.displayBadges -and $esRow.displayBadges.Trim()) {
+            $tags_es = $esRow.displayBadges.Split('|') | ForEach-Object { $_.Trim() }
+        }
+
+        # Spanish highlight
+        if ($esRow.highlight -and $esRow.highlight.Trim()) {
+            $highlight_es = $esRow.highlight.Trim()
+        }
+
+        # Spanish reasons
+        foreach ($rk in $reasonKeys) {
+            $esVal = $esRow.($rk.csv)
+            if ($esVal -and $esVal.Trim()) {
+                $reasons_es[$rk.json] = $esVal.Trim()
+            }
+        }
+    }
+
     $mattress = [ordered]@{
         id            = $row.id.Trim()
         name          = $row.name.Trim()
@@ -105,8 +145,11 @@ foreach ($row in $rows) {
         features      = $features
         tags          = $tags
         highlight     = $highlight
+        tags_es       = $tags_es
+        highlight_es  = $highlight_es
         imageUrl      = $imageUrl
         reasons       = $reasons
+        reasons_es    = $reasons_es
     }
 
     $result[$tier] += $mattress
