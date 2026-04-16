@@ -17,7 +17,7 @@ function doPost(e) {
 
     // --- Send email with fallback ---
     var toEmail = data.email;
-    var subject = 'Your DreamFinder Results from Bel Furniture';
+    var subject = 'Your DreamFinder Results from The Furniture Market';
     var firstName = (data.name || 'there').split(' ')[0];
 
     try {
@@ -26,7 +26,7 @@ function doPost(e) {
 
       GmailApp.sendEmail(toEmail, subject, 'Please view in an HTML email client.', {
         htmlBody: htmlBody,
-        name: 'Bel Furniture Sleep Team'
+        name: 'The Furniture Market Sleep Team'
       });
 
     } catch (emailErr) {
@@ -36,11 +36,11 @@ function doPost(e) {
         + 'Sleep profile: ' + (data.sleepProfile || '') + '\n'
         + 'Your discount: ' + (data.discount || 5) + '% OFF\n'
         + 'Discount code: ' + (data.dreamCode || '') + '\n\n'
-        + 'Show this email at Bel Furniture to redeem.\n\n'
+        + 'Show this email at The Furniture Market to redeem.\n\n'
         + (data.allMatches || []).map(function(m, i) { return (i+1) + '. ' + m.name + ' - ' + m.matchPct + '% match'; }).join('\n');
 
       GmailApp.sendEmail(toEmail, subject, plainBody, {
-        name: 'Bel Furniture Sleep Team'
+        name: 'The Furniture Market Sleep Team'
       });
     }
 
@@ -97,7 +97,7 @@ function buildSimpleHtml(data, firstName) {
     + '<table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f4;padding:20px 0;"><tr><td align="center">'
     + '<table width="600" cellpadding="0" cellspacing="0" style="background:#0d1730;border-radius:12px;overflow:hidden;max-width:600px;">'
     + '<tr><td style="background:#1a2744;padding:28px 28px 20px;text-align:center;border-bottom:2px solid #c9a84c;">'
-    + '<div style="font-size:10px;letter-spacing:3px;color:#c9a84c;text-transform:uppercase;margin-bottom:6px;">Bel Furniture x DreamFinder</div>'
+    + '<div style="font-size:10px;letter-spacing:3px;color:#c9a84c;text-transform:uppercase;margin-bottom:6px;">The Furniture Market x DreamFinder</div>'
     + '<div style="font-size:22px;font-weight:700;color:#ffffff;margin-bottom:4px;">Your Perfect Matches, ' + firstName + '</div>'
     + '<div style="font-size:12px;color:#a0b0c8;">Based on your personalized sleep profile</div>'
     + '</td></tr>'
@@ -116,7 +116,7 @@ function buildSimpleHtml(data, firstName) {
     + '</td></tr>'
     + accSection
     + '<tr><td style="padding:18px 28px 24px;text-align:center;border-top:1px solid #1e3050;">'
-    + '<div style="font-size:12px;color:#a0b0c8;margin-bottom:3px;">Bring this email to your Bel Furniture store</div>'
+    + '<div style="font-size:12px;color:#a0b0c8;margin-bottom:3px;">Bring this email to The Furniture Market in Texarkana</div>'
     + '<div style="font-size:13px;color:#c9a84c;font-weight:700;">Your ' + (data.discount || 5) + '% discount is waiting for you</div>'
     + (dreamCode ? '<div style="font-size:16px;font-weight:800;color:#c9a84c;letter-spacing:3px;margin-top:4px;">' + dreamCode + '</div>' : '')
     + '</td></tr>'

@@ -22,13 +22,12 @@ specific retailer. Each store gets its own fully customized deployment.
 
 ---
 
-## This Repo — Bel Furniture Deployment
-Deployed at: https://beford782.github.io/DreamFinder
-Repo: https://github.com/beford782/DreamFinder
-Local path: `C:\Users\BlakeFord\Documents\GitHub\DreamFinder`
+## This Repo — The Furniture Market of Texarkana (TFM) Deployment
+Deployed at: TBD (GitHub Pages URL pending repo setup)
+Repo: TBD (new repo for TFM)
 
-This is Bel Furniture's instance. Everything in `data/` is Bel-specific.
-Do not treat any Bel-specific content (mattress models, branding, discount codes,
+This is The Furniture Market's instance. Everything in `data/` is TFM-specific.
+Do not treat any TFM-specific content (mattress models, branding, discount codes,
 GAS endpoint) as a default or starting point for other retailers.
 
 ---
@@ -44,12 +43,13 @@ All store identity lives in two files only:
 - `data/mattresses.csv` / `data/mattresses.json` — this store's mattress lineup
 
 ### Each retailer gets its own repo
-Do not push Bel changes to another retailer's deployment.
+Do not push TFM changes to another retailer's deployment.
 Do not copy `data/mattresses.csv` between retailer repos — each store has a
 completely different product lineup.
 
-**Planned deployments (separate repos):**
-- Bel Furniture — this repo (active)
+**Active deployments (separate repos):**
+- Bel Furniture — beford782/DreamFinder (active)
+- The Furniture Market of Texarkana — this repo (active)
 - Star Furniture — separate repo (planned)
 - Lacks Furniture — separate repo (planned)
 
@@ -73,7 +73,7 @@ Flag any question customization requests as requiring a config migration first.
 
 ### Domain Lock
 A domain lock at the top of the `<script>` block restricts where the app runs.
-Allowed domains: `beford782.github.io`, `localhost`, `127.0.0.1`, and `''` (local file access).
+Allowed domains: `localhost`, `127.0.0.1` (TFM's GitHub Pages domain TBD — add when repo is created).
 If deploying to a new domain, add it to the `allowed` array around line 3607.
 
 ### Data files
@@ -100,7 +100,7 @@ Never commit CSV changes without also committing the regenerated JSON.
 | `tier` | gold / silver / bronze |
 | `id` | g1–g33, unique per deployment, never reuse |
 | `name` | Model name |
-| `brand` | Spring Air / Restonic / Bel-O-Pedic (Bel-specific) |
+| `brand` | Restonic (TFM-specific, other brands TBD) |
 | `subBrand` | Sub-line (Copper, Last Mattress, etc.) |
 | `firmnessScore` | 1–10 number used by scoring engine |
 | `firmnessLabel` | Display text (Plush, Medium, Firm, etc.) |
@@ -131,7 +131,7 @@ Tags are stored in the JSON `features` array (mapped from `quizTags` in CSV).
 
 **3. Locally made bonus (+25)**
 If `m.locallyMade === true`, adds 25 points and appends a match reason.
-In the Bel deployment: Spring Air and Restonic = locally made, Bel-O-Pedic = not.
+In the TFM deployment: locally-made status TBD per mattress brand.
 This value and logic may differ per retailer deployment.
 
 Qualified results = top 3 models scoring ≥ 60% of the top score.

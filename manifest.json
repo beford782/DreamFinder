@@ -1,7 +1,7 @@
 {
-  "name": "DreamFinder — Bel Furniture",
+  "name": "DreamFinder — The Furniture Market",
   "short_name": "DreamFinder",
-  "description": "Personalized sleep consultation for Bel Furniture",
+  "description": "Personalized sleep consultation for The Furniture Market",
   "start_url": "/DreamFinder/",
   "display": "standalone",
   "orientation": "landscape",
