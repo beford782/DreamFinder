@@ -3669,7 +3669,7 @@
   <div class="mattress-drawer" id="mattressDrawer">
     <div class="drawer-handle-bar" onclick="window.closeMattressDrawer()"></div>
     <!-- Full-width mattress hero image -->
-    <div id="drawerHeroImg" style="width:100%; height:200px; background:var(--navy-light); overflow:hidden; flex-shrink:0;"></div>
+    <div id="drawerHeroImg" style="width:100%; height:200px; background:#1a2744; overflow:hidden; flex-shrink:0; border-radius:0 0 12px 12px;"></div>
     <div class="drawer-scroll" id="drawerScroll">
       <div class="drawer-mattress-header">
         <div class="drawer-mattress-img" id="drawerImg"></div>
@@ -6308,7 +6308,7 @@
       if (imgSrc) {
         imgEl.innerHTML = '<img src="'+imgSrc+'" alt="'+m.name+'">';
         imgEl.className = 'drawer-mattress-img';
-        heroEl.innerHTML = '<img src="'+imgSrc+'" alt="'+m.name+'" style="width:100%;height:100%;object-fit:cover;display:block;">';
+        heroEl.innerHTML = '<img src="'+imgSrc+'" alt="'+m.name+'" style="width:100%;height:100%;object-fit:contain;display:block;">';
       } else {
         imgEl.textContent = 'bed';
         imgEl.className = 'drawer-mattress-img no-img';
