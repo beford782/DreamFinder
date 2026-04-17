@@ -44,10 +44,10 @@ function doPost(e) {
       Logger.log('HTML email failed, trying plain text: ' + emailErr.toString());
       var plainBody = isEs
         ? ('Hola ' + firstName + ',\n\n'
-          + 'Tu mejor opción: ' + (data.topMatch || '') + ' (' + (data.matchPct || '') + '% compatibilidad)\n'
-          + 'Perfil de sueño: ' + (data.sleepProfile || '') + '\n'
+          + 'Tu mejor opci\u00f3n: ' + (data.topMatch || '') + ' (' + (data.matchPct || '') + '% compatibilidad)\n'
+          + 'Perfil de sue\u00f1o: ' + (data.sleepProfile || '') + '\n'
           + 'Tu descuento: ' + (data.discount || 5) + '% DE DESCUENTO\n'
-          + 'Código de descuento: ' + (data.dreamCode || '') + '\n\n'
+          + 'C\u00f3digo de descuento: ' + (data.dreamCode || '') + '\n\n'
           + 'Muestra este correo en Bel Furniture para canjearlo.\n\n'
           + (data.allMatches || []).map(function(m, i) { return (i+1) + '. ' + m.name + ' - ' + m.matchPct + '% compatibilidad'; }).join('\n'))
         : ('Hi ' + firstName + ',\n\n'
@@ -80,7 +80,7 @@ function buildSimpleHtml(data, firstName, isEs) {
   var matches = (data.allMatches || []).slice(0, 3);
   var accs = (data.accessories || []);
 
-  var topPickLabel = isEs ? 'Mejor Opción' : 'Top Pick';
+  var topPickLabel = isEs ? 'Mejor Opci\u00f3n' : 'Top Pick';
   var matchLabel = isEs ? 'Compatibilidad' : 'Match';
 
   var matchRows = matches.map(function(m, i) {
@@ -118,16 +118,16 @@ function buildSimpleHtml(data, firstName, isEs) {
 
   var headerText = isEs ? 'Bel Furniture x DreamFinder' : 'Bel Furniture x DreamFinder';
   var titleText = isEs ? ('Tus Combinaciones Perfectas, ' + firstName) : ('Your Perfect Matches, ' + firstName);
-  var subtitleText = isEs ? 'Basado en tu perfil de sueño personalizado' : 'Based on your personalized sleep profile';
+  var subtitleText = isEs ? 'Basado en tu perfil de sue\u00f1o personalizado' : 'Based on your personalized sleep profile';
   var discountReady = isEs
-    ? ((data.discount || 5) + '% DE DESCUENTO - ¡Tu Descuento Está Listo!')
+    ? ((data.discount || 5) + '% DE DESCUENTO - \u00a1Tu Descuento Est\u00e1 Listo!')
     : ((data.discount || 5) + '% OFF - Your Discount Is Ready!');
-  var showCode = isEs ? 'Muestra este código a tu especialista de sueño hoy' : 'Show this code to your sleep specialist today';
-  var profileLabel = isEs ? 'Tu Perfil de Sueño' : 'Your Sleep Profile';
-  var matchesLabel = isEs ? 'Tus Mejores Opciones de Colchón' : 'Your Top Mattress Matches';
+  var showCode = isEs ? 'Muestra este c\u00f3digo a tu especialista de sue\u00f1o hoy' : 'Show this code to your sleep specialist today';
+  var profileLabel = isEs ? 'Tu Perfil de Sue\u00f1o' : 'Your Sleep Profile';
+  var matchesLabel = isEs ? 'Tus Mejores Opciones de Colch\u00f3n' : 'Your Top Mattress Matches';
   var footerLine1 = isEs ? 'Lleva este correo a tu tienda Bel Furniture' : 'Bring this email to your Bel Furniture store';
   var footerLine2 = isEs
-    ? ('Tu ' + (data.discount || 5) + '% de descuento te está esperando')
+    ? ('Tu ' + (data.discount || 5) + '% de descuento te est\u00e1 esperando')
     : ('Your ' + (data.discount || 5) + '% discount is waiting for you');
 
   return '<!DOCTYPE html><html><body style="margin:0;padding:0;background:#f4f4f4;font-family:Arial,sans-serif;">'
