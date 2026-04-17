@@ -1,0 +1,37 @@
+{
+  "storeName": "The Furniture Market",
+  "languages": ["en", "es"],
+  "colors": {
+    "storePrimary": "#4E7C9B",
+    "storePrimaryLight": "#6394B0",
+    "storePrimaryGlow": "rgba(78, 124, 155, 0.15)"
+  },
+  "text": {
+    "pageTitle": "DreamFinder — The Furniture Market Sleep Quiz",
+    "metaDescription": "Take the DreamFinder sleep quiz at The Furniture Market and get personalized mattress recommendations.",
+    "ogTitle": "DreamFinder — The Furniture Market",
+    "trustSignal": "Stylish Furniture, Local Touch",
+    "madeBadge": "Made in Texas",
+    "socialProof": "Trusted by The Furniture Market — Stylish Furniture, Local Touch",
+    "footer": "&copy; 2026 The Furniture Market of Texarkana. All rights reserved.",
+    "emailPrivacy": "We'll only use your email to send your results.",
+    "privacyPolicy": "Your information is never shared with third parties.",
+    "inStockText": "In Stock at The Furniture Market",
+    "emailHeader": "The Furniture Market × DreamFinder",
+    "emailSubtext": "Bring this email to The Furniture Market in Texarkana"
+  },
+  "text_es": {
+    "pageTitle": "DreamFinder — Prueba de Sueño de The Furniture Market",
+    "metaDescription": "Toma la prueba de sueño DreamFinder en The Furniture Market y recibe recomendaciones personalizadas de colchones.",
+    "ogTitle": "DreamFinder — The Furniture Market",
+    "trustSignal": "Muebles Elegantes, Toque Local",
+    "madeBadge": "Hecho en Texas",
+    "socialProof": "Confiado por clientes de The Furniture Market en Texarkana",
+    "footer": "&copy; 2026 The Furniture Market of Texarkana. Todos los derechos reservados.",
+    "emailPrivacy": "Solo usaremos tu correo para enviarte tus resultados.",
+    "privacyPolicy": "Tu información nunca se comparte con terceros.",
+    "inStockText": "Disponible en The Furniture Market",
+    "emailHeader": "The Furniture Market × DreamFinder",
+    "emailSubtext": "Lleva este correo a The Furniture Market en Texarkana"
+  }
+}
