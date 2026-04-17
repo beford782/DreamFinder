@@ -68,6 +68,15 @@ headers = [
     "Store Address",
     "Store Hours",
     "Footer Text",
+    "Social Proof Text",
+    # Spanish overrides (optional — leave blank to fall back to English)
+    "Trust Signal (Spanish)",
+    "Badge Text (Spanish)",
+    "Email Sender Name (Spanish)",
+    "Email Subject Line (Spanish)",
+    "Footer Text (Spanish)",
+    "Social Proof (Spanish)",
+    "Enable Spanish Toggle (yes/no)",
 ]
 for i, h in enumerate(headers, 1):
     ws.cell(row=1, column=i, value=h)
@@ -90,6 +99,14 @@ example = [
     "12345 Main St, Houston, TX 77001",
     "Mon–Sat 10am–8pm · Sun 12–6pm",
     "Powered by DreamFinder · (c) 2026 Bel Furniture",
+    "Trusted by Bel Furniture customers across Texas",
+    "Sirviendo con orgullo a las familias de Texas por más de veinticinco años",
+    "Hecho en Texas",
+    "Equipo de Descanso de Bel Furniture",
+    "Tus Resultados de DreamFinder de Bel Furniture",
+    "© 2026 Bel Furniture. Todos los derechos reservados.",
+    "Confiado por clientes de Bel Furniture en todo Texas",
+    "yes",
 ]
 for i, val in enumerate(example, 1):
     cell = ws.cell(row=2, column=i, value=val)
@@ -119,6 +136,8 @@ matt_headers = [
     "Sub-Brand",
     "Tier *",
     "Firmness (1-10) *",
+    "Highlight *\n(one-line card hero, ~10 words)",
+    "Made Locally (yes/no)",
     "Display Tags\n(comma-sep)",
     "Feature Keywords\n(comma-sep, see ref tab)",
     "Image File Name *\n(e.g. athena.png)",
@@ -136,6 +155,8 @@ for i, h in enumerate(matt_headers, 1):
 # Example rows from Bel Furniture
 bel_mattresses = [
     ["g4", "Athena", "Spring Air", "Last Mattress", "gold", 6,
+     "Hand-tufted latex hybrid with a lifetime warranty",
+     "yes",
      "Hybrid, Latex, Hand-Tufted",
      "medium, cooling, support, hybrid, responsive, latex, hand-tufting, lifetime-warranty",
      "athena.png",
@@ -147,6 +168,8 @@ bel_mattresses = [
      "Hand-tufted, lifetime warranty",
      "Ultra premium hand-tufted hybrid with specialty foams and lifetime warranty"],
     ["g1", "Caitlin", "Spring Air", "", "gold", 2,
+     "Copper-infused cooling for clean and gentle sleep",
+     "yes",
      "Hybrid, Copper",
      "plush, cooling, pressure-relief, hybrid, motion-isolation, copper",
      "caitlin.png",
@@ -158,6 +181,8 @@ bel_mattresses = [
      "",
      "Copper-infused plush hybrid with antimicrobial properties"],
     ["g20", "Bella", "Spring Air", "", "bronze", 3,
+     "Classic innerspring comfort at an accessible price",
+     "yes",
      "Innerspring, Back Supporter",
      "plush, comfort, support, innerspring, foam-encasement",
      "bella.png",

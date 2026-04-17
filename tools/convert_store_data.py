@@ -2,35 +2,34 @@
 """
 DreamFinder Store Data Converter
 =================================
-Reads a completed onboarding spreadsheet (.xlsx) and generates:
-  1. CSS variable block for store branding
-  2. JavaScript MATTRESSES object
-  3. JavaScript ACCESSORIES array
-  4. Branding text replacements list
-  5. (Optional) A full store-specific index.html
+Reads a completed onboarding spreadsheet (.xlsx) and writes the retailer's
+deployment into the config-driven file layout the app reads at runtime:
 
-Usage:
-    python convert_store_data.py <spreadsheet.xlsx> [options]
+    data/store-config.json     — branding, colors, text + text_es
+    data/mattresses.csv        — mattress lineup (build-data.ps1 generates the JSON)
+    data/accessories.json      — accessories with bilingual {en, es} shape
+    Code.gs                    — GAS script with retailer strings substituted
+    manifest.json              — PWA manifest with retailer store name
 
-Common flags:
-    --image-base-url URL       Public URL prefix where images will be served
-    --source-images PATH       Auto-convert retailer images (mattresses/, accessories/) to optimized WebP
-    --output-dir PATH          Where to write the build output (default: .)
-    --output-html              Generate a complete index.html
-    --skip-image-conversion    Skip the WebP conversion step
+Optionally (with --source-images) also converts the retailer's raw mattress and
+accessory images into optimized WebP under images/.
 
-Examples:
-    # Just emit the JSON / CSS / JS without touching images
-    python convert_store_data.py "Store_Data.xlsx" --image-base-url "https://acme.github.io/DreamFinder"
+Intended to run against a DreamFinder-template clone:
 
-    # Full build with image conversion (recommended for new retailer onboarding)
-    python convert_store_data.py "Store_Data.xlsx" \\
+    python tools/convert_store_data.py ./incoming/Acme_Store_Data.xlsx \\
         --image-base-url "https://acme.github.io/DreamFinder" \\
-        --source-images "./incoming/" \\
-        --output-dir "../"
+        --source-images ./incoming \\
+        --output-dir .
+
+After running, manual steps still required:
+  • Drop store-logo / brand logos / PWA icons into images/
+  • Create a new GAS deployment and paste the web app URL into index.html
+  • Add the new Pages domain to the domain lock array in index.html
+  • Run .\\build-data.ps1 to regenerate data/mattresses.json
 """
 
 import argparse
+import csv
 import glob
 import json
 import os
@@ -41,9 +40,6 @@ import openpyxl
 
 
 # ── Image conversion ──────────────────────────────────────────────────────
-# Source images for mattresses and accessories are converted to optimized
-# WebP at build time. Keeps customer-facing pages small (~100x reduction
-# vs. the original PNG/JPG sources) without asking the retailer to pre-shrink.
 
 WEBP_LONG_EDGE = 1000
 WEBP_QUALITY = 82
@@ -51,16 +47,7 @@ CONVERTIBLE_EXTS = ('.png', '.jpg', '.jpeg', '.PNG', '.JPG', '.JPEG', '.webp', '
 
 
 def convert_images_to_webp(src_dir, dst_dir, label='images'):
-    """Convert every image in src_dir into optimized .webp in dst_dir.
-
-    - Resizes so the long edge is at most WEBP_LONG_EDGE
-    - Encodes as WebP at WEBP_QUALITY
-    - Output filename is the source stem + '.webp' (lowercased)
-    - Idempotent: re-converting the same source overwrites the .webp
-
-    Returns a list of (src_basename, src_bytes, dst_bytes) tuples.
-    Requires Pillow (`pip install Pillow`).
-    """
+    """Convert every image in src_dir into optimized .webp in dst_dir."""
     try:
         from PIL import Image
     except ImportError:
@@ -69,7 +56,7 @@ def convert_images_to_webp(src_dir, dst_dir, label='images'):
         return []
 
     if not os.path.isdir(src_dir):
-        print(f"[!] {label} source folder not found: {src_dir} — skipping conversion.")
+        print(f"[!] {label} source folder not found: {src_dir} — skipping.")
         return []
 
     os.makedirs(dst_dir, exist_ok=True)
@@ -83,7 +70,6 @@ def convert_images_to_webp(src_dir, dst_dir, label='images'):
 
         try:
             img = Image.open(src_path)
-            # WebP doesn't need alpha for product photos; flatten on white.
             if img.mode in ('RGBA', 'LA'):
                 bg = Image.new('RGB', img.size, (255, 255, 255))
                 bg.paste(img, mask=img.split()[-1])
@@ -115,24 +101,35 @@ def convert_images_to_webp(src_dir, dst_dir, label='images'):
     return results
 
 
-def read_store_info(ws):
-    """Read the Store Info tab. Returns dict of store config."""
-    headers = [cell.value for cell in ws[1]]
-    # Find the first non-example row (row 3 if example is row 2, or row 2 if no example)
-    data_row = None
-    for row in ws.iter_rows(min_row=2, max_row=10, values_only=False):
-        vals = [cell.value for cell in row]
-        # Skip rows that are empty or the Bel Furniture example
-        if not any(vals):
-            continue
-        if vals[0] and "Bel Furniture" in str(vals[0]):
-            continue
-        data_row = vals
-        break
+# ── Spreadsheet readers ──────────────────────────────────────────────────
 
-    # Fallback: if no non-example row found, use row 2 (might be the example itself for testing)
-    if data_row is None:
-        data_row = [cell.value for cell in ws[2]]
+def _clean_header(h):
+    if not h:
+        return h
+    return h.replace("*", "").strip().split("\n")[0].strip()
+
+
+def _is_example_row(vals):
+    """Heuristic: detect leftover yellow Bel example rows."""
+    joined = " ".join(str(v) for v in vals if v is not None).lower()
+    return "bel furniture" in joined or "bel-o-pedic" in joined
+
+
+def _first_nonempty_row(ws, max_row=10):
+    """Return the first data row that isn't empty or a Bel example."""
+    for row in ws.iter_rows(min_row=2, max_row=max_row, values_only=True):
+        if not any(row):
+            continue
+        if _is_example_row(row):
+            continue
+        return row
+    # Fallback: whatever is on row 2
+    return tuple(c.value for c in ws[2])
+
+
+def read_store_info(ws):
+    headers = [_clean_header(c.value) for c in ws[1]]
+    data_row = _first_nonempty_row(ws)
 
     mapping = {
         "Store Name": "store_name",
@@ -150,158 +147,136 @@ def read_store_info(ws):
         "Store Phone": "store_phone",
         "Store Address": "store_address",
         "Store Hours": "store_hours",
-        "Footer Text": "footer_text",
+        "Footer Text": "footer",
+        "Social Proof Text": "social_proof",
+        "Trust Signal (Spanish)": "trust_signal_es",
+        "Badge Text (Spanish)": "badge_text_es",
+        "Email Sender Name (Spanish)": "email_sender_es",
+        "Email Subject Line (Spanish)": "email_subject_es",
+        "Footer Text (Spanish)": "footer_es",
+        "Social Proof (Spanish)": "social_proof_es",
+        "Enable Spanish Toggle (yes/no)": "enable_spanish",
     }
 
     info = {}
     for i, header in enumerate(headers):
         if header in mapping and i < len(data_row):
-            info[mapping[header]] = data_row[i] if data_row[i] is not None else ""
+            v = data_row[i]
+            info[mapping[header]] = "" if v is None else v
     return info
 
 
-def read_brands(ws, image_base_url):
-    """Read the Brands tab. Returns list of brand dicts."""
-    headers = [cell.value for cell in ws[1]]
-    clean_headers = []
-    for h in headers:
-        if h:
-            h = h.replace("*", "").strip().split("\n")[0].strip()
-        clean_headers.append(h)
-
-    brands = []
+def read_mattresses(ws):
+    """Return list of dicts matching the mattresses.csv schema."""
+    headers = [_clean_header(c.value) for c in ws[1]]
+    rows = []
     for row in ws.iter_rows(min_row=2, values_only=True):
-        if not row[0]:
+        if not row or not row[0]:
             continue
-        vals = dict(zip(clean_headers, row))
-        brand_name = str(vals.get("Brand Name", "")).strip()
-        logo_file = str(vals.get("Logo File Name", "") or "").strip()
-        if brand_name:
-            brands.append({
-                "name": brand_name,
-                "logoUrl": f"{image_base_url}/logos/{logo_file}" if logo_file else "",
-                "logoFile": logo_file,
-            })
-    return brands
-
-
-def read_mattresses(ws, image_base_url):
-    """Read the Mattresses tab. Returns dict with gold/silver/bronze lists."""
-    headers = [cell.value for cell in ws[1]]
-    # Clean header names (remove * and whitespace)
-    clean_headers = []
-    for h in headers:
-        if h:
-            h = h.replace("*", "").strip().split("\n")[0].strip()
-        clean_headers.append(h)
-
-    tiers = {"gold": [], "silver": [], "bronze": []}
-
-    for row in ws.iter_rows(min_row=2, values_only=True):
-        if not row[0]:  # Skip empty rows
+        if _is_example_row(row):
             continue
+        vals = dict(zip(headers, row))
 
-        vals = dict(zip(clean_headers, row))
-
-        mattress_id = str(vals.get("ID", "")).strip()
-        name = str(vals.get("Name", "")).strip()
-        brand = str(vals.get("Brand", "")).strip()
-        sub_brand = str(vals.get("Sub-Brand", "") or "").strip()
-        tier = str(vals.get("Tier", "bronze")).strip().lower()
-        firmness = int(vals.get("Firmness (1-10)", 5) or 5)
-
-        # Parse comma-separated lists
-        tags = [t.strip() for t in str(vals.get("Display Tags", "") or "").split(",") if t.strip()]
-        features = [f.strip() for f in str(vals.get("Feature Keywords", "") or "").split(",") if f.strip()]
-
-        # Build image URL. Source file may be .png/.jpg/etc., but auto-conversion
-        # produces .webp — point the URL at the converted version.
-        img_file = str(vals.get("Image File Name", "") or "").strip()
-        if img_file:
-            stem, _ = os.path.splitext(img_file)
-            image_url = f"{image_base_url}/images/mattresses/{stem.lower()}.webp"
+        # Firmness → label (used if retailer doesn't provide one)
+        firm_raw = vals.get("Firmness (1-10)") or vals.get("Firmness") or 5
+        try:
+            firmness = int(firm_raw)
+        except (TypeError, ValueError):
+            firmness = 5
+        if firmness <= 3:
+            firm_label = "Plush"
+        elif firmness <= 6:
+            firm_label = "Medium"
         else:
-            image_url = ""
+            firm_label = "Firm"
 
-        # Build reasons dict
-        reasons = {}
-        reason_map = {
-            "Why: Cooling": "cooling",
-            "Why: Pressure Relief": "pressureRelief",
-            "Why: Motion Isolation": "motionIsolation",
-            "Why: Support": "support",
-            "Why: Firmness Feel": None,  # key determined by firmness
-            "Why: Durability": "durability",
-            "Why: Default": "default",
-        }
+        # Normalize comma-separated spreadsheet values to pipe-separated CSV values
+        def pipe(s):
+            if not s:
+                return ""
+            return "|".join(x.strip() for x in str(s).split(",") if x.strip())
 
-        for col_name, reason_key in reason_map.items():
-            val = str(vals.get(col_name, "") or "").strip()
-            if val:
-                if reason_key is None:
-                    # Determine firmness feel key
-                    if firmness <= 3:
-                        reason_key = "plush"
-                    elif firmness <= 6:
-                        reason_key = "medium"
-                    else:
-                        reason_key = "firm"
-                reasons[reason_key] = val
+        # Features — also map kebab-case keywords straight through (build-data.ps1
+        # turns them into camelCase for the runtime features array)
+        features = pipe(vals.get("Feature Keywords"))
 
-        mattress = {
-            "id": mattress_id,
-            "name": name,
-            "brand": brand,
-            "subBrand": sub_brand,
-            "firmness": firmness,
-            "tags": tags,
+        locally = str(vals.get("Made Locally (yes/no)") or "").strip().lower()
+        if locally not in ("yes", "no"):
+            locally = "no"
+
+        rows.append({
+            "tier": str(vals.get("Tier") or "bronze").strip().lower(),
+            "id": str(vals.get("ID") or "").strip(),
+            "name": str(vals.get("Name") or "").strip(),
+            "brand": str(vals.get("Brand") or "").strip(),
+            "subBrand": str(vals.get("Sub-Brand") or "").strip(),
+            "firmnessScore": firmness,
+            "firmnessLabel": firm_label,
+            "price": "",
+            "quizTags": pipe(vals.get("Display Tags")),
+            "displayBadges": pipe(vals.get("Display Tags")),
+            "highlight": str(vals.get("Highlight") or "").strip(),
+            "locally-made": locally,
             "features": features,
-            "imageUrl": image_url,
-            "reasons": reasons,
-        }
+            "reason_cooling": str(vals.get("Why: Cooling") or "").strip(),
+            "reason_pressureRelief": str(vals.get("Why: Pressure Relief") or "").strip(),
+            "reason_motionIsolation": str(vals.get("Why: Motion Isolation") or "").strip(),
+            "reason_support": str(vals.get("Why: Support") or "").strip(),
+            "reason_plush": str(vals.get("Why: Firmness Feel") or "").strip() if firmness <= 3 else "",
+            "reason_medium": str(vals.get("Why: Firmness Feel") or "").strip() if 4 <= firmness <= 6 else "",
+            "reason_firm": str(vals.get("Why: Firmness Feel") or "").strip() if firmness >= 7 else "",
+            "reason_durability": str(vals.get("Why: Durability") or "").strip(),
+            "reason_default": str(vals.get("Why: Default") or "").strip(),
+        })
+    return rows
 
-        if tier in tiers:
-            tiers[tier].append(mattress)
-        else:
-            tiers["bronze"].append(mattress)
 
-    return tiers
+MATTRESS_CSV_COLUMNS = [
+    "tier", "id", "name", "brand", "subBrand", "firmnessScore", "firmnessLabel",
+    "price", "quizTags", "displayBadges", "highlight", "locally-made", "features",
+    "reason_cooling", "reason_pressureRelief", "reason_motionIsolation",
+    "reason_support", "reason_plush", "reason_medium", "reason_firm",
+    "reason_durability", "reason_default",
+]
 
 
-def read_accessories(ws, image_base_url):
-    """Read the Accessories tab. Returns list of accessory objects."""
-    headers = [cell.value for cell in ws[1]]
-    clean_headers = []
-    for h in headers:
-        if h:
-            h = h.replace("*", "").strip().split("\n")[0].strip()
-        clean_headers.append(h)
-
+def read_accessories(ws):
+    """Return list of accessory dicts matching data/accessories.json shape."""
+    headers = [_clean_header(c.value) for c in ws[1]]
     accessories = []
-
     for row in ws.iter_rows(min_row=2, values_only=True):
-        if not row[0]:
+        if not row or not row[0]:
             continue
+        if _is_example_row(row):
+            continue
+        vals = dict(zip(headers, row))
 
-        vals = dict(zip(clean_headers, row))
+        acc_id = str(vals.get("ID") or "").strip()
+        name_en = str(vals.get("Name") or "").strip()
+        name_es = str(vals.get("Name (Spanish)") or "").strip() or name_en
+        cat_en = str(vals.get("Category") or "").strip()
+        cat_es = str(vals.get("Category (Spanish)") or "").strip() or cat_en
+        desc_en = str(vals.get("Description") or "").strip()
+        desc_es = str(vals.get("Description (Spanish)") or "").strip() or desc_en
 
-        acc_id = str(vals.get("ID", "")).strip()
-        name = str(vals.get("Name", "")).strip()
-        category = str(vals.get("Category", "")).strip()
-        sub_type = str(vals.get("Sub-Type", "") or "").strip()
-        price = vals.get("Price", 0) or 0
-        description = str(vals.get("Description", "") or "").strip()
+        sub_type = str(vals.get("Sub-Type") or "").strip()
 
-        img_file = str(vals.get("Image File Name", "") or "").strip()
+        try:
+            price = float(vals.get("Price") or 0)
+            if price.is_integer():
+                price = int(price)
+        except (TypeError, ValueError):
+            price = 0
+
+        img_file = str(vals.get("Image File Name") or "").strip()
         if img_file:
             stem, _ = os.path.splitext(img_file)
-            image = f"{image_base_url}/images/accessories/{stem.lower()}.webp"
+            image = f"images/accessories/{stem.lower()}.webp"
         else:
             image = ""
 
-        match_tags = [t.strip() for t in str(vals.get("Match Tags", "") or "").split(",") if t.strip()]
+        match_tags = [t.strip() for t in str(vals.get("Match Tags") or "").split(",") if t.strip()]
 
-        # Build matchScores
         score_map = {
             "Score: Default": "default",
             "Score: Cooling": "cooling",
@@ -313,325 +288,271 @@ def read_accessories(ws, image_base_url):
             "Score: Position Back": "position_back",
             "Score: Position Stomach": "position_stomach",
         }
-
         match_scores = {}
-        for col_name, score_key in score_map.items():
-            val = vals.get(col_name)
-            if val is not None and val != "" and val != 0:
-                match_scores[score_key] = int(val)
+        for col, key in score_map.items():
+            v = vals.get(col)
+            if v is None or v == "" or v == 0:
+                continue
+            try:
+                match_scores[key] = int(v)
+            except (TypeError, ValueError):
+                continue
 
-        accessory = {
+        entry = {
             "id": acc_id,
-            "name": name,
-            "category": category,
+            "name": {"en": name_en, "es": name_es},
+            "category": {"en": cat_en, "es": cat_es},
             "price": price,
             "image": image,
-            "description": description,
+            "description": {"en": desc_en, "es": desc_es},
+            "matchTags": match_tags,
+            "matchScores": match_scores,
         }
         if sub_type:
-            accessory["subType"] = sub_type
-        accessory["matchTags"] = match_tags
-        accessory["matchScores"] = match_scores
-
-        accessories.append(accessory)
-
+            entry["subType"] = sub_type
+        accessories.append(entry)
     return accessories
 
 
-def format_mattress_js(mattress):
-    """Format a single mattress as a JS object literal string."""
-    tags_str = json.dumps(mattress["tags"])
-    features_str = json.dumps(mattress["features"])
-    reasons_parts = []
-    for k, v in mattress["reasons"].items():
-        # Escape single quotes in value
-        v_escaped = v.replace("'", "\\'")
-        reasons_parts.append(f"'{k}':'{v_escaped}'")
-    reasons_str = "{ " + ", ".join(reasons_parts) + " }"
-
-    return (
-        f"        {{ id: '{mattress['id']}', name: '{mattress['name']}', "
-        f"brand: '{mattress['brand']}', subBrand: '{mattress['subBrand']}', "
-        f"firmness: {mattress['firmness']}, "
-        f"tags: {tags_str}, "
-        f"features: {features_str}, "
-        f"imageUrl: '{mattress['imageUrl']}', "
-        f"reasons: {reasons_str} }}"
-    )
+def read_brands(ws):
+    headers = [_clean_header(c.value) for c in ws[1]]
+    brands = []
+    for row in ws.iter_rows(min_row=2, values_only=True):
+        if not row or not row[0]:
+            continue
+        vals = dict(zip(headers, row))
+        name = str(vals.get("Brand Name") or "").strip()
+        logo = str(vals.get("Logo File Name") or "").strip()
+        if name:
+            brands.append({"name": name, "logoFile": logo})
+    return brands
 
 
-def format_accessory_js(acc):
-    """Format a single accessory as a JS object literal string."""
-    lines = []
-    lines.append(f"      {{ id: '{acc['id']}', name: '{acc['name']}', "
-                  f"category: '{acc['category']}', price: {acc['price']},")
-    lines.append(f"        image: '{acc['image']}',")
-    desc_escaped = acc['description'].replace("'", "\\'")
-    lines.append(f"        description: '{desc_escaped}',")
-    if acc.get("subType"):
-        lines.append(f"        subType: '{acc['subType']}',")
-    lines.append(f"        matchTags: {json.dumps(acc['matchTags'])}, "
-                  f"matchScores: {json.dumps(acc['matchScores'])} }}")
-    return "\n".join(lines)
+# ── Output writers ───────────────────────────────────────────────────────
+
+def hex_to_rgba(hex_str, alpha):
+    m = re.match(r"^#?([0-9a-fA-F]{6})$", hex_str or "")
+    if not m:
+        return f"rgba(139, 26, 26, {alpha})"  # fallback
+    r = int(m.group(1)[0:2], 16)
+    g = int(m.group(1)[2:4], 16)
+    b = int(m.group(1)[4:6], 16)
+    return f"rgba({r}, {g}, {b}, {alpha})"
 
 
-def generate_css_block(info):
-    """Generate CSS custom property overrides."""
-    color = info.get("primary_color", "#8B1A1A")
-    light = info.get("primary_color_light", "#a52525")
-    # Derive glow from primary color
-    r, g, b = int(color[1:3], 16), int(color[3:5], 16), int(color[5:7], 16)
-    glow = f"rgba({r}, {g}, {b}, 0.15)"
+def build_store_config(info, brands):
+    """Assemble the data/store-config.json structure."""
+    store = info.get("store_name", "") or "Your Store"
+    primary = info.get("primary_color", "") or "#8B1A1A"
+    primary_light = info.get("primary_color_light", "") or "#a52525"
+    glow = hex_to_rgba(primary, 0.15)
 
-    return f"""      /* Store Brand Colors */
-      --store-primary: {color};        /* {info.get('store_name', '')} */
-      --store-primary-light: {light};
-      --store-primary-glow: {glow};"""
+    enable_es = str(info.get("enable_spanish") or "yes").strip().lower() == "yes"
+    languages = ["en", "es"] if enable_es else ["en"]
 
+    discount_pct = info.get("default_discount") or 5
 
-def generate_mattresses_js(tiers):
-    """Generate the full MATTRESSES const."""
-    lines = ["    const MATTRESSES = {"]
+    text = {
+        "pageTitle": f"DreamFinder — {store} Sleep Quiz",
+        "metaDescription": f"Take the DreamFinder sleep quiz at {store} and get personalized mattress recommendations.",
+        "ogTitle": f"DreamFinder — {store}",
+        "trustSignal": info.get("trust_signal") or "",
+        "madeBadge": info.get("badge_text") or "",
+        "socialProof": info.get("social_proof") or f"Recommended by your {store} sleep team",
+        "footer": info.get("footer") or f"&copy; {store}. All rights reserved.",
+        "emailPrivacy": f"We'll only use your email to send your results from {store}.",
+        "privacyPolicy": "Your information is never shared with third parties.",
+        "inStockText": f"In Stock at {store}",
+        "emailHeader": f"{store} × DreamFinder",
+        "emailSubtext": f"Bring this email to your {store} store",
+    }
 
-    for tier_name in ["gold", "silver", "bronze"]:
-        mattresses = tiers.get(tier_name, [])
-        lines.append(f"      {tier_name}: [")
-        for m in mattresses:
-            lines.append(format_mattress_js(m) + ",")
-        lines.append("      ],")
+    text_es = {
+        "pageTitle": f"DreamFinder — Prueba de Sueño de {store}",
+        "metaDescription": f"Toma la prueba de sueño DreamFinder en {store} y recibe recomendaciones personalizadas de colchones.",
+        "ogTitle": f"DreamFinder — {store}",
+        "trustSignal": info.get("trust_signal_es") or "",
+        "madeBadge": info.get("badge_text_es") or info.get("badge_text") or "",
+        "socialProof": info.get("social_proof_es") or f"Confiado por clientes de {store}",
+        "footer": info.get("footer_es") or info.get("footer") or f"&copy; {store}. Todos los derechos reservados.",
+        "emailPrivacy": "Solo usaremos tu correo para enviarte tus resultados.",
+        "privacyPolicy": "Tu información nunca se comparte con terceros.",
+        "inStockText": f"Disponible en {store}",
+        "emailHeader": f"{store} × DreamFinder",
+        "emailSubtext": f"Lleva este correo a tu tienda {store}",
+    }
 
-    lines.append("    };")
-    return "\n".join(lines)
-
-
-def generate_accessories_js(accessories):
-    """Generate the full ACCESSORIES const."""
-    lines = ["    const ACCESSORIES = ["]
-    for acc in accessories:
-        lines.append(format_accessory_js(acc) + ",")
-    lines.append("    ];")
-    return "\n".join(lines)
-
-
-def generate_footer_html(info, brands, image_base_url):
-    """Generate the footer HTML with store name and brand logos."""
-    footer_text = info.get("footer_text", f"Powered by DreamFinder")
-    store = info.get("store_name", "")
-
-    brand_tags = []
-    for b in brands:
-        logo_html = ""
-        if b.get("logoUrl"):
-            logo_html = f'<img src="{b["logoUrl"]}" alt="{b["name"]}" class="brand-logo" />'
-        else:
-            logo_html = f'<span class="brand-logo-placeholder"></span>'
-        brand_tags.append(
-            f'          <div class="brand-tag">\n'
-            f'            {logo_html}\n'
-            f'            <span class="brand-name">{b["name"]}</span>\n'
-            f'          </div>'
-        )
-
-    brands_joined = '\n          <span class="brand-sep"></span>\n'.join(brand_tags)
-
-    return f"""    <!-- Footer -->
-    <footer class="footer">
-      <div class="footer-left">
-        {footer_text}
-      </div>
-      <div class="brand-logos">
-        <span class="label">Our Brands</span>
-        <div class="brands">
-{brands_joined}
-        </div>
-      </div>
-      <div style="width:100%; text-align:center; padding-top:0.5rem; font-size:0.45rem; color:rgba(248,246,241,0.25); line-height:1.5;">
-        DreamFinder is a recommendation tool, not medical advice. Match scores are guidance only. Purchases subject to store policies.
-        <a href="#" onclick="event.preventDefault();document.getElementById('privacyOverlay').classList.add('visible');" style="color:rgba(212,168,75,0.4); text-decoration:underline; pointer-events: auto;">Privacy & Terms</a>
-      </div>
-    </footer>"""
+    config = {
+        "storeName": store,
+        "languages": languages,
+        "discountPct": discount_pct,
+        "colors": {
+            "storePrimary": primary,
+            "storePrimaryLight": primary_light,
+            "storePrimaryGlow": glow,
+        },
+        "text": text,
+        "text_es": text_es,
+    }
+    if brands:
+        config["brands"] = brands
+    return config
 
 
-def generate_branding_replacements(info, brands):
-    """Generate a list of text replacements needed in index.html."""
-    store = info.get("store_name", "")
-    brand_list = ", ".join(b["name"] for b in brands) if brands else "(no brands specified)"
-    return f"""
-BRANDING TEXT REPLACEMENTS
-==========================
-Search & replace these strings in index.html:
+def write_mattresses_csv(path, mattress_rows):
+    with open(path, "w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=MATTRESS_CSV_COLUMNS)
+        w.writeheader()
+        for r in mattress_rows:
+            w.writerow({c: r.get(c, "") for c in MATTRESS_CSV_COLUMNS})
 
-  "Bel Furniture"                          -> "{store}"
-  "bel</span>"  (logo line 1)             -> "{info.get('logo_line1', '')}</span>"
-  "furniture</span>" (logo line 2)        -> "{info.get('logo_line2', '')}</span>"
-  "Proudly serving Texas families..."      -> "{info.get('trust_signal', '')}"
-  "Made in Texas"                          -> "{info.get('badge_text', '')}"
-  "Texas" (default location)               -> "{info.get('default_location', '')}"
 
-Footer:
-  - Replace footer text with: "{info.get('footer_text', '')}"
-  - Replace brand logos with: {brand_list}
-  - Brand logo images go in logos/ folder
+def patch_code_gs(src, store_name, email_subject, email_sender):
+    """String-substitute Bel references in Code.gs."""
+    substitutions = [
+        ("Bel Furniture", store_name),
+        ("Your DreamFinder Results from Bel Furniture", email_subject or f"Your DreamFinder Results from {store_name}"),
+        ("Bel Furniture Sleep Team", email_sender or f"{store_name} Sleep Team"),
+        ("Show this email at Bel Furniture to redeem.", f"Show this email at {store_name} to redeem."),
+        ("Bel Furniture x DreamFinder", f"{store_name} x DreamFinder"),
+        ("Bring this email to your Bel Furniture store", f"Bring this email to your {store_name} store"),
+    ]
+    out = src
+    for before, after in substitutions:
+        out = out.replace(before, after)
+    return out
 
-Also update:
-  - manifest.json: "DreamFinder -- {store}"
-  - Code.gs: Replace "Bel Furniture" in email subject/sender/body
-  - Google Apps Script: Deploy a new script instance for this store
-"""
 
+def patch_manifest(src, store_name):
+    try:
+        m = json.loads(src)
+    except json.JSONDecodeError:
+        return src
+    m["name"] = f"DreamFinder — {store_name}"
+    m["short_name"] = "DreamFinder"
+    m["description"] = f"Personalized sleep consultation for {store_name}"
+    return json.dumps(m, indent=2, ensure_ascii=False)
+
+
+# ── Main ──────────────────────────────────────────────────────────────────
 
 def main():
-    parser = argparse.ArgumentParser(description="Convert DreamFinder onboarding spreadsheet to JS code")
+    parser = argparse.ArgumentParser(description="Convert DreamFinder onboarding spreadsheet into deployment config files")
     parser.add_argument("spreadsheet", help="Path to the .xlsx file")
-    parser.add_argument("--image-base-url", default="https://example.github.io/DreamFinder",
-                        help="Base URL where images will be hosted (no trailing slash)")
-    parser.add_argument("--output-html", action="store_true",
-                        help="Generate a complete index.html (requires ../index.html as template)")
+    parser.add_argument("--image-base-url", default="",
+                        help="Base URL where images will be hosted (currently informational; "
+                             "app uses relative paths and prepends this at send time via PUBLIC_ASSET_ROOT).")
     parser.add_argument("--output-dir", default=".",
-                        help="Directory to write output files (default: current dir)")
+                        help="Directory of the DreamFinder template clone (default: current dir)")
     parser.add_argument("--source-images", default=None,
-                        help="Path to retailer's submitted images folder (with mattresses/ and accessories/ subdirs). "
+                        help="Folder containing mattresses/ and accessories/ subfolders of raw images. "
                              "If set, images are auto-converted to optimized WebP into <output-dir>/images/.")
-    parser.add_argument("--skip-image-conversion", action="store_true",
-                        help="Skip image WebP conversion (if you've already done it).")
+    parser.add_argument("--skip-image-conversion", action="store_true")
     args = parser.parse_args()
 
-    # Strip trailing slash from URL
-    args.image_base_url = args.image_base_url.rstrip("/")
-
-    # Auto-convert source images to WebP if a source folder was provided
-    if args.source_images and not args.skip_image_conversion:
-        print(f"Converting source images from {args.source_images}...")
-        convert_images_to_webp(
-            os.path.join(args.source_images, 'mattresses'),
-            os.path.join(args.output_dir, 'images', 'mattresses'),
-            label='mattresses'
-        )
-        convert_images_to_webp(
-            os.path.join(args.source_images, 'accessories'),
-            os.path.join(args.output_dir, 'images', 'accessories'),
-            label='accessories'
-        )
+    out = os.path.abspath(args.output_dir)
+    data_dir = os.path.join(out, "data")
+    os.makedirs(data_dir, exist_ok=True)
 
     print(f"Reading {args.spreadsheet}...")
     wb = openpyxl.load_workbook(args.spreadsheet, data_only=True)
 
-    # Read all tabs
     store_info = read_store_info(wb["Store Info"])
-    print(f"  Store: {store_info.get('store_name', '(unknown)')}")
+    store_name = store_info.get("store_name") or "Your Store"
+    print(f"  Store: {store_name}")
 
-    tiers = read_mattresses(wb["Mattresses"], args.image_base_url)
-    total_m = sum(len(v) for v in tiers.values())
-    print(f"  Mattresses: {total_m} (gold={len(tiers['gold'])}, silver={len(tiers['silver'])}, bronze={len(tiers['bronze'])})")
+    mattress_rows = read_mattresses(wb["Mattresses"])
+    tier_counts = {"gold": 0, "silver": 0, "bronze": 0}
+    for m in mattress_rows:
+        if m["tier"] in tier_counts:
+            tier_counts[m["tier"]] += 1
+    print(f"  Mattresses: {len(mattress_rows)} (gold={tier_counts['gold']}, "
+          f"silver={tier_counts['silver']}, bronze={tier_counts['bronze']})")
 
-    accessories = read_accessories(wb["Accessories"], args.image_base_url)
+    accessories = read_accessories(wb["Accessories"])
     print(f"  Accessories: {len(accessories)}")
 
     brands = []
     if "Brands" in wb.sheetnames:
-        brands = read_brands(wb["Brands"], args.image_base_url)
-        print(f"  Brands: {len(brands)} ({', '.join(b['name'] for b in brands)})")
+        brands = read_brands(wb["Brands"])
+        print(f"  Brands: {len(brands)}")
 
-    # Generate outputs
-    os.makedirs(args.output_dir, exist_ok=True)
+    if args.source_images and not args.skip_image_conversion:
+        print(f"\nConverting source images from {args.source_images}...")
+        convert_images_to_webp(
+            os.path.join(args.source_images, 'mattresses'),
+            os.path.join(out, 'images', 'mattresses'),
+            label='mattresses'
+        )
+        convert_images_to_webp(
+            os.path.join(args.source_images, 'accessories'),
+            os.path.join(out, 'images', 'accessories'),
+            label='accessories'
+        )
 
-    css_block = generate_css_block(store_info)
-    mattresses_js = generate_mattresses_js(tiers)
-    accessories_js = generate_accessories_js(accessories)
-    footer_html = generate_footer_html(store_info, brands, args.image_base_url)
-    replacements = generate_branding_replacements(store_info, brands)
+    # Write store-config.json
+    config = build_store_config(store_info, brands)
+    cfg_path = os.path.join(data_dir, "store-config.json")
+    with open(cfg_path, "w", encoding="utf-8") as f:
+        json.dump(config, f, indent=2, ensure_ascii=False)
+    print(f"\n  Wrote {cfg_path}")
 
-    # Write individual output files
-    store_slug = store_info.get("store_name", "store").lower().replace(" ", "-")
+    # Write mattresses.csv
+    csv_path = os.path.join(data_dir, "mattresses.csv")
+    write_mattresses_csv(csv_path, mattress_rows)
+    print(f"  Wrote {csv_path}")
 
-    css_path = os.path.join(args.output_dir, f"{store_slug}_css.txt")
-    with open(css_path, "w", encoding="utf-8") as f:
-        f.write(css_block)
-    print(f"\n  CSS variables  -> {css_path}")
-
-    matt_path = os.path.join(args.output_dir, f"{store_slug}_mattresses.js")
-    with open(matt_path, "w", encoding="utf-8") as f:
-        f.write(mattresses_js)
-    print(f"  MATTRESSES     -> {matt_path}")
-
-    acc_path = os.path.join(args.output_dir, f"{store_slug}_accessories.js")
+    # Write accessories.json
+    acc_path = os.path.join(data_dir, "accessories.json")
     with open(acc_path, "w", encoding="utf-8") as f:
-        f.write(accessories_js)
-    print(f"  ACCESSORIES    -> {acc_path}")
+        json.dump(accessories, f, indent=2, ensure_ascii=False)
+    print(f"  Wrote {acc_path}")
 
-    repl_path = os.path.join(args.output_dir, f"{store_slug}_replacements.txt")
-    with open(repl_path, "w", encoding="utf-8") as f:
-        f.write(replacements)
-    print(f"  Replacements   -> {repl_path}")
-
-    footer_path = os.path.join(args.output_dir, f"{store_slug}_footer.html")
-    with open(footer_path, "w", encoding="utf-8") as f:
-        f.write(footer_html)
-    print(f"  Footer HTML    -> {footer_path}")
-
-    # Optionally generate full HTML
-    if args.output_html:
-        template_path = os.path.join(os.path.dirname(__file__), "..", "index.html")
-        if not os.path.exists(template_path):
-            print(f"\n  ERROR: Template not found at {template_path}")
-            sys.exit(1)
-
-        with open(template_path, "r", encoding="utf-8") as f:
-            html = f.read()
-
-        # Replace CSS variables
-        css_pattern = r"(--store-primary:)[^;]+(;.*?\n\s*--store-primary-light:)[^;]+(;.*?\n\s*--store-primary-glow:)[^;]+(;)"
-        new_css = (
-            f"\\1 {store_info.get('primary_color', '#8B1A1A')}\\2 "
-            f"{store_info.get('primary_color_light', '#a52525')}\\3 "
+    # Patch Code.gs in place (if present)
+    code_gs_path = os.path.join(out, "Code.gs")
+    if os.path.exists(code_gs_path):
+        with open(code_gs_path, "r", encoding="utf-8") as f:
+            src = f.read()
+        patched = patch_code_gs(
+            src, store_name,
+            store_info.get("email_subject", ""),
+            store_info.get("email_sender", "")
         )
-        r, g, b = (int(store_info['primary_color'][i:i+2], 16) for i in (1, 3, 5))
-        glow = f"rgba({r}, {g}, {b}, 0.15)"
-        new_css += f" {glow}\\4"
-        html = re.sub(css_pattern, new_css, html, flags=re.DOTALL)
+        with open(code_gs_path, "w", encoding="utf-8") as f:
+            f.write(patched)
+        print(f"  Patched {code_gs_path}")
 
-        # Replace MATTRESSES object
-        matt_pattern = r"const MATTRESSES = \{.*?\};\s*\n"
-        html = re.sub(matt_pattern, mattresses_js + "\n", html, flags=re.DOTALL)
+    # Patch manifest.json in place (if present)
+    manifest_path = os.path.join(out, "manifest.json")
+    if os.path.exists(manifest_path):
+        with open(manifest_path, "r", encoding="utf-8") as f:
+            src = f.read()
+        patched = patch_manifest(src, store_name)
+        with open(manifest_path, "w", encoding="utf-8") as f:
+            f.write(patched + "\n")
+        print(f"  Patched {manifest_path}")
 
-        # Replace ACCESSORIES array
-        acc_pattern = r"const ACCESSORIES = \[.*?\];\s*\n"
-        html = re.sub(acc_pattern, accessories_js + "\n", html, flags=re.DOTALL)
+    # Post-run checklist
+    pages_url = args.image_base_url or "https://<retailer>.github.io/DreamFinder"
+    print("\n" + "=" * 64)
+    print("Done. Remaining manual steps:")
+    print("=" * 64)
+    print("  1. Run .\\build-data.ps1 to regenerate data/mattresses.json")
+    print("  2. Drop retailer logos into images/logos/ (store, brand, icons)")
+    print("  3. Drop PWA icons into repo root: icon-192.png and icon-512.png")
+    print("  4. Create a Google Apps Script deployment:")
+    print("     - New Google Sheet → Tools → Apps Script")
+    print("     - Paste Code.gs (already patched with retailer strings)")
+    print("     - Deploy → New deployment → Web app → Anyone")
+    print("     - Paste the /exec URL into index.html's GOOGLE_SCRIPT_URL constant")
+    print(f"  5. Add '{_host_from_url(pages_url)}' to the domain lock array in index.html")
+    print("  6. Enable GitHub Pages on the new repo (main / root)")
+    print("  7. Commit and push")
 
-        # Replace store name references
-        html = html.replace("Bel Furniture", store_info.get("store_name", ""))
-        html = html.replace(
-            '<span class="logo-main">bel</span>',
-            f'<span class="logo-main">{store_info.get("logo_line1", "")}</span>'
-        )
-        html = html.replace(
-            '<span class="logo-sub">furniture</span>',
-            f'<span class="logo-sub">{store_info.get("logo_line2", "")}</span>'
-        )
 
-        # Replace trust signal and badge
-        html = html.replace(
-            "Proudly serving Texas families for over 25 years",
-            store_info.get("trust_signal", "")
-        )
-        html = html.replace("Made in Texas", store_info.get("badge_text", ""))
-
-        # Replace footer
-        footer_pattern = r"    <!-- Footer -->.*?    </footer>"
-        html = re.sub(footer_pattern, footer_html, html, flags=re.DOTALL)
-
-        # Replace image base URL
-        html = html.replace(
-            "https://beford782.github.io/DreamFinder",
-            args.image_base_url
-        )
-
-        html_path = os.path.join(args.output_dir, f"{store_slug}_index.html")
-        with open(html_path, "w", encoding="utf-8") as f:
-            f.write(html)
-        print(f"  Full HTML      -> {html_path}")
-
-    print("\nDone!")
+def _host_from_url(url):
+    m = re.match(r"^https?://([^/]+)", url)
+    return m.group(1) if m else url
 
 
 if __name__ == "__main__":
