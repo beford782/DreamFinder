@@ -3407,12 +3407,12 @@
       <div class="hero-store-logo">
         <span class="hero-logo-main">bel</span>
         <span class="hero-logo-sub">furniture</span>
-        <p class="trust-signal" data-i18n="welcome.trust_signal">Proudly serving Texas families for over twenty-five years</p>
+        <p class="trust-signal" data-store="trust-signal">Proudly serving Texas families for over twenty-five years</p>
         <div class="made-badge">
           <svg viewBox="0 0 24 24" fill="currentColor">
             <polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9"/>
           </svg>
-          <span data-i18n="welcome.made_badge">Made in Texas</span>
+          <span data-store="made-badge">Made in Texas</span>
         </div>
       </div>
 
@@ -4208,6 +4208,12 @@
         if (ogTitle && textBlock.ogTitle) ogTitle.setAttribute('content', textBlock.ogTitle);
         document.querySelectorAll('[data-store="name"]').forEach(function(el) {
           el.textContent = STORE_CONFIG.storeName || el.textContent;
+        });
+        document.querySelectorAll('[data-store="trust-signal"]').forEach(function(el) {
+          if (textBlock.trustSignal) el.textContent = textBlock.trustSignal;
+        });
+        document.querySelectorAll('[data-store="made-badge"]').forEach(function(el) {
+          if (textBlock.madeBadge) el.textContent = textBlock.madeBadge;
         });
         document.querySelectorAll('[data-store="social-proof"]').forEach(function(el) {
           el.textContent = textBlock.socialProof || el.textContent;
