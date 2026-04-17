@@ -3396,9 +3396,9 @@
   </div>
 
   <!-- SCREEN: Welcome / Landing -->
-  <main class="main screen active" id="welcomeScreen">
+  <main class="main screen active" id="welcomeScreen" style="position:relative;">
     <!-- Language Toggle -->
-    <div id="langToggle" style="position:absolute; top:1rem; right:1rem; z-index:20; display:flex; background:rgba(255,255,255,0.08); border-radius:8px; overflow:hidden; border:1px solid rgba(255,255,255,0.15);">
+    <div id="langToggle" style="position:absolute; top:1rem; right:1rem; z-index:50; display:flex; background:rgba(13,23,48,0.85); border-radius:10px; overflow:hidden; border:1px solid rgba(201,168,76,0.35); box-shadow:0 4px 16px rgba(0,0,0,0.3);">
       <button id="langBtnEn" onclick="switchLanguage('en')" ontouchend="event.preventDefault();switchLanguage('en');" style="padding:0.35rem 0.7rem; font-family:inherit; font-size:0.75rem; font-weight:700; border:none; cursor:pointer; touch-action:manipulation; background:#c9a84c; color:#0d1730; letter-spacing:0.5px;">EN</button>
       <button id="langBtnEs" onclick="switchLanguage('es')" ontouchend="event.preventDefault();switchLanguage('es');" style="padding:0.35rem 0.7rem; font-family:inherit; font-size:0.75rem; font-weight:700; border:none; cursor:pointer; touch-action:manipulation; background:transparent; color:rgba(255,255,255,0.5); letter-spacing:0.5px;">ES</button>
     </div>
