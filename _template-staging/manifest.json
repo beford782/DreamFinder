@@ -1,0 +1,10 @@
+{
+  "name": "DreamFinder — Your Store",
+  "short_name": "DreamFinder",
+  "description": "Personalized sleep consultation for Your Store",
+  "start_url": "/DreamFinder/",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#0f1f33",
+  "theme_color": "#0f1f33"
+}

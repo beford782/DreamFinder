@@ -1,0 +1,38 @@
+{
+  "storeName": "Your Store",
+  "languages": ["en", "es"],
+  "discountPct": 5,
+  "colors": {
+    "storePrimary": "#1F3A5C",
+    "storePrimaryLight": "#2b4f7e",
+    "storePrimaryGlow": "rgba(31, 58, 92, 0.15)"
+  },
+  "text": {
+    "pageTitle": "DreamFinder — Your Store Sleep Quiz",
+    "metaDescription": "Take the DreamFinder sleep quiz at Your Store and get personalized mattress recommendations.",
+    "ogTitle": "DreamFinder — Your Store",
+    "trustSignal": "Replace with your tagline",
+    "madeBadge": "Local Favorite",
+    "socialProof": "Recommended by your Your Store sleep team",
+    "footer": "&copy; Your Store. All rights reserved.",
+    "emailPrivacy": "We'll only use your email to send your results.",
+    "privacyPolicy": "Your information is never shared with third parties.",
+    "inStockText": "In Stock",
+    "emailHeader": "Your Store × DreamFinder",
+    "emailSubtext": "Bring this email to your Your Store location"
+  },
+  "text_es": {
+    "pageTitle": "DreamFinder — Prueba de Sueño de Your Store",
+    "metaDescription": "Toma la prueba de sueño DreamFinder y recibe recomendaciones personalizadas de colchones.",
+    "ogTitle": "DreamFinder — Your Store",
+    "trustSignal": "Reemplaza con tu eslogan",
+    "madeBadge": "Favorito Local",
+    "socialProof": "Confiado por clientes de Your Store",
+    "footer": "&copy; Your Store. Todos los derechos reservados.",
+    "emailPrivacy": "Solo usaremos tu correo para enviarte tus resultados.",
+    "privacyPolicy": "Tu información nunca se comparte con terceros.",
+    "inStockText": "Disponible",
+    "emailHeader": "Your Store × DreamFinder",
+    "emailSubtext": "Lleva este correo a tu tienda Your Store"
+  }
+}
