@@ -102,6 +102,11 @@ Add bases/foundations, pillows, and protectors. Key fields:
 - **Category** — Must be: `Foundations & Support`, `Pillows`, or `Protectors`
 - **Match Scores (0-5)** — Controls how strongly each accessory is recommended based on quiz answers. Leave blank if unsure — we can help fill these in.
 
+**Spanish accessory text (optional):** The Name, Category, and Description columns have
+Spanish counterparts. Fill them in if you want the accessories to display in Spanish when
+customers toggle to ES — otherwise the English text is shown in both languages. We'll
+generate translations for you if you'd prefer.
+
 ### Step 5: Fill Out the Brands Tab
 
 Add one row for each mattress brand you carry. These appear in the "Our Brands" section at the bottom of the app.

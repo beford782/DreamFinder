@@ -201,10 +201,13 @@ ws3 = wb.create_sheet("Accessories")
 acc_headers = [
     "ID *",
     "Name *",
+    "Name (Spanish)",
     "Category *",
+    "Category (Spanish)",
     "Sub-Type",
     "Price *",
     "Description *",
+    "Description (Spanish)",
     "Image File Name *",
     "Match Tags\n(comma-sep)",
     "Score: Default",
@@ -221,14 +224,20 @@ for i, h in enumerate(acc_headers, 1):
     ws3.cell(row=1, column=i, value=h)
 
 bel_accessories = [
-    ["base-bt3000", "BT3000 Power Base", "Foundations & Support", "adjustable", 899,
+    ["base-bt3000", "BT3000 Power Base", "Base Eléctrica BT3000",
+     "Foundations & Support", "Bases y Soportes", "adjustable", 899,
      "Head & foot adjustment, wireless remote, USB ports, massage, LED lighting",
+     "Ajuste de cabeza y pies, control inalámbrico, puertos USB, masaje, luces LED",
      "base-bt3000.jpg", "snoring, back_pain", "", "", "", 4, 4, 3, "", "", ""],
-    ["pillow-activecool", "Active Cool Pillow", "Pillows", "", 160,
+    ["pillow-activecool", "Active Cool Pillow", "Almohada Active Cool",
+     "Pillows", "Almohadas", "", 160,
      "Advanced active cooling fabric with premium memory foam clusters",
+     "Gel de enfriamiento con ventilación — disipa el calor activamente",
      "pillow-activecool.webp", "hot_sleeper, cooling", "", 4, 4, "", "", "", 2, 2, ""],
-    ["protector-activedry", "Active Dry Protector", "Protectors", "", 100,
+    ["protector-activedry", "Active Dry Protector", "Protector Active Dry",
+     "Protectors", "Protectores", "", 100,
      "Waterproof & breathable — wicks moisture, extends mattress life",
+     "Barrera impermeable con tela transpirable — protege contra derrames y alérgenos",
      "protector-activedry.jpg", "all", 3, 1, "", "", "", "", "", "", ""],
 ]
 
@@ -240,23 +249,23 @@ for row_idx, row_data in enumerate(bel_accessories, 2):
         cell.border = THIN_BORDER
         cell.alignment = WRAP
 
-# Category dropdown
+# Category dropdown (column D after adding Name-ES)
 cat_dv = DataValidation(type="list", formula1='"Foundations & Support,Pillows,Protectors"', allow_blank=False)
 cat_dv.error = "Must be: Foundations & Support, Pillows, or Protectors"
 ws3.add_data_validation(cat_dv)
-cat_dv.add("C2:C50")
+cat_dv.add("D2:D50")
 
-# Sub-Type dropdown
+# Sub-Type dropdown (column F after adding Category-ES)
 sub_dv = DataValidation(type="list", formula1='"adjustable,foundation,low_profile,bunkie,"', allow_blank=True)
 sub_dv.error = "Must be: adjustable, foundation, low_profile, bunkie, or blank"
 ws3.add_data_validation(sub_dv)
-sub_dv.add("D2:D50")
+sub_dv.add("F2:F50")
 
-# Score validation (0-5)
+# Score validation (0-5) — scores now in columns L through T
 score_dv = DataValidation(type="whole", operator="between", formula1=0, formula2=5)
 score_dv.error = "Score must be 0-5"
 ws3.add_data_validation(score_dv)
-score_dv.add("I2:Q50")
+score_dv.add("L2:T50")
 
 style_header_row(ws3, len(acc_headers))
 auto_width(ws3)
@@ -379,6 +388,8 @@ instructions = [
     ("• Sub-Type is for foundations only: adjustable, foundation, low_profile, or bunkie.", ""),
     ("• Match Scores (0-5) control how strongly this accessory is recommended based on quiz answers.", ""),
     ("  Leave blank or 0 if the score doesn't apply.", ""),
+    ("• Spanish columns (Name / Category / Description) are optional. Leave blank to fall back to English,", ""),
+    ("  or skip entirely if your store doesn't need the Spanish language toggle.", ""),
     ("", ""),
     ("STEP 4: BRANDS TAB", ""),
     ("Add one row per mattress brand you carry. These appear in the app footer.", ""),

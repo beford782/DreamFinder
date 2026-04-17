@@ -4151,17 +4151,20 @@
       }
     ];
 
-    // ----- MATTRESS DATA & STORE CONFIG (loaded from external JSON) -----
+    // ----- MATTRESS DATA, ACCESSORIES & STORE CONFIG (loaded from external JSON) -----
     let MATTRESSES = { gold: [], silver: [], bronze: [] };
+    let ACCESSORIES = [];
     let STORE_CONFIG = {};
 
     (async function loadAppData() {
       try {
-        const [mattressRes, storeRes] = await Promise.all([
+        const [mattressRes, accessoryRes, storeRes] = await Promise.all([
           fetch('./data/mattresses.json'),
+          fetch('./data/accessories.json'),
           fetch('./data/store-config.json')
         ]);
         MATTRESSES = await mattressRes.json();
+        ACCESSORIES = await accessoryRes.json();
         STORE_CONFIG = await storeRes.json();
       } catch (e) {
         console.error('Failed to load app data:', e);
@@ -4229,57 +4232,6 @@
         });
       }
     }
-    // ----- SLEEP ACCESSORIES -----
-    // Image folder: place product images in an "images/accessories/" folder next to this HTML file.
-    // Naming convention: images/accessories/{product-id}.jpg
-    // Fallback: if an image fails to load, it shows a styled placeholder with the product name.
-    const ACC_IMAGE_PATH = 'https://beford782.github.io/DreamFinder/images/accessories/';
-
-    const ACCESSORIES = [
-      // Bases & Foundations (shown first)
-      { id: 'base-bt3000', name: {en: 'BT3000 Power Base', es: 'Base Eléctrica BT3000'}, category: {en: 'Foundations & Support', es: 'Bases y Soportes'}, price: 899,
-        image: 'https://beford782.github.io/DreamFinder/images/accessories/base-bt3000.jpg',
-        description: {en: 'Head & foot adjustment, wireless remote, USB ports, massage, under-bed LED lighting — 850lb capacity', es: 'Ajuste de cabeza y pies, control inalámbrico, puertos USB, masaje, luces LED — capacidad de 850 lbs'},
-        subType: 'adjustable',
-        matchTags: ['snoring', 'back_pain'], matchScores: { back_pain: 4, snoring: 4, premium: 3 } },
-
-      { id: 'base-foundation', name: {en: 'Better Than A Boxspring', es: 'Mejor Que Un Box Spring'}, category: {en: 'Foundations & Support', es: 'Bases y Soportes'}, price: 111,
-        image: 'https://beford782.github.io/DreamFinder/images/accessories/base-foundation.webp',
-        description: {en: 'Standard-height foundation — sturdy platform support that replaces a traditional box spring', es: 'Base de altura estándar — soporte de plataforma resistente que reemplaza un box spring tradicional'},
-        subType: 'foundation',
-        matchTags: ['all'], matchScores: { default: 2 } },
-      { id: 'base-lowprofile', name: {en: 'Low Profile Foundation', es: 'Base de Perfil Bajo'}, category: {en: 'Foundations & Support', es: 'Bases y Soportes'}, price: 142,
-        image: 'https://beford782.github.io/DreamFinder/images/accessories/base-lowprofile.webp',
-        description: {en: 'Reduced height foundation — ideal for taller mattresses or platform-style bed frames', es: 'Base de altura reducida — ideal para colchones altos o marcos de cama estilo plataforma'},
-        subType: 'low_profile',
-        matchTags: ['all'], matchScores: { default: 2 } },
-      { id: 'base-bunkie', name: {en: 'Eckard Bunkie Board', es: 'Tabla Eckard Bunkie'}, category: {en: 'Foundations & Support', es: 'Bases y Soportes'}, price: 76,
-        image: 'https://beford782.github.io/DreamFinder/images/accessories/base-bunkie.webp',
-        description: {en: 'Ultra-slim 2" support board — distributes weight evenly, perfect for platform beds & bunk beds', es: 'Tabla de soporte ultra delgada de 2" — distribuye el peso uniformemente, perfecta para camas de plataforma y literas'},
-        subType: 'bunkie',
-        matchTags: ['all'], matchScores: { default: 1 } },
-
-      // Pillows (shown second)
-      { id: 'pillow-activedry', name: {en: 'Active Dry Pillow', es: 'Almohada Active Dry'}, category: {en: 'Pillows', es: 'Almohadas'}, price: 120,
-        image: 'https://beford782.github.io/DreamFinder/images/accessories/pillow-activedry.webp',
-        description: {en: 'Moisture-wicking memory foam blend with knife-edge multi-level support — all sleep positions', es: 'Tela que absorbe la humedad con espuma de memoria transpirable — mantiene la cabeza y el cuello frescos y secos'},
-        matchTags: ['cooling', 'all_positions'], matchScores: { default: 2, cooling: 2, hot: 2, position_side: 1, position_back: 2, position_stomach: 1 } },
-      { id: 'pillow-activecool', name: {en: 'Active Cool Pillow', es: 'Almohada Active Cool'}, category: {en: 'Pillows', es: 'Almohadas'}, price: 160,
-        image: 'https://beford782.github.io/DreamFinder/images/accessories/pillow-activecool.webp',
-        description: {en: 'Advanced active cooling fabric with premium memory foam clusters — conforms to head, neck & shoulders', es: 'Gel de enfriamiento con ventilación — disipa el calor activamente para un sueño fresco toda la noche'},
-        matchTags: ['hot_sleeper', 'cooling'], matchScores: { cooling: 4, hot: 4, position_side: 2, position_back: 2 } },
-
-      // Mattress Protectors (shown last)
-      { id: 'protector-activedry', name: {en: 'Active Dry Protector', es: 'Protector Active Dry'}, category: {en: 'Protectors', es: 'Protectores'}, price: 100,
-        image: 'https://beford782.github.io/DreamFinder/images/accessories/protector-activedry.jpg',
-        description: {en: 'Waterproof & breathable — wicks moisture so you stay cool and dry, extends mattress life', es: 'Barrera impermeable con tela transpirable — protege contra derrames y alérgenos sin retener calor'},
-        matchTags: ['all'], matchScores: { default: 3, cooling: 1 } },
-      { id: 'protector-activecool', name: {en: 'Active Cool Protector', es: 'Protector Active Cool'}, category: {en: 'Protectors', es: 'Protectores'}, price: 200,
-        image: 'https://beford782.github.io/DreamFinder/images/accessories/protector-activecool.webp',
-        description: {en: 'Advanced cooling + waterproof protection — hypoallergenic, helps you stay in deeper sleep stages longer', es: 'Capa impermeable con enfriamiento — combina protección del colchón con regulación de temperatura'},
-        matchTags: ['hot_sleeper', 'cooling'], matchScores: { cooling: 4, hot: 4, default: 2 } },
-    ];
-
     // ----- APP STATE -----
     let currentQuestion = 0;
     let answers = {};
