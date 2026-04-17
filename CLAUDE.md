@@ -48,8 +48,9 @@ Do not push Bel changes to another retailer's deployment.
 Do not copy `data/mattresses.csv` between retailer repos — each store has a
 completely different product lineup.
 
-**Planned deployments (separate repos):**
+**Deployments (separate repos):**
 - Bel Furniture — this repo (active)
+- The Furniture Market — `beford782/TheFurnitureMarket` (active)
 - Star Furniture — separate repo (planned)
 - Lacks Furniture — separate repo (planned)
 
@@ -78,18 +79,73 @@ If deploying to a new domain, add it to the `allowed` array around line 3607.
 
 ### Data files
 - `data/mattresses.csv` — source of truth for mattress lineup, edit this
+- `data/mattresses-es.csv` — Spanish translations for mattress display text (optional per retailer)
 - `data/mattresses.json` — generated file, never edit directly
 - `data/store-config.json` — all store-specific configuration
+- `data/dict-en.json` — English UI dictionary (shared across all retailers)
+- `data/dict-es.json` — Spanish UI dictionary (shared across all retailers)
 
-The app fetches both JSON files at load time.
+The app fetches mattresses.json, store-config.json, and the active dictionary at load time.
 
 ### Build script
 ```
 .\build-data.ps1
 ```
 Run from repo root. Converts `data\mattresses.csv` → `data\mattresses.json`.
+If `data\mattresses-es.csv` exists, merges Spanish translations as `tags_es`,
+`highlight_es`, `reasons_es` fields into the JSON.
 Always run this before committing if the CSV was changed.
 Never commit CSV changes without also committing the regenerated JSON.
+
+---
+
+## Bilingual / i18n Architecture — Critical Rules
+
+DreamFinder ships with full English + Spanish support as a core feature of the
+white-label template. Every new retailer deployment includes bilingual accessibility
+by default. Do not treat this as optional or Bel-specific.
+
+### How it works
+- **Language toggle** (EN | ES) appears on the welcome screen. Controlled by
+  `store-config.json` field `"languages": ["en", "es"]`. Toggle hides automatically
+  if only one language is configured.
+- **UI strings** live in `data/dict-en.json` and `data/dict-es.json`. These are
+  generic (not retailer-specific) and shared across all deployments. Do not put
+  store names, slogans, or brand copy in the dict files.
+- **Retailer-specific text** lives in `store-config.json` under `text` (English)
+  and `text_es` (Spanish) blocks. This includes trust signals, footer copy, email
+  privacy text, social proof, and in-stock labels.
+- **Quiz questions, profile names, and label constants** use inline bilingual
+  objects `{en: "...", es: "..."}` directly in `index.html`. The `L(obj)` function
+  reads the active language from these objects.
+- **Mattress product text** (badges, highlights, match reasons) is translated via
+  `data/mattresses-es.csv`. The build script merges these into `mattresses.json`.
+  If a retailer hasn't provided Spanish product translations, the app falls back
+  to English text gracefully.
+- **Email** is sent in the customer's chosen language. The client builds the HTML
+  email body in the active language and sends `lang: currentLang` in the GAS payload.
+  `Code.gs` uses this for the subject line and server-side fallback.
+- **Session reset** (`startOver()`) always resets language to English.
+
+### Rules for new features
+- Any new user-facing string must be bilingual. Use `t('key')` for dict lookups
+  or `{en: "...", es: "..."}` with `L()` for inline data.
+- Never hardcode English-only display text in JavaScript template literals.
+- Retailer-specific copy (store name, taglines, footer) goes in `store-config.json`
+  `text` and `text_es` blocks — never in the dict files.
+- When adding new quiz questions or options, always include both `en` and `es` values.
+- When adding new accessories, use `{en: "...", es: "..."}` for `name`, `category`,
+  and `description` fields.
+
+### Key functions
+- `t(key, replacements)` — dictionary lookup with optional `{placeholder}` interpolation
+- `L(obj)` — reads `currentLang` from a `{en: "...", es: "..."}` object; falls back
+  to plain strings gracefully
+- `mField(m, field)` — language-aware mattress field accessor (reads `field_es` when
+  in Spanish mode)
+- `applyTranslations()` — applies `data-i18n` attributes on all tagged HTML elements
+- `switchLanguage(lang)` — reloads dictionary, updates toggle UI, re-applies text
+- `applyLanguageConfig()` — shows/hides toggle based on `store-config.languages`
 
 ---
 
