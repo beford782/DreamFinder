@@ -4,6 +4,10 @@ Welcome! DreamFinder is a personalized mattress recommendation app that helps yo
 floor sales team guide customers to their perfect mattress through a quick 12-question
 sleep consultation quiz.
 
+DreamFinder ships with **full English + Spanish bilingual support**. Customers can
+toggle between languages on the welcome screen, and the entire experience — quiz,
+results, email, and salesperson handoff — switches to their preferred language.
+
 To set up DreamFinder for your store, we need a few things from you.
 
 ---
@@ -21,6 +25,8 @@ To set up DreamFinder for your store, we need a few things from you.
 | Square app icons (192px + 512px) | PNG | `logos/` folder in Google Drive |
 | Mattress product images | PNG or JPG, one per mattress | `mattresses/` folder in Google Drive |
 | Accessory product images | PNG, JPG, or WebP | `accessories/` folder in Google Drive |
+| Spanish store text (optional) | Spreadsheet (Store Info tab) | Same spreadsheet, Spanish columns |
+| Spanish mattress descriptions (optional) | Spreadsheet (Mattresses tab) | Same spreadsheet, Spanish columns |
 
 ---
 
@@ -57,6 +63,19 @@ This is just one row of basic info:
 - **Store Hours** — Shown in the customer email (e.g., "Mon–Sat 10am–8pm · Sun 12–6pm")
 - **Footer Text** — The copyright/credit line at the bottom of the app (e.g., "Powered by DreamFinder · (c) 2026 Your Store Name")
 
+**Spanish Translations (optional but recommended):**
+DreamFinder includes a built-in EN/ES language toggle. The quiz, results, and
+email are automatically translated, but your store-specific text needs Spanish
+versions from you:
+- **Trust Signal (Spanish)** — e.g., "Sirviendo con orgullo a las familias de Texas"
+- **Footer Text (Spanish)** — e.g., "© 2026 Tu Tienda. Todos los derechos reservados."
+- **Social Proof (Spanish)** — e.g., "Confiado por clientes de Tu Tienda"
+- **Email Subject (Spanish)** — e.g., "Tus Resultados de DreamFinder de Tu Tienda"
+- **Email Sender Name (Spanish)** — e.g., "Equipo de Descanso de Tu Tienda"
+
+If you don't provide Spanish translations, we'll generate them for you. If you
+don't want the Spanish toggle at all, just let us know and we'll disable it.
+
 ### Step 3: Fill Out the Mattresses Tab
 
 Add one row for every mattress you want in the app. Key fields:
@@ -67,6 +86,11 @@ Add one row for every mattress you want in the app. Key fields:
 - **Feature Keywords** — These drive the quiz matching algorithm. See the Feature Keywords tab for the full list with descriptions.
 - **Image File Name** — Must exactly match the file you upload (e.g., `royal-cloud.png`)
 - **"Why" columns** — Short selling points shown when a mattress matches. "Why: Default" is required.
+
+**Spanish mattress text (optional):** If you'd like the mattress badge chips, highlight
+lines, and "Why it matches you" reason text to appear in Spanish when customers toggle
+to ES, provide Spanish translations for each mattress. We'll generate these for you if
+not provided — they can always be refined later.
 
 > **Tip:** The yellow example rows show Bel Furniture's real data. Use them as a guide,
 > then delete them before submitting.
@@ -125,6 +149,8 @@ DreamFinder - [Your Store Name]/
 - [ ] One image per mattress in `mattresses/`, file names matching IDs
 - [ ] One image per accessory in `accessories/`, file names matching IDs
 - [ ] Yellow example rows deleted from spreadsheet
+- [ ] Spanish store text provided (or noted as "generate for us")
+- [ ] Spanish mattress text provided (or noted as "generate for us")
 
 ---
 

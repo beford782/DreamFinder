@@ -253,6 +253,13 @@ Open the Pages URL on a desktop browser AND on an iPad. Run the full flow:
 - [ ] Restart button works from header, accessories screen, and email screen
 - [ ] Discount overlay doesn't block taps; full reveal completes before fade-out
 - [ ] Idle timer (2 min) returns to welcome
+- [ ] **Spanish toggle (EN/ES) visible on welcome screen**
+- [ ] **Tap ES — entire welcome screen switches to Spanish**
+- [ ] **Complete quiz in Spanish — all 12 questions, labels, sublabels in Spanish**
+- [ ] **Profile, results, drawer, accessories all render in Spanish**
+- [ ] **Submit email in Spanish mode — email arrives with Spanish subject, body, labels**
+- [ ] **Tap EN — reverts to English cleanly**
+- [ ] **Idle reset returns language to English**
 - [ ] Console (DevTools) is clean — no red errors, no 404s
 
 ---
