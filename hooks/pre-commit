@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+# DreamFinder pre-commit hook
+#
+# Blocks commits that stage mattresses.csv / mattresses-es.csv changes
+# without also staging the regenerated mattresses.json.
+#
+# Enable once per clone:
+#   git config core.hooksPath hooks
+#
+# Bypass (only if you know what you're doing):
+#   git commit --no-verify
+
+set -e
+
+staged() {
+    git diff --cached --name-only --diff-filter=ACMR | grep -Fx "$1" > /dev/null 2>&1
+}
+
+csv_changed=false
+json_changed=false
+
+if staged "data/mattresses.csv" || staged "data/mattresses-es.csv"; then
+    csv_changed=true
+fi
+
+if staged "data/mattresses.json"; then
+    json_changed=true
+fi
+
+if [ "$csv_changed" = true ] && [ "$json_changed" = false ]; then
+    echo ""
+    echo "pre-commit: mattresses CSV changed but mattresses.json is not staged."
+    echo ""
+    echo "Run the build script and stage the regenerated JSON:"
+    echo ""
+    echo "    .\\build-data.ps1"
+    echo "    git add data/mattresses.json"
+    echo ""
+    echo "(Bypass with --no-verify if you know why you're doing that.)"
+    exit 1
+fi
+
+# Basic JSON validity check on staged store-config.json
+if staged "data/store-config.json"; then
+    tmp=$(mktemp)
+    git show ":data/store-config.json" > "$tmp"
+    if command -v python3 > /dev/null 2>&1; then
+        if ! python3 -c "import json,sys; json.load(open('$tmp'))" 2> /dev/null; then
+            echo "pre-commit: data/store-config.json is not valid JSON."
+            rm -f "$tmp"
+            exit 1
+        fi
+    fi
+    rm -f "$tmp"
+fi
+
+exit 0
