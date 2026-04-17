@@ -4168,8 +4168,25 @@
       }
       await loadDictionary(currentLang);
       applyStoreConfig();
+      applyLanguageConfig();
       applyTranslations();
     })();
+
+    // Show/hide language toggle based on store-config.languages array.
+    // If only one language is configured (or the field is missing), hide the toggle
+    // and keep the app in English. Retailers who want Spanish add "es" to the array.
+    function applyLanguageConfig() {
+      var langs = (STORE_CONFIG && Array.isArray(STORE_CONFIG.languages))
+        ? STORE_CONFIG.languages
+        : ['en'];
+      var toggle = document.getElementById('langToggle');
+      if (!toggle) return;
+      if (langs.length < 2) {
+        toggle.style.display = 'none';
+      } else {
+        toggle.style.display = 'flex';
+      }
+    }
 
     function applyStoreConfig() {
       if (!STORE_CONFIG.colors && !STORE_CONFIG.text) return;

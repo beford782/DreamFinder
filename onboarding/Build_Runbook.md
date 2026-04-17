@@ -113,6 +113,45 @@ Several of these have `STORE_CONFIG.text.{inStockText, emailHeader, emailSubtext
 
 CSS theme color is set near the top of `<style>` (`--store-primary` etc.). Change to the retailer's primary brand color.
 
+### Language support (`data/store-config.json`)
+
+The template ships bilingual (English + Spanish) by default. A language toggle appears on the welcome screen and customers can flip the whole app — quiz, profile, results, drawer, accessories, email capture, email body — into Spanish.
+
+To configure per retailer, edit the `languages` array:
+
+```json
+"languages": ["en", "es"]   // default — toggle visible
+"languages": ["en"]          // English-only — toggle hidden
+```
+
+If Spanish is enabled, also customize the `text_es` block alongside `text`:
+
+```json
+"text": {
+  "socialProof": "Trusted by Acme customers across Arizona",
+  "footer": "© 2026 Acme Mattress. All rights reserved.",
+  ...
+},
+"text_es": {
+  "socialProof": "Confiado por clientes de Acme en todo Arizona",
+  "footer": "© 2026 Acme Mattress. Todos los derechos reservados.",
+  ...
+}
+```
+
+See `data/dict-en.json` / `data/dict-es.json` for the UI dictionary (all static strings, shared across retailers — rarely need retailer edits).
+
+### Spanish mattress descriptions (optional)
+
+To translate mattress-specific copy (badge chips, highlight lines, per-match reason text) into Spanish, create `data/mattresses-es.csv` alongside `data/mattresses.csv`. Columns:
+
+- `id` (required, matches the English CSV)
+- `displayBadges`, `highlight`, `reason_cooling`, `reason_pressureRelief`, `reason_motionIsolation`, `reason_support`, `reason_plush`, `reason_medium`, `reason_firm`, `reason_durability`, `reason_default`
+
+Empty cells are allowed — the app falls back to the English value when a Spanish translation is missing. Run `.\build-data.ps1` after editing the CSV to regenerate `data/mattresses.json` with the Spanish fields merged in as `tags_es`, `highlight_es`, `reasons_es`.
+
+If the retailer doesn't want Spanish, just skip creating this file. The app ignores it cleanly.
+
 ### `Code.gs`
 
 Open in any text editor and replace:

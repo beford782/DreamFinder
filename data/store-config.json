@@ -1,5 +1,6 @@
 {
   "storeName": "Bel Furniture",
+  "languages": ["en", "es"],
   "colors": {
     "storePrimary": "#8B1A1A",
     "storePrimaryLight": "#a52525",
