@@ -225,7 +225,11 @@ significant debugging to get right.
 
 - **Quiz → Results**: 9 questions → scoring engine → Gold/Silver/Bronze tier tabs → top pick badge
 - **Mattress drawer**: Opens on card tap. Prev/next navigation between results. Firmness bar, match reasons, features.
-- **Accessories**: 3-step flow (Foundations → Pillows → Protectors). Sticky cart bar. Cart persists to handoff screen.
+- **Accessories / Sleep System**: Framed as "Build Your Sleep System" (not add-ons).
+  Conditional adjustable base hero (shown when quiz flags snoring, reflux, or back pain)
+  with animated SVG and personalized benefit cards. Featured top pillow with "Matched to
+  Your Profile" badge. "Did You Know?" educational callout for protectors. Sticky cart bar.
+  Cart persists to handoff screen.
 - **Discount reveal**: Dramatic animation — DREAM + 3-digit code. 10rem gold glow font.
 - **Handoff screen**: Customer marks "I'm Interested" on mattresses/accessories. Salesperson sees saved picks.
 - **Idle timeout**: Inactivity triggers reset flow back to start screen. Uses `window.startOver()`.
