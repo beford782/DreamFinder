@@ -3676,7 +3676,7 @@
     <!-- Bottom section with CTA -->
     <div class="bottom-section">
       <div style="text-align:center; margin-top:0.4rem; display:flex; flex-direction:column; gap:0.5rem; align-items:center;">
-        <button class="cta-btn" onclick="showAccessories()" style="background:linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 100%); color:var(--navy); box-shadow:0 4px 0 #9a7a2e, 0 6px 20px rgba(212,168,75,0.25); font-size:0.85rem; padding:0.7rem 1.75rem; border:2px solid var(--gold-pale); font-weight:700; border-radius:14px; transition:all 0.15s ease;" data-i18n="results.complete_setup">Complete Your Setup — Pillows, Protectors & More →</button>
+        <button class="cta-btn" onclick="showAccessories()" style="background:linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 100%); color:var(--navy); box-shadow:0 4px 0 #9a7a2e, 0 6px 20px rgba(212,168,75,0.25); font-size:0.85rem; padding:0.7rem 1.75rem; border:2px solid var(--gold-pale); font-weight:700; border-radius:14px; transition:all 0.15s ease;" data-i18n="results.complete_setup">Build Your Sleep System →</button>
         <div style="font-size:0.68rem; color:var(--cream-dim);" data-i18n="results.discount_applies" data-i18n-html="true">Your <span id="bannerPct" style="color:var(--gold); font-weight:700;"></span> discount applies to everything</div>
       </div>
     </div>
@@ -3803,8 +3803,8 @@
   <div class="screen" id="accessoriesScreen" style="flex-direction:column; height:calc(100vh - var(--header-height) - var(--accent-bar-height)); overflow-y:auto; padding:1rem;">
     <div id="accHeader" style="text-align:center; margin-bottom:0.75rem; opacity:0; transform:translateY(10px); transition:all 0.5s ease-out;">
       <div style="font-size:0.65rem; text-transform:uppercase; letter-spacing:2px; color:var(--gold); font-weight:600; margin-bottom:0.25rem;" data-i18n="accessories.analysis_label">Sleep Profile Analysis</div>
-      <h3 style="font-size:1.1rem; font-weight:700; color:var(--cream); margin-bottom:0.2rem;" data-i18n="accessories.title">Everything else you need for better sleep</h3>
-      <p style="font-size:0.78rem; color:var(--cream-dim); line-height:1.3;" id="accessoriesSubhead" data-i18n="accessories.subtitle">Based on your sleep profile, our algorithm identified these accessories to optimize your sleep.</p>
+      <h3 style="font-size:1.1rem; font-weight:700; color:var(--cream); margin-bottom:0.2rem;" data-i18n="accessories.title">Your Complete Sleep System</h3>
+      <p style="font-size:0.78rem; color:var(--cream-dim); line-height:1.3;" id="accessoriesSubhead" data-i18n="accessories.subtitle">Your mattress is one piece of the puzzle. The right foundation, pillow, and protector complete the system.</p>
       <div id="accDiscountBanner" style="display:inline-flex; align-items:center; gap:0.5rem; margin-top:0.6rem; background:linear-gradient(135deg,rgba(212,168,75,0.15),rgba(212,168,75,0.07)); border:1px solid rgba(212,168,75,0.4); border-radius:50px; padding:0.35rem 1rem;">
         <span style="font-size:0.9rem;">🏷️</span>
         <span id="accDiscountText" style="font-size:0.75rem; font-weight:600; color:var(--gold);">Your 5% discount applies to everything on this page</span>
@@ -5803,9 +5803,14 @@
       
       // Store grouped data for stepped reveal
       const categoryIcons = { 'Foundations & Support': icon('support', 20), 'Pillows': icon('cloud', 20), 'Protectors': icon('check', 20) };
+      var pillowSub;
+      if (position === 'side') pillowSub = _es ? 'Los que duermen de lado necesitan una almohada que llene el espacio entre el hombro y la cabeza' : 'Side sleepers need a pillow that fills the gap between shoulder and head';
+      else if (position === 'back') pillowSub = _es ? 'Los que duermen boca arriba necesitan soporte medio para mantener el cuello alineado' : 'Back sleepers need medium support to keep the neck aligned';
+      else if (position === 'stomach') pillowSub = _es ? 'Los que duermen boca abajo necesitan una almohada delgada para evitar tensión en el cuello' : 'Stomach sleepers need a thin pillow to avoid neck strain';
+      else pillowSub = _es ? 'Adaptadas a tu posición de sueño y temperatura' : 'Matched to your sleep position & temperature';
       const categorySubtitles = {
         'Foundations & Support': _es ? 'Cada colchón necesita la base correcta' : 'Every mattress needs the right foundation',
-        'Pillows': _es ? 'Adaptadas a tu posición de sueño y temperatura' : 'Matched to your sleep position & temperature',
+        'Pillows': pillowSub,
         'Protectors': _es ? 'Extiende la vida del colchón y mejora la calidad de sueño' : 'Extend mattress life & improve sleep quality'
       };
       const nextLabels = {
@@ -5862,7 +5867,7 @@
               <div class="accessory-category">${_aCat}</div>
               <div class="accessory-name">${_aName}</div>
               <div class="accessory-description">${_aDesc}</div>
-              <div style="font-size:0.65rem; color:var(--gold); margin-top:0.4rem; font-style:italic; line-height:1.3;">${a.reasons[0]}</div>
+              <div style="font-size:0.7rem; color:var(--gold); margin-top:0.5rem; line-height:1.3; background:rgba(212,168,75,0.08); border-radius:6px; padding:0.35rem 0.5rem;">💡 ${a.reasons[0]}</div>
             </div>`;
           setTimeout(() => grid.insertAdjacentHTML('beforeend', cardHtml), (i + 1) * 200);
         });
@@ -5910,10 +5915,53 @@
       setTimeout(() => { analyzing.style.opacity = '1'; }, 500);
       setTimeout(() => { status.textContent = _es ? 'Combinando accesorios con tu perfil...' : 'Matching accessories to your profile...'; }, 1000);
       
-      // After analyzing, show first category
+      // After analyzing, show hero if applicable, then first category
       setTimeout(() => {
         analyzing.style.opacity = '0';
-        renderAccStep();
+        var health = answers.health_conditions || [];
+        var _issues = answers.sleep_issues || [];
+        var hasSnoring = health.includes('snoring');
+        var hasReflux = health.includes('reflux');
+        var hasBackPain = _issues.includes('back_pain');
+        var showAdjustableHero = hasSnoring || hasReflux || hasBackPain;
+
+        if (showAdjustableHero) {
+          var heroTitle = _es ? 'Base Ajustable' : 'Adjustable Base';
+          var heroLabel = _es ? '\u2b50 RECOMENDADO SEG\u00daN TU PERFIL DE SUE\u00d1O' : '\u2b50 RECOMMENDED BASED ON YOUR SLEEP PROFILE';
+          var heroSub = _es ? 'Basado en tus respuestas, una base ajustable podr\u00eda transformar tu sue\u00f1o.' : 'Based on your answers, an adjustable base could transform your sleep.';
+          var heroCta = _es ? 'Pide a tu especialista de sue\u00f1o una demostraci\u00f3n en la tienda.' : 'Ask your sleep specialist for a demo on the showroom floor.';
+          var benefitCards = '';
+          if (hasSnoring) {
+            benefitCards += '<div style="display:flex;align-items:flex-start;gap:0.65rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.65rem 0.85rem;">'
+              + '<span style="font-size:1.1rem;flex-shrink:0;">\ud83e\udec1</span>'
+              + '<div><div style="font-size:0.78rem;font-weight:600;color:var(--gold);">' + (_es ? 'Dijiste: Ronquidos' : 'You said: Snoring') + '</div>'
+              + '<div style="font-size:0.72rem;color:var(--cream-dim);line-height:1.4;">' + (_es ? 'Elevar tu cabeza 7-10\u00b0 abre las v\u00edas respiratorias y puede reducir significativamente los ronquidos.' : 'Elevating your head 7-10\u00b0 opens airways and can significantly reduce snoring.') + '</div></div></div>';
+          }
+          if (hasReflux) {
+            benefitCards += '<div style="display:flex;align-items:flex-start;gap:0.65rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.65rem 0.85rem;">'
+              + '<span style="font-size:1.1rem;flex-shrink:0;">\ud83d\udd25</span>'
+              + '<div><div style="font-size:0.78rem;font-weight:600;color:var(--gold);">' + (_es ? 'Dijiste: Reflujo \u00c1cido' : 'You said: Acid Reflux') + '</div>'
+              + '<div style="font-size:0.72rem;color:var(--cream-dim);line-height:1.4;">' + (_es ? 'La posici\u00f3n inclinada reduce la acidez nocturna al mantener el \u00e1cido estomacal en su lugar.' : 'Incline positioning reduces nighttime heartburn by keeping stomach acid in place.') + '</div></div></div>';
+          }
+          if (hasBackPain) {
+            benefitCards += '<div style="display:flex;align-items:flex-start;gap:0.65rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.65rem 0.85rem;">'
+              + '<span style="font-size:1.1rem;flex-shrink:0;">\ud83e\uddb4</span>'
+              + '<div><div style="font-size:0.78rem;font-weight:600;color:var(--gold);">' + (_es ? 'Dijiste: Dolor de Espalda' : 'You said: Back Pain') + '</div>'
+              + '<div style="font-size:0.72rem;color:var(--cream-dim);line-height:1.4;">' + (_es ? 'La posici\u00f3n de gravedad cero quita presi\u00f3n de tu columna \u2014 como flotar sin peso.' : 'The zero-gravity position takes pressure off your spine \u2014 like floating weightlessly.') + '</div></div></div>';
+          }
+          var heroHtml = '<div class="acc-hero-section acc-card-animated" style="grid-column:1/-1;background:linear-gradient(135deg,rgba(212,168,75,0.08),rgba(212,168,75,0.03));border:1px solid rgba(212,168,75,0.25);border-radius:16px;padding:1.25rem;margin-bottom:0.75rem;">'
+            + '<div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--gold);font-weight:700;margin-bottom:0.75rem;">' + heroLabel + '</div>'
+            + '<div style="font-size:1rem;font-weight:700;color:var(--cream);margin-bottom:0.5rem;">' + heroTitle + '</div>'
+            + '<div style="font-size:0.82rem;color:var(--cream-dim);line-height:1.4;margin-bottom:1rem;">' + heroSub + '</div>'
+            + '<div style="display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1rem;">' + benefitCards + '</div>'
+            + '<div style="font-size:0.72rem;color:var(--cream-dim);font-style:italic;">' + heroCta + '</div>'
+            + '</div>';
+          grid.insertAdjacentHTML('beforeend', heroHtml);
+          analytics.log('adjustable_base_hero_shown', { snoring: hasSnoring, reflux: hasReflux, backPain: hasBackPain });
+          setTimeout(function() { renderAccStep(); }, 800);
+        } else {
+          renderAccStep();
+        }
       }, 1600);
     };
 
