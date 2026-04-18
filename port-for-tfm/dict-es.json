@@ -34,7 +34,7 @@
   "results.tier_bronze": "Bronce",
   "results.tier_explainer": "<span style=\"color:#d4a84b; font-weight:700;\">Oro</span> · materiales premium &nbsp;·&nbsp; <span style=\"color:#c0c7ce; font-weight:700;\">Plata</span> · valor intermedio &nbsp;·&nbsp; <span style=\"color:#cd7f32; font-weight:700;\">Bronce</span> · nivel de entrada",
   "results.tap_hint": "Toca cualquier tarjeta de colchón para explorar detalles y características",
-  "results.complete_setup": "Completa Tu Configuración — Almohadas, Protectores y Más →",
+  "results.complete_setup": "Construye Tu Sistema de Sueño →",
   "results.discount_applies": "Tu <span id=\"bannerPct\" style=\"color:var(--gold); font-weight:700;\"></span> descuento aplica a todo",
   "results.back_to_results": "← Volver a los resultados",
 
@@ -72,8 +72,8 @@
   "email.start_new": "↺ Iniciar Nuevo Cliente",
 
   "accessories.analysis_label": "Análisis de Perfil de Sueño",
-  "accessories.title": "Todo lo demás que necesitas para dormir mejor",
-  "accessories.subtitle": "Basado en tu perfil de sueño, nuestro algoritmo identificó estos accesorios para optimizar tu descanso.",
+  "accessories.title": "Tu Sistema Completo de Sueño",
+  "accessories.subtitle": "Tu colchón es una pieza del rompecabezas. La base, almohada y protector correctos completan el sistema.",
   "accessories.analyzing": "Analizando tu perfil de sueño...",
   "accessories.send_results": "Envíame Mis Resultados",
   "accessories.start_over": "Empezar de Nuevo",

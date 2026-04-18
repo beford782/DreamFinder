@@ -34,7 +34,7 @@
   "results.tier_bronze": "Bronze",
   "results.tier_explainer": "<span style=\"color:#d4a84b; font-weight:700;\">Gold</span> · premium materials &nbsp;·&nbsp; <span style=\"color:#c0c7ce; font-weight:700;\">Silver</span> · mid-range value &nbsp;·&nbsp; <span style=\"color:#cd7f32; font-weight:700;\">Bronze</span> · entry-level",
   "results.tap_hint": "Tap any mattress card to explore details & features",
-  "results.complete_setup": "Complete Your Setup — Pillows, Protectors & More →",
+  "results.complete_setup": "Build Your Sleep System →",
   "results.discount_applies": "Your <span id=\"bannerPct\" style=\"color:var(--gold); font-weight:700;\"></span> discount applies to everything",
   "results.back_to_results": "← Back to all matches",
 
@@ -72,8 +72,8 @@
   "email.start_new": "↺ Start New Customer",
 
   "accessories.analysis_label": "Sleep Profile Analysis",
-  "accessories.title": "Everything else you need for better sleep",
-  "accessories.subtitle": "Based on your sleep profile, our algorithm identified these accessories to optimize your sleep.",
+  "accessories.title": "Your Complete Sleep System",
+  "accessories.subtitle": "Your mattress is one piece of the puzzle. The right foundation, pillow, and protector complete the system.",
   "accessories.analyzing": "Analyzing your sleep profile...",
   "accessories.send_results": "Send Me My Results",
   "accessories.start_over": "Start Over",

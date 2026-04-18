@@ -1108,7 +1108,7 @@
       display: flex;
       flex-direction: column;
       padding: 0.75rem 1.25rem 1rem;
-      overflow: hidden;
+      overflow-y: auto;
     }
 
     .profile-reveal-badge {
@@ -3675,7 +3675,7 @@
     <!-- Bottom section with CTA -->
     <div class="bottom-section">
       <div style="text-align:center; margin-top:0.4rem; display:flex; flex-direction:column; gap:0.5rem; align-items:center;">
-        <button class="cta-btn" onclick="showAccessories()" style="background:linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 100%); color:var(--navy); box-shadow:0 4px 0 #9a7a2e, 0 6px 20px rgba(212,168,75,0.25); font-size:0.85rem; padding:0.7rem 1.75rem; border:2px solid var(--gold-pale); font-weight:700; border-radius:14px; transition:all 0.15s ease;" data-i18n="results.complete_setup">Complete Your Setup — Pillows, Protectors & More →</button>
+        <button class="cta-btn" onclick="showAccessories()" style="background:linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 100%); color:var(--navy); box-shadow:0 4px 0 #9a7a2e, 0 6px 20px rgba(212,168,75,0.25); font-size:0.85rem; padding:0.7rem 1.75rem; border:2px solid var(--gold-pale); font-weight:700; border-radius:14px; transition:all 0.15s ease;" data-i18n="results.complete_setup">Build Your Sleep System →</button>
         <div style="font-size:0.68rem; color:var(--cream-dim);" data-i18n="results.discount_applies" data-i18n-html="true">Your <span id="bannerPct" style="color:var(--gold); font-weight:700;"></span> discount applies to everything</div>
       </div>
     </div>
@@ -3802,8 +3802,8 @@
   <div class="screen" id="accessoriesScreen" style="flex-direction:column; height:calc(100vh - var(--header-height) - var(--accent-bar-height)); overflow-y:auto; padding:1rem;">
     <div id="accHeader" style="text-align:center; margin-bottom:0.75rem; opacity:0; transform:translateY(10px); transition:all 0.5s ease-out;">
       <div style="font-size:0.65rem; text-transform:uppercase; letter-spacing:2px; color:var(--gold); font-weight:600; margin-bottom:0.25rem;" data-i18n="accessories.analysis_label">Sleep Profile Analysis</div>
-      <h3 style="font-size:1.1rem; font-weight:700; color:var(--cream); margin-bottom:0.2rem;" data-i18n="accessories.title">Everything else you need for better sleep</h3>
-      <p style="font-size:0.78rem; color:var(--cream-dim); line-height:1.3;" id="accessoriesSubhead" data-i18n="accessories.subtitle">Based on your sleep profile, our algorithm identified these accessories to optimize your sleep.</p>
+      <h3 style="font-size:1.1rem; font-weight:700; color:var(--cream); margin-bottom:0.2rem;" data-i18n="accessories.title">Your Complete Sleep System</h3>
+      <p style="font-size:0.78rem; color:var(--cream-dim); line-height:1.3;" id="accessoriesSubhead" data-i18n="accessories.subtitle">Your mattress is one piece of the puzzle. The right foundation, pillow, and protector complete the system.</p>
       <div id="accDiscountBanner" style="display:inline-flex; align-items:center; gap:0.5rem; margin-top:0.6rem; background:linear-gradient(135deg,rgba(212,168,75,0.15),rgba(212,168,75,0.07)); border:1px solid rgba(212,168,75,0.4); border-radius:50px; padding:0.35rem 1rem;">
         <span style="font-size:0.9rem;">🏷️</span>
         <span id="accDiscountText" style="font-size:0.75rem; font-weight:600; color:var(--gold);">Your 5% discount applies to everything on this page</span>
@@ -5802,9 +5802,14 @@
       
       // Store grouped data for stepped reveal
       const categoryIcons = { 'Foundations & Support': icon('support', 20), 'Pillows': icon('cloud', 20), 'Protectors': icon('check', 20) };
+      var pillowSub;
+      if (position === 'side') pillowSub = _es ? 'Los que duermen de lado necesitan una almohada que llene el espacio entre el hombro y la cabeza' : 'Side sleepers need a pillow that fills the gap between shoulder and head';
+      else if (position === 'back') pillowSub = _es ? 'Los que duermen boca arriba necesitan soporte medio para mantener el cuello alineado' : 'Back sleepers need medium support to keep the neck aligned';
+      else if (position === 'stomach') pillowSub = _es ? 'Los que duermen boca abajo necesitan una almohada delgada para evitar tensión en el cuello' : 'Stomach sleepers need a thin pillow to avoid neck strain';
+      else pillowSub = _es ? 'Adaptadas a tu posición de sueño y temperatura' : 'Matched to your sleep position & temperature';
       const categorySubtitles = {
         'Foundations & Support': _es ? 'Cada colchón necesita la base correcta' : 'Every mattress needs the right foundation',
-        'Pillows': _es ? 'Adaptadas a tu posición de sueño y temperatura' : 'Matched to your sleep position & temperature',
+        'Pillows': pillowSub,
         'Protectors': _es ? 'Extiende la vida del colchón y mejora la calidad de sueño' : 'Extend mattress life & improve sleep quality'
       };
       const nextLabels = {
@@ -5840,7 +5845,24 @@
           </div>`;
         grid.insertAdjacentHTML('beforeend', headerHtml);
 
+        // Educational callout for Protectors section
+        if (g.category === 'Protectors') {
+          var protEyebrow = _es ? '¿SABÍAS?' : 'DID YOU KNOW?';
+          var protCopy = _es
+            ? 'La mayoría de garantías de colchón requieren un protector. Mantiene tu colchón limpio, higiénico y puede extender su vida 3-5 años.'
+            : 'Most mattress warranties require a protector. It keeps your mattress clean, hygienic, and can extend its life by 3-5 years.';
+          var protCallout = '<div class="acc-card-animated" style="grid-column:1/-1; display:flex; gap:0.75rem; align-items:flex-start; background:rgba(212,168,75,0.08); border-left:3px solid var(--gold); border-radius:6px; padding:0.75rem 1rem; margin-bottom:0.75rem;">'
+            + '<span style="font-size:1.1rem; flex-shrink:0;">🛡️</span>'
+            + '<div>'
+            +   '<div style="font-size:0.65rem; font-weight:700; color:var(--gold); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:0.2rem;">' + protEyebrow + '</div>'
+            +   '<div style="font-size:0.75rem; color:var(--cream); line-height:1.4;">' + protCopy + '</div>'
+            + '</div>'
+            + '</div>';
+          grid.insertAdjacentHTML('beforeend', protCallout);
+        }
+
         var _matchWord = _es ? 'Compatibilidad' : 'Match';
+        var _topMatchBadge = _es ? '\u2b50 La Mejor para Tu Perfil' : '\u2b50 Matched to Your Profile';
         // Stagger cards in
         g.items.forEach((a, i) => {
           const matchPct = Math.min(Math.round((a.score / maxScore) * 100), 99);
@@ -5851,8 +5873,23 @@
           // For _toggleAcc, pass English name/category for analytics
           const _aNameEn = typeof a.name === 'object' ? a.name.en : a.name;
           const _aCatEn = typeof a.category === 'object' ? a.category.en : a.category;
+          // Feature the top pillow (first card in the Pillows category)
+          const isFeaturedPillow = (g.category === 'Pillows' && i === 0 && isRec);
+          // Combine up to 2 unique reasons for the featured pillow
+          const reasonLines = isFeaturedPillow
+            ? (a.reasons.length >= 2
+                ? '<div style="font-size:0.7rem; color:var(--gold); margin-top:0.5rem; line-height:1.4; background:rgba(212,168,75,0.1); border-radius:6px; padding:0.45rem 0.6rem;">\ud83d\udca1 ' + a.reasons[0] + '<br>\ud83d\udca1 ' + a.reasons[1] + '</div>'
+                : '<div style="font-size:0.7rem; color:var(--gold); margin-top:0.5rem; line-height:1.4; background:rgba(212,168,75,0.1); border-radius:6px; padding:0.45rem 0.6rem;">\ud83d\udca1 ' + a.reasons[0] + '</div>')
+            : '<div style="font-size:0.7rem; color:var(--gold); margin-top:0.5rem; line-height:1.3; background:rgba(212,168,75,0.08); border-radius:6px; padding:0.35rem 0.5rem;">\ud83d\udca1 ' + a.reasons[0] + '</div>';
+          const featuredStyle = isFeaturedPillow
+            ? 'border:2px solid var(--gold); box-shadow:0 4px 20px rgba(212,168,75,0.2);'
+            : '';
+          const topMatchBadge = isFeaturedPillow
+            ? '<div style="position:absolute; top:0.5rem; left:0.5rem; background:linear-gradient(135deg,#d4a84b,#b8922f); color:#0d1730; font-size:0.58rem; font-weight:700; letter-spacing:1px; padding:0.25rem 0.5rem; border-radius:12px; text-transform:uppercase; box-shadow:0 2px 8px rgba(0,0,0,0.3); z-index:2;">' + _topMatchBadge + '</div>'
+            : '';
           const cardHtml = `
-            <div class="accessory-card acc-card-animated ${isRec ? 'recommended' : ''}" id="acc-${a.id}" onclick="window._toggleAcc('${a.id}','${_aNameEn.replace(/'/g,"\\'")}','${_aCatEn.replace(/'/g,"\\'")}')">
+            <div class="accessory-card acc-card-animated ${isRec ? 'recommended' : ''}" id="acc-${a.id}" style="${featuredStyle}" onclick="window._toggleAcc('${a.id}','${_aNameEn.replace(/'/g,"\\'")}','${_aCatEn.replace(/'/g,"\\'")}')">
+              ${topMatchBadge}
               <div class="accessory-image">
                 <img src="${a.image}" alt="${_aName}" style="width:100%;height:100%;object-fit:cover;">
                 ${isRec ? `<span class="accessory-match">${matchPct}% ${_matchWord}</span>` : ''}
@@ -5861,7 +5898,7 @@
               <div class="accessory-category">${_aCat}</div>
               <div class="accessory-name">${_aName}</div>
               <div class="accessory-description">${_aDesc}</div>
-              <div style="font-size:0.65rem; color:var(--gold); margin-top:0.4rem; font-style:italic; line-height:1.3;">${a.reasons[0]}</div>
+              ${reasonLines}
             </div>`;
           setTimeout(() => grid.insertAdjacentHTML('beforeend', cardHtml), (i + 1) * 200);
         });
@@ -5909,10 +5946,111 @@
       setTimeout(() => { analyzing.style.opacity = '1'; }, 500);
       setTimeout(() => { status.textContent = _es ? 'Combinando accesorios con tu perfil...' : 'Matching accessories to your profile...'; }, 1000);
       
-      // After analyzing, show first category
+      // After analyzing, show hero if applicable, then first category
       setTimeout(() => {
         analyzing.style.opacity = '0';
-        renderAccStep();
+        var health = answers.health_conditions || [];
+        var _issues = answers.sleep_issues || [];
+        var hasSnoring = health.includes('snoring');
+        var hasReflux = health.includes('reflux');
+        var hasBackPain = _issues.includes('back_pain');
+        var showAdjustableHero = hasSnoring || hasReflux || hasBackPain;
+
+        if (showAdjustableHero) {
+          var heroTitle = _es ? 'Base Ajustable' : 'Adjustable Base';
+          var heroLabel = _es ? '\u2b50 RECOMENDADO SEG\u00daN TU PERFIL DE SUE\u00d1O' : '\u2b50 RECOMMENDED BASED ON YOUR SLEEP PROFILE';
+          var heroSub = _es ? 'Basado en tus respuestas, una base ajustable podr\u00eda transformar tu sue\u00f1o.' : 'Based on your answers, an adjustable base could transform your sleep.';
+          var heroCta = _es ? 'Pide a tu especialista de sue\u00f1o una demostraci\u00f3n en la tienda.' : 'Ask your sleep specialist for a demo on the showroom floor.';
+          var benefitCards = '';
+          if (hasSnoring) {
+            benefitCards += '<div style="display:flex;align-items:flex-start;gap:0.65rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.65rem 0.85rem;">'
+              + '<span style="font-size:1.1rem;flex-shrink:0;">\ud83e\udec1</span>'
+              + '<div><div style="font-size:0.78rem;font-weight:600;color:var(--gold);">' + (_es ? 'Dijiste: Ronquidos' : 'You said: Snoring') + '</div>'
+              + '<div style="font-size:0.72rem;color:var(--cream-dim);line-height:1.4;">' + (_es ? 'Elevar tu cabeza 7-10\u00b0 abre las v\u00edas respiratorias y puede reducir significativamente los ronquidos.' : 'Elevating your head 7-10\u00b0 opens airways and can significantly reduce snoring.') + '</div></div></div>';
+          }
+          if (hasReflux) {
+            benefitCards += '<div style="display:flex;align-items:flex-start;gap:0.65rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.65rem 0.85rem;">'
+              + '<span style="font-size:1.1rem;flex-shrink:0;">\ud83d\udd25</span>'
+              + '<div><div style="font-size:0.78rem;font-weight:600;color:var(--gold);">' + (_es ? 'Dijiste: Reflujo \u00c1cido' : 'You said: Acid Reflux') + '</div>'
+              + '<div style="font-size:0.72rem;color:var(--cream-dim);line-height:1.4;">' + (_es ? 'La posici\u00f3n inclinada reduce la acidez nocturna al mantener el \u00e1cido estomacal en su lugar.' : 'Incline positioning reduces nighttime heartburn by keeping stomach acid in place.') + '</div></div></div>';
+          }
+          if (hasBackPain) {
+            benefitCards += '<div style="display:flex;align-items:flex-start;gap:0.65rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:0.65rem 0.85rem;">'
+              + '<span style="font-size:1.1rem;flex-shrink:0;">\ud83e\uddb4</span>'
+              + '<div><div style="font-size:0.78rem;font-weight:600;color:var(--gold);">' + (_es ? 'Dijiste: Dolor de Espalda' : 'You said: Back Pain') + '</div>'
+              + '<div style="font-size:0.72rem;color:var(--cream-dim);line-height:1.4;">' + (_es ? 'La posici\u00f3n de gravedad cero quita presi\u00f3n de tu columna \u2014 como flotar sin peso.' : 'The zero-gravity position takes pressure off your spine \u2014 like floating weightlessly.') + '</div></div></div>';
+          }
+          var labels = _es
+            ? ['PLANO', 'LECTURA', 'GRAVEDAD CERO', 'ANTI-RONQUIDOS']
+            : ['FLAT', 'READING', 'ZERO GRAVITY', 'ANTI-SNORE'];
+          var adjSvg = '<svg viewBox="0 0 220 150" fill="none" style="width:100%;max-width:220px;height:auto;">'
+            // Fixed bed frame (always flat, never moves)
+            + '<rect x="18" y="102" width="184" height="5" rx="2" fill="#d4a84b" opacity="0.3"/>'
+            + '<rect x="22" y="107" width="4" height="12" rx="1.5" fill="#d4a84b" opacity="0.25"/>'
+            + '<rect x="194" y="107" width="4" height="12" rx="1.5" fill="#d4a84b" opacity="0.25"/>'
+            // Hip section (stays flat on top of frame)
+            + '<rect x="103" y="92" width="24" height="10" rx="2" fill="#d4a84b" opacity="0.45"/>'
+            // Head section — pivots at (105,97), POSITIVE rotation = head lifts UP
+            + '<g>'
+            +   '<animateTransform attributeName="transform" type="rotate"'
+            +   ' values="0 105 97; 0 105 97; 30 105 97; 30 105 97; 18 105 97; 18 105 97; 8 105 97; 8 105 97; 0 105 97"'
+            +   ' keyTimes="0; 0.125; 0.25; 0.375; 0.5; 0.625; 0.75; 0.875; 1"'
+            +   ' dur="8s" repeatCount="indefinite"/>'
+            +   '<rect x="20" y="92" width="85" height="10" rx="3" fill="#d4a84b" opacity="0.55"/>'
+            +   '<rect x="30" y="84" width="20" height="8" rx="4" fill="#d4a84b" opacity="0.45"/>'
+            +   '<circle cx="40" cy="76" r="8" fill="#d4a84b" opacity="0.45"/>'
+            +   '<line x1="40" y1="84" x2="100" y2="95" stroke="#d4a84b" stroke-width="2.5" stroke-linecap="round" opacity="0.35"/>'
+            + '</g>'
+            // Foot section — pivots at (127,97), NEGATIVE rotation = feet lift UP
+            + '<g>'
+            +   '<animateTransform attributeName="transform" type="rotate"'
+            +   ' values="0 127 97; 0 127 97; 0 127 97; 0 127 97; -12 127 97; -12 127 97; 0 127 97; 0 127 97; 0 127 97"'
+            +   ' keyTimes="0; 0.125; 0.25; 0.375; 0.5; 0.625; 0.75; 0.875; 1"'
+            +   ' dur="8s" repeatCount="indefinite"/>'
+            +   '<rect x="127" y="92" width="70" height="10" rx="3" fill="#d4a84b" opacity="0.5"/>'
+            +   '<line x1="132" y1="94" x2="180" y2="94" stroke="#d4a84b" stroke-width="2.5" stroke-linecap="round" opacity="0.35"/>'
+            +   '<circle cx="183" cy="94" r="2.5" fill="#d4a84b" opacity="0.3"/>'
+            + '</g>'
+            // Position labels — fade in/out synced to each position phase
+            + '<text x="110" y="138" fill="#d4a84b" font-size="8" font-family="sans-serif" letter-spacing="1.5" text-anchor="middle" opacity="0">' + labels[0]
+            +   '<animate attributeName="opacity" values="0;0.6;0.6;0;0;0;0;0;0;0.6" keyTimes="0;0.03;0.12;0.13;0.25;0.5;0.75;0.87;0.97;1" dur="8s" repeatCount="indefinite"/>'
+            + '</text>'
+            + '<text x="110" y="138" fill="#d4a84b" font-size="8" font-family="sans-serif" letter-spacing="1.5" text-anchor="middle" opacity="0">' + labels[1]
+            +   '<animate attributeName="opacity" values="0;0;0;0.6;0.6;0;0;0;0;0" keyTimes="0;0.24;0.27;0.30;0.37;0.38;0.5;0.75;0.97;1" dur="8s" repeatCount="indefinite"/>'
+            + '</text>'
+            + '<text x="110" y="138" fill="#d4a84b" font-size="8" font-family="sans-serif" letter-spacing="1.5" text-anchor="middle" opacity="0">' + labels[2]
+            +   '<animate attributeName="opacity" values="0;0;0;0;0;0.6;0.6;0;0;0" keyTimes="0;0.25;0.49;0.52;0.55;0.58;0.62;0.63;0.97;1" dur="8s" repeatCount="indefinite"/>'
+            + '</text>'
+            + '<text x="110" y="138" fill="#d4a84b" font-size="8" font-family="sans-serif" letter-spacing="1.5" text-anchor="middle" opacity="0">' + labels[3]
+            +   '<animate attributeName="opacity" values="0;0;0;0;0;0;0;0.6;0.6;0" keyTimes="0;0.25;0.5;0.74;0.77;0.80;0.83;0.86;0.87;1" dur="8s" repeatCount="indefinite"/>'
+            + '</text>'
+            + '</svg>';
+          var heroContinueLabel = _es ? 'Continuar a Bases y Soportes →' : 'Continue to Foundations →';
+          var heroHtml = '<div id="adjHeroSection" class="acc-hero-section acc-card-animated" style="grid-column:1/-1;background:linear-gradient(135deg,rgba(212,168,75,0.08),rgba(212,168,75,0.03));border:1px solid rgba(212,168,75,0.25);border-radius:16px;padding:1.25rem;margin-bottom:0.75rem;">'
+            + '<div style="display:flex;gap:1.25rem;align-items:flex-start;">'
+            + '<div style="flex:1;min-width:0;">'
+            + '<div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--gold);font-weight:700;margin-bottom:0.75rem;">' + heroLabel + '</div>'
+            + '<div style="font-size:1rem;font-weight:700;color:var(--cream);margin-bottom:0.5rem;">' + heroTitle + '</div>'
+            + '<div style="font-size:0.82rem;color:var(--cream-dim);line-height:1.4;margin-bottom:1rem;">' + heroSub + '</div>'
+            + '<div style="display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1rem;">' + benefitCards + '</div>'
+            + '<div style="font-size:0.72rem;color:var(--cream-dim);font-style:italic;margin-bottom:1rem;">' + heroCta + '</div>'
+            + '<button id="adjHeroContinueBtn" class="acc-next-btn" onclick="window._adjHeroContinue()" ontouchend="event.preventDefault();window._adjHeroContinue();" style="touch-action:manipulation;">' + heroContinueLabel + '</button>'
+            + '</div>'
+            + '<div style="flex-shrink:0;width:180px;display:flex;align-items:center;justify-content:center;padding-top:1.5rem;">' + adjSvg + '</div>'
+            + '</div>'
+            + '</div>';
+          grid.insertAdjacentHTML('beforeend', heroHtml);
+          analytics.log('adjustable_base_hero_shown', { snoring: hasSnoring, reflux: hasReflux, backPain: hasBackPain });
+          // Stop here — wait for user to tap Continue before advancing
+          window._adjHeroContinue = function() {
+            analytics.log('adj_hero_continue_tapped');
+            var btn = document.getElementById('adjHeroContinueBtn');
+            if (btn) btn.disabled = true;
+            renderAccStep();
+          };
+        } else {
+          renderAccStep();
+        }
       }, 1600);
     };
 
