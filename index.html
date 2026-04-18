@@ -5846,6 +5846,22 @@
           </div>`;
         grid.insertAdjacentHTML('beforeend', headerHtml);
 
+        // Educational callout for Protectors section
+        if (g.category === 'Protectors') {
+          var protEyebrow = _es ? '¿SABÍAS?' : 'DID YOU KNOW?';
+          var protCopy = _es
+            ? 'La mayoría de garantías de colchón requieren un protector. Mantiene tu colchón limpio, higiénico y puede extender su vida 3-5 años.'
+            : 'Most mattress warranties require a protector. It keeps your mattress clean, hygienic, and can extend its life by 3-5 years.';
+          var protCallout = '<div class="acc-card-animated" style="grid-column:1/-1; display:flex; gap:0.75rem; align-items:flex-start; background:rgba(212,168,75,0.08); border-left:3px solid var(--gold); border-radius:6px; padding:0.75rem 1rem; margin-bottom:0.75rem;">'
+            + '<span style="font-size:1.1rem; flex-shrink:0;">🛡️</span>'
+            + '<div>'
+            +   '<div style="font-size:0.65rem; font-weight:700; color:var(--gold); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:0.2rem;">' + protEyebrow + '</div>'
+            +   '<div style="font-size:0.75rem; color:var(--cream); line-height:1.4;">' + protCopy + '</div>'
+            + '</div>'
+            + '</div>';
+          grid.insertAdjacentHTML('beforeend', protCallout);
+        }
+
         var _matchWord = _es ? 'Compatibilidad' : 'Match';
         var _topMatchBadge = _es ? '\u2b50 La Mejor para Tu Perfil' : '\u2b50 Matched to Your Profile';
         // Stagger cards in
