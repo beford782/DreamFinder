@@ -5847,6 +5847,7 @@
         grid.insertAdjacentHTML('beforeend', headerHtml);
 
         var _matchWord = _es ? 'Compatibilidad' : 'Match';
+        var _topMatchBadge = _es ? '\u2b50 La Mejor para Tu Perfil' : '\u2b50 Matched to Your Profile';
         // Stagger cards in
         g.items.forEach((a, i) => {
           const matchPct = Math.min(Math.round((a.score / maxScore) * 100), 99);
@@ -5857,8 +5858,23 @@
           // For _toggleAcc, pass English name/category for analytics
           const _aNameEn = typeof a.name === 'object' ? a.name.en : a.name;
           const _aCatEn = typeof a.category === 'object' ? a.category.en : a.category;
+          // Feature the top pillow (first card in the Pillows category)
+          const isFeaturedPillow = (g.category === 'Pillows' && i === 0 && isRec);
+          // Combine up to 2 unique reasons for the featured pillow
+          const reasonLines = isFeaturedPillow
+            ? (a.reasons.length >= 2
+                ? '<div style="font-size:0.7rem; color:var(--gold); margin-top:0.5rem; line-height:1.4; background:rgba(212,168,75,0.1); border-radius:6px; padding:0.45rem 0.6rem;">\ud83d\udca1 ' + a.reasons[0] + '<br>\ud83d\udca1 ' + a.reasons[1] + '</div>'
+                : '<div style="font-size:0.7rem; color:var(--gold); margin-top:0.5rem; line-height:1.4; background:rgba(212,168,75,0.1); border-radius:6px; padding:0.45rem 0.6rem;">\ud83d\udca1 ' + a.reasons[0] + '</div>')
+            : '<div style="font-size:0.7rem; color:var(--gold); margin-top:0.5rem; line-height:1.3; background:rgba(212,168,75,0.08); border-radius:6px; padding:0.35rem 0.5rem;">\ud83d\udca1 ' + a.reasons[0] + '</div>';
+          const featuredStyle = isFeaturedPillow
+            ? 'border:2px solid var(--gold); box-shadow:0 4px 20px rgba(212,168,75,0.2);'
+            : '';
+          const topMatchBadge = isFeaturedPillow
+            ? '<div style="position:absolute; top:0.5rem; left:0.5rem; background:linear-gradient(135deg,#d4a84b,#b8922f); color:#0d1730; font-size:0.58rem; font-weight:700; letter-spacing:1px; padding:0.25rem 0.5rem; border-radius:12px; text-transform:uppercase; box-shadow:0 2px 8px rgba(0,0,0,0.3); z-index:2;">' + _topMatchBadge + '</div>'
+            : '';
           const cardHtml = `
-            <div class="accessory-card acc-card-animated ${isRec ? 'recommended' : ''}" id="acc-${a.id}" onclick="window._toggleAcc('${a.id}','${_aNameEn.replace(/'/g,"\\'")}','${_aCatEn.replace(/'/g,"\\'")}')">
+            <div class="accessory-card acc-card-animated ${isRec ? 'recommended' : ''}" id="acc-${a.id}" style="${featuredStyle}" onclick="window._toggleAcc('${a.id}','${_aNameEn.replace(/'/g,"\\'")}','${_aCatEn.replace(/'/g,"\\'")}')">
+              ${topMatchBadge}
               <div class="accessory-image">
                 <img src="${a.image}" alt="${_aName}" style="width:100%;height:100%;object-fit:cover;">
                 ${isRec ? `<span class="accessory-match">${matchPct}% ${_matchWord}</span>` : ''}
@@ -5867,7 +5883,7 @@
               <div class="accessory-category">${_aCat}</div>
               <div class="accessory-name">${_aName}</div>
               <div class="accessory-description">${_aDesc}</div>
-              <div style="font-size:0.7rem; color:var(--gold); margin-top:0.5rem; line-height:1.3; background:rgba(212,168,75,0.08); border-radius:6px; padding:0.35rem 0.5rem;">💡 ${a.reasons[0]}</div>
+              ${reasonLines}
             </div>`;
           setTimeout(() => grid.insertAdjacentHTML('beforeend', cardHtml), (i + 1) * 200);
         });
