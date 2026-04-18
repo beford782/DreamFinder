@@ -5994,21 +5994,29 @@
             +   '<animate attributeName="opacity" values="0;0;0;0;0;0;0;0.6;0.6;0" keyTimes="0;0.25;0.5;0.74;0.77;0.80;0.83;0.86;0.87;1" dur="8s" repeatCount="indefinite"/>'
             + '</text>'
             + '</svg>';
-          var heroHtml = '<div class="acc-hero-section acc-card-animated" style="grid-column:1/-1;background:linear-gradient(135deg,rgba(212,168,75,0.08),rgba(212,168,75,0.03));border:1px solid rgba(212,168,75,0.25);border-radius:16px;padding:1.25rem;margin-bottom:0.75rem;">'
+          var heroContinueLabel = _es ? 'Continuar a Bases y Soportes →' : 'Continue to Foundations →';
+          var heroHtml = '<div id="adjHeroSection" class="acc-hero-section acc-card-animated" style="grid-column:1/-1;background:linear-gradient(135deg,rgba(212,168,75,0.08),rgba(212,168,75,0.03));border:1px solid rgba(212,168,75,0.25);border-radius:16px;padding:1.25rem;margin-bottom:0.75rem;">'
             + '<div style="display:flex;gap:1.25rem;align-items:flex-start;">'
             + '<div style="flex:1;min-width:0;">'
             + '<div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--gold);font-weight:700;margin-bottom:0.75rem;">' + heroLabel + '</div>'
             + '<div style="font-size:1rem;font-weight:700;color:var(--cream);margin-bottom:0.5rem;">' + heroTitle + '</div>'
             + '<div style="font-size:0.82rem;color:var(--cream-dim);line-height:1.4;margin-bottom:1rem;">' + heroSub + '</div>'
             + '<div style="display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1rem;">' + benefitCards + '</div>'
-            + '<div style="font-size:0.72rem;color:var(--cream-dim);font-style:italic;">' + heroCta + '</div>'
+            + '<div style="font-size:0.72rem;color:var(--cream-dim);font-style:italic;margin-bottom:1rem;">' + heroCta + '</div>'
+            + '<button id="adjHeroContinueBtn" class="acc-next-btn" onclick="window._adjHeroContinue()" ontouchend="event.preventDefault();window._adjHeroContinue();" style="touch-action:manipulation;">' + heroContinueLabel + '</button>'
             + '</div>'
             + '<div style="flex-shrink:0;width:180px;display:flex;align-items:center;justify-content:center;padding-top:1.5rem;">' + adjSvg + '</div>'
             + '</div>'
             + '</div>';
           grid.insertAdjacentHTML('beforeend', heroHtml);
           analytics.log('adjustable_base_hero_shown', { snoring: hasSnoring, reflux: hasReflux, backPain: hasBackPain });
-          setTimeout(function() { renderAccStep(); }, 800);
+          // Stop here — wait for user to tap Continue before advancing
+          window._adjHeroContinue = function() {
+            analytics.log('adj_hero_continue_tapped');
+            var btn = document.getElementById('adjHeroContinueBtn');
+            if (btn) btn.disabled = true;
+            renderAccStep();
+          };
         } else {
           renderAccStep();
         }
