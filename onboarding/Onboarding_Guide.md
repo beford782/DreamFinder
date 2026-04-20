@@ -8,6 +8,12 @@ DreamFinder ships with **full English + Spanish bilingual support**. Customers c
 toggle between languages on the welcome screen, and the entire experience — quiz,
 results, email, and salesperson handoff — switches to their preferred language.
 
+After the mattress results, customers enter the **Sleep System** flow where
+foundations, pillows, and protectors are presented as part of a complete sleep
+solution — not as optional add-ons. Customers with specific issues (snoring,
+acid reflux, back pain) see a personalized **adjustable base hero** with
+animated product demo and benefit cards explaining exactly how it helps them.
+
 To set up DreamFinder for your store, we need a few things from you.
 
 ---
@@ -97,10 +103,14 @@ not provided — they can always be refined later.
 
 ### Step 4: Fill Out the Accessories Tab
 
+Customers see your accessories as a "Sleep System" (foundation + pillow + protector) after choosing their mattress. Adjustable bases get special treatment — when a customer's quiz answers indicate snoring, acid reflux, or back pain, the #1 adjustable base is featured with a personalized benefit card. Pillows adapt to sleep position (side/back/stomach sleepers see different featured options).
+
 Add bases/foundations, pillows, and protectors. Key fields:
 
 - **Category** — Must be: `Foundations & Support`, `Pillows`, or `Protectors`
+- **Sub-Type** (for Foundations only) — `adjustable` (gets the hero treatment), `foundation`, `low_profile`, or `bunkie`
 - **Match Scores (0-5)** — Controls how strongly each accessory is recommended based on quiz answers. Leave blank if unsure — we can help fill these in.
+- **Match Tags** — Used by the Sleep System hero logic. For adjustable bases, include relevant tags like `snoring`, `back_pain`, `reflux` so the customer sees a personalized benefit card when their quiz matches.
 
 ### Step 5: Fill Out the Brands Tab
 

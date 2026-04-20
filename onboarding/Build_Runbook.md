@@ -244,7 +244,12 @@ Open the Pages URL on a desktop browser AND on an iPad. Run the full flow:
 - [ ] Results page: Gold/Silver/Bronze tabs work; tier explainer reads correctly; $/$$/$$$ price markers visible
 - [ ] Mattress card opens drawer; drawer prev/next works; mattress images load
 - [ ] Compare 2 button works; compare modal renders side-by-side
-- [ ] Accessories flow works
+- [ ] Accessories flow works — "Build Your Sleep System" CTA takes customer through foundations → pillows → protectors
+- [ ] **Adjustable base hero appears** when quiz includes snoring, reflux, or back pain — shows personalized benefit cards and animated base SVG
+- [ ] **Hero "Continue to Foundations" button** advances the flow (no auto-scroll)
+- [ ] **Featured top pillow** has gold border + "Matched to Your Profile" badge + 2 personalized reasons
+- [ ] **Protector "Did You Know?" callout** shows between the section header and product cards
+- [ ] Pillow step intro text is personalized to sleep position (side/back/stomach)
 - [ ] Email submit:
   - [ ] No DEBUG row in the sheet
   - [ ] Single clean row written: date, name, email, phone, DREAM code, matches, accessories
