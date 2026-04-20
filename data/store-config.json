@@ -1,6 +1,10 @@
 {
   "storeName": "Bel Furniture",
   "languages": ["en", "es"],
+  "logo": {
+    "main": "bel",
+    "sub": "furniture"
+  },
   "colors": {
     "storePrimary": "#8B1A1A",
     "storePrimaryLight": "#a52525",
@@ -15,7 +19,7 @@
     "socialProof": "Trusted by Bel Furniture customers across Texas",
     "footer": "&copy; 2026 Bel Furniture. All rights reserved.",
     "emailPrivacy": "We'll only use your email to send your results.",
-    "privacyPolicy": "Your information is never shared with third parties.",
+    "privacyPolicyContact": "To have your information removed, contact your local Bel Furniture store.",
     "inStockText": "In Stock at Bel Furniture",
     "emailHeader": "Bel Furniture × DreamFinder",
     "emailSubtext": "Bring this email to your Bel Furniture store"
@@ -29,7 +33,7 @@
     "socialProof": "Confiado por clientes de Bel Furniture en todo Texas",
     "footer": "&copy; 2026 Bel Furniture. Todos los derechos reservados.",
     "emailPrivacy": "Solo usaremos tu correo para enviarte tus resultados.",
-    "privacyPolicy": "Tu información nunca se comparte con terceros.",
+    "privacyPolicyContact": "Para eliminar tu información, comunícate con tu tienda local de Bel Furniture.",
     "inStockText": "Disponible en Bel Furniture",
     "emailHeader": "Bel Furniture × DreamFinder",
     "emailSubtext": "Lleva este correo a tu tienda Bel Furniture"

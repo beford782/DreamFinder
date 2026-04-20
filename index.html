@@ -4,14 +4,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
-  <title>Bel Furniture × DreamFinder</title>
+  <title>DreamFinder</title>
 
   <!-- Favicon: gold moon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%23d4a84b'/><ellipse cx='62' cy='50' rx='30' ry='45' fill='%230b1929'/></svg>">
 
   <!-- Open Graph / Social -->
-  <meta id="metaDescription" name="description" content="Find your perfect mattress with DreamFinder — a personalized sleep consultation powered by Bel Furniture. 12 quick questions, expert recommendations, and an exclusive discount.">
-  <meta id="ogTitle" property="og:title" content="Bel Furniture × DreamFinder — Find Your Perfect Mattress">
+  <meta id="metaDescription" name="description" content="Find your perfect mattress with DreamFinder — a personalized sleep consultation. 12 quick questions, expert recommendations, and an exclusive discount.">
+  <meta id="ogTitle" property="og:title" content="DreamFinder — Find Your Perfect Mattress">
   <meta property="og:description" content="Take our 5-minute sleep consultation and get personalized mattress recommendations with an exclusive discount.">
   <meta property="og:type" content="website">
   <meta name="theme-color" content="#0f1f33">
@@ -25,7 +25,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     /* ============================================
-       BEL FURNITURE × DREAMFINDER LANDING PAGE
+       DREAMFINDER LANDING PAGE (retailer-branded at runtime via data/store-config.json)
        ============================================
        CUSTOMIZATION: Store branding is now loaded from
        data/store-config.json — edit that file to rebrand.
@@ -3341,10 +3341,10 @@
 
   <header class="header">
     <div class="brand-lockup">
-      <!-- Store Logo — swap for <img> when using actual logo file -->
+      <!-- Store Logo — populated from store-config.json. Swap for <img> when using actual logo file -->
       <div class="store-logo">
-        <span class="logo-main">bel</span>
-        <span class="logo-sub">furniture</span>
+        <span class="logo-main" data-store="logo-main"></span>
+        <span class="logo-sub" data-store="logo-sub"></span>
       </div>
 
       <div class="brand-divider"></div>
@@ -3403,10 +3403,10 @@
       <button id="langBtnEs" onclick="switchLanguage('es')" ontouchend="event.preventDefault();switchLanguage('es');" style="padding:0.35rem 0.7rem; font-family:inherit; font-size:0.75rem; font-weight:700; border:none; cursor:pointer; touch-action:manipulation; background:transparent; color:rgba(255,255,255,0.5); letter-spacing:0.5px;">ES</button>
     </div>
     <div class="welcome">
-      <!-- Large Store Logo -->
+      <!-- Large Store Logo — populated from store-config.json -->
       <div class="hero-store-logo">
-        <span class="hero-logo-main">bel</span>
-        <span class="hero-logo-sub">furniture</span>
+        <span class="hero-logo-main" data-store="logo-main"></span>
+        <span class="hero-logo-sub" data-store="logo-sub"></span>
         <p class="trust-signal" data-store="trust-signal">Proudly serving Texas families for over twenty-five years</p>
         <div class="made-badge">
           <svg viewBox="0 0 24 24" fill="currentColor">
@@ -3470,7 +3470,7 @@
         </svg>
       </button>
 
-      <p class="social-proof" data-store="social-proof" data-i18n="welcome.social_proof">Recommended by your Bel Furniture sleep team</p>
+      <p class="social-proof" data-store="social-proof" data-i18n="welcome.social_proof"></p>
 
 
 
@@ -3479,7 +3479,7 @@
     <!-- Footer -->
     <footer class="footer">
       <div class="footer-left">
-        <span data-store="footer">Powered by <strong>DreamFinder</strong> · © 2026 Bel Furniture</span>
+        <span data-store="footer">Powered by <strong>DreamFinder</strong></span>
       </div>
       <div class="brand-logos">
         <span class="label">Our Brands</span>
@@ -3783,7 +3783,7 @@
         <div class="email-sent-subtext" data-i18n="email.sent_subtitle">Check your inbox for your personalized results.</div>
       </div>
 
-      <div class="email-privacy"><span data-store="email-privacy">We'll send your results and may occasionally follow up with sleep tips and offers from Bel Furniture.</span> Your info is never sold to third parties. Unsubscribe anytime. <a href="#" onclick="event.preventDefault();document.getElementById('privacyOverlay').classList.add('visible');" style="color:var(--gold); text-decoration:underline; font-weight:500;">Privacy & Terms</a></div>
+      <div class="email-privacy"><span data-store="email-privacy">We'll only use your email to send your results.</span> Your info is never sold to third parties. Unsubscribe anytime. <a href="#" onclick="event.preventDefault();document.getElementById('privacyOverlay').classList.add('visible');" style="color:var(--gold); text-decoration:underline; font-weight:500;">Privacy & Terms</a></div>
 
       <div id="dreamCodeBox" style="width:100%; margin:1rem 0 0.5rem; border:2px dashed rgba(212,168,75,0.5); border-radius:14px; padding:1rem 1.25rem; text-align:center; background:rgba(212,168,75,0.05);">
         <div style="font-size:0.6rem; text-transform:uppercase; letter-spacing:2px; color:var(--gold); font-weight:600; margin-bottom:0.4rem;" data-i18n="email.discount_label">Your Discount Code</div>
@@ -4189,11 +4189,23 @@
     }
 
     function applyStoreConfig() {
-      if (!STORE_CONFIG.colors && !STORE_CONFIG.text) return;
+      if (!STORE_CONFIG.colors && !STORE_CONFIG.text && !STORE_CONFIG.logo) return;
       const root = document.documentElement;
-      if (STORE_CONFIG.colors.storePrimary) root.style.setProperty('--store-primary', STORE_CONFIG.colors.storePrimary);
-      if (STORE_CONFIG.colors.storePrimaryLight) root.style.setProperty('--store-primary-light', STORE_CONFIG.colors.storePrimaryLight);
-      if (STORE_CONFIG.colors.storePrimaryGlow) root.style.setProperty('--store-primary-glow', STORE_CONFIG.colors.storePrimaryGlow);
+      if (STORE_CONFIG.colors) {
+        if (STORE_CONFIG.colors.storePrimary) root.style.setProperty('--store-primary', STORE_CONFIG.colors.storePrimary);
+        if (STORE_CONFIG.colors.storePrimaryLight) root.style.setProperty('--store-primary-light', STORE_CONFIG.colors.storePrimaryLight);
+        if (STORE_CONFIG.colors.storePrimaryGlow) root.style.setProperty('--store-primary-glow', STORE_CONFIG.colors.storePrimaryGlow);
+      }
+
+      // Logo wordmark (language-independent)
+      if (STORE_CONFIG.logo) {
+        document.querySelectorAll('[data-store="logo-main"]').forEach(function(el) {
+          if (STORE_CONFIG.logo.main !== undefined) el.textContent = STORE_CONFIG.logo.main;
+        });
+        document.querySelectorAll('[data-store="logo-sub"]').forEach(function(el) {
+          if (STORE_CONFIG.logo.sub !== undefined) el.textContent = STORE_CONFIG.logo.sub;
+        });
+      }
 
       // Pick the language-appropriate text block
       var textBlock = (currentLang === 'es' && STORE_CONFIG.text_es)
@@ -4224,8 +4236,8 @@
         document.querySelectorAll('[data-store="email-privacy"]').forEach(function(el) {
           el.textContent = textBlock.emailPrivacy || el.textContent;
         });
-        document.querySelectorAll('[data-store="privacy-policy"]').forEach(function(el) {
-          el.textContent = textBlock.privacyPolicy || el.textContent;
+        document.querySelectorAll('[data-store="privacy-policy-contact"]').forEach(function(el) {
+          el.textContent = textBlock.privacyPolicyContact || el.textContent;
         });
       }
     }
@@ -5226,7 +5238,7 @@
               <div class="card-feat-chips">${chipHtml}</div>
               <div class="card-stock-badge">
                 <div class="card-stock-icon"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5.5l2 2 4-4" stroke="#66bb6a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-                <span class="card-stock-text">${(STORE_CONFIG.text && STORE_CONFIG.text.inStockText) || "In Stock at Bel Furniture"}</span>
+                <span class="card-stock-text">${((currentLang === 'es' && STORE_CONFIG.text_es) ? STORE_CONFIG.text_es.inStockText : (STORE_CONFIG.text && STORE_CONFIG.text.inStockText)) || "In Stock"}</span>
               </div>
               <div class="card-tap-hint">${_tapHint}</div>
             </div>`;
@@ -5575,8 +5587,8 @@
       const topMatches = saved.length > 0 ? allMatches.slice(0, 6) : allMatches.slice(0, 3);
       const _es = currentLang === 'es';
       const _storeTextBlock = (_es && STORE_CONFIG.text_es) ? STORE_CONFIG.text_es : STORE_CONFIG.text;
-      const _emailHeader = (_storeTextBlock && _storeTextBlock.emailHeader) || "Bel Furniture × DreamFinder";
-      const _emailSubtext = (_storeTextBlock && _storeTextBlock.emailSubtext) || (_es ? "Lleva este correo a tu tienda Bel Furniture" : "Bring this email to your Bel Furniture store");
+      const _emailHeader = (_storeTextBlock && _storeTextBlock.emailHeader) || "DreamFinder";
+      const _emailSubtext = (_storeTextBlock && _storeTextBlock.emailSubtext) || (_es ? "Lleva este correo a tu tienda" : "Bring this email to your store");
       const _eTitle = _es ? `Tus Combinaciones Perfectas, ${firstName}` : `Your Perfect Matches, ${firstName}`;
       const _eSubtitle = _es ? 'Basado en tu perfil de sueño personalizado' : 'Based on your personalized sleep profile';
       const _eDiscount = _es ? `&#127991; ${STORE_DISCOUNT}% DE DESCUENTO &mdash; ¡Tu Descuento Está Listo!` : `&#127991; ${STORE_DISCOUNT}% OFF &mdash; Your Discount Is Ready!`;
@@ -6611,7 +6623,7 @@
       <button onclick="document.getElementById('privacyOverlay').classList.remove('visible');" style="position:absolute; top:0.75rem; right:0.75rem; background:none; border:none; color:rgba(248,246,241,0.5); font-size:1.2rem; cursor:pointer; font-family:inherit; padding:0.25rem;">&times;</button>
       <div style="font-size:0.9rem; font-weight:700; color:#d4a84b; margin-bottom:0.75rem;">Privacy</div>
       <div style="font-size:0.68rem; color:rgba(248,246,241,0.7); line-height:1.65; margin-bottom:1rem;">
-        <span data-store="privacy-policy">DreamFinder collects your name, email, and optional phone number to deliver your mattress recommendations. Your data is only used for this purpose and is never sold or shared with third parties. To have your information removed, contact your local Bel Furniture store.</span>
+        DreamFinder collects your name, email, and optional phone number to deliver your mattress recommendations. Your data is only used for this purpose and is never sold or shared with third parties. <span data-store="privacy-policy-contact">To have your information removed, contact your local store.</span>
       </div>
       <div style="font-size:0.9rem; font-weight:700; color:#d4a84b; margin-bottom:0.75rem;">Disclaimer</div>
       <div style="font-size:0.68rem; color:rgba(248,246,241,0.7); line-height:1.65;">
