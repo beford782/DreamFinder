@@ -236,17 +236,40 @@ significant debugging to get right.
 
 ---
 
-## Accessory Images
+## Image Format Convention
 
-Location: `images/accessories/`
-Current filenames the app expects:
-- `pillow-activecool.png`
-- `pillow-activedry.png`
-- `protector-activecool.png`
-- `protector-activedry.jpg`
+**MUST:** all mattress and accessory images are `.jpg`, lowercase
+kebab-case, no spaces, no underscores.
 
-These 4 images need attention: delete any corrupted files and re-upload originals
-with the filenames above. The app code already references these names.
+- ✅ `copper-ice-regular.jpg`, `kimber-firm.jpg`, `adjustable-4150.jpg`
+- ❌ `Copper Ice Regular.png`, `kimber_firm.webp`, `AdjustableBase.PNG`
+
+**Why:** Outlook desktop's Word render engine doesn't support `.webp`
+at all, handles `.png` unreliably (especially with URL-encoded spaces
+in the filename), and iOS Mail's Mail Privacy Protection is stricter
+still. Customer results emails routinely ship product images, so any
+image outside the jpg-kebab-case convention shows as a broken link.
+
+**When adding a new mattress or accessory image:**
+1. Save as `.jpg` at quality 85–90.
+2. Filename lowercase, kebab-case, no spaces. Must match the
+   mattress `name` column in CSV (lowercased, spaces kept in CSV but
+   use kebab-case in the filename if you're adding a new product —
+   the build script tolerates spaces for legacy files, prefers
+   kebab-case going forward).
+3. Drop into `images/mattresses/` or `images/accessories/`.
+4. For accessories, reference the filename in `index.html`'s
+   `ACCESSORIES` array.
+
+**Converting existing webp or png assets:**
+```python
+from PIL import Image
+Image.open('source.webp').convert('RGB').save('target.jpg', 'JPEG', quality=88, optimize=True)
+```
+
+`build-data.ps1` resolves extensions in order `jpg, png, webp`, so a
+leftover `.webp` won't break anything — but new images should be jpg
+from the start to avoid the email rendering gap.
 
 ---
 
