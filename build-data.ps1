@@ -101,7 +101,7 @@ foreach ($row in $rows) {
     $imageUrl = ""
     $imgName = $row.name.Trim().ToLower()
     $imgDir = Join-Path $PSScriptRoot "images\mattresses"
-    foreach ($ext in @("webp", "jpg", "png")) {
+    foreach ($ext in @("jpg", "png", "webp")) {
         if (Test-Path "$imgDir\$imgName.$ext") {
             $imageUrl = "images/mattresses/$imgName.$ext"
             break

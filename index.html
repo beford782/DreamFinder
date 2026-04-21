@@ -4256,28 +4256,28 @@
         matchTags: ['snoring', 'back_pain'], matchScores: { back_pain: 4, snoring: 4, premium: 3 } },
 
       { id: 'base-foundation', name: {en: 'Better Than A Boxspring', es: 'Mejor Que Un Box Spring'}, category: {en: 'Foundations & Support', es: 'Bases y Soportes'}, price: 111,
-        image: 'https://beford782.github.io/DreamFinder/images/accessories/base-foundation.webp',
+        image: 'https://beford782.github.io/DreamFinder/images/accessories/base-foundation.jpg',
         description: {en: 'Standard-height foundation — sturdy platform support that replaces a traditional box spring', es: 'Base de altura estándar — soporte de plataforma resistente que reemplaza un box spring tradicional'},
         subType: 'foundation',
         matchTags: ['all'], matchScores: { default: 2 } },
       { id: 'base-lowprofile', name: {en: 'Low Profile Foundation', es: 'Base de Perfil Bajo'}, category: {en: 'Foundations & Support', es: 'Bases y Soportes'}, price: 142,
-        image: 'https://beford782.github.io/DreamFinder/images/accessories/base-lowprofile.webp',
+        image: 'https://beford782.github.io/DreamFinder/images/accessories/base-lowprofile.jpg',
         description: {en: 'Reduced height foundation — ideal for taller mattresses or platform-style bed frames', es: 'Base de altura reducida — ideal para colchones altos o marcos de cama estilo plataforma'},
         subType: 'low_profile',
         matchTags: ['all'], matchScores: { default: 2 } },
       { id: 'base-bunkie', name: {en: 'Eckard Bunkie Board', es: 'Tabla Eckard Bunkie'}, category: {en: 'Foundations & Support', es: 'Bases y Soportes'}, price: 76,
-        image: 'https://beford782.github.io/DreamFinder/images/accessories/base-bunkie.webp',
+        image: 'https://beford782.github.io/DreamFinder/images/accessories/base-bunkie.jpg',
         description: {en: 'Ultra-slim 2" support board — distributes weight evenly, perfect for platform beds & bunk beds', es: 'Tabla de soporte ultra delgada de 2" — distribuye el peso uniformemente, perfecta para camas de plataforma y literas'},
         subType: 'bunkie',
         matchTags: ['all'], matchScores: { default: 1 } },
 
       // Pillows (shown second)
       { id: 'pillow-activedry', name: {en: 'Active Dry Pillow', es: 'Almohada Active Dry'}, category: {en: 'Pillows', es: 'Almohadas'}, price: 120,
-        image: 'https://beford782.github.io/DreamFinder/images/accessories/pillow-activedry.webp',
+        image: 'https://beford782.github.io/DreamFinder/images/accessories/pillow-activedry.jpg',
         description: {en: 'Moisture-wicking memory foam blend with knife-edge multi-level support — all sleep positions', es: 'Tela que absorbe la humedad con espuma de memoria transpirable — mantiene la cabeza y el cuello frescos y secos'},
         matchTags: ['cooling', 'all_positions'], matchScores: { default: 2, cooling: 2, hot: 2, position_side: 1, position_back: 2, position_stomach: 1 } },
       { id: 'pillow-activecool', name: {en: 'Active Cool Pillow', es: 'Almohada Active Cool'}, category: {en: 'Pillows', es: 'Almohadas'}, price: 160,
-        image: 'https://beford782.github.io/DreamFinder/images/accessories/pillow-activecool.webp',
+        image: 'https://beford782.github.io/DreamFinder/images/accessories/pillow-activecool.jpg',
         description: {en: 'Advanced active cooling fabric with premium memory foam clusters — conforms to head, neck & shoulders', es: 'Gel de enfriamiento con ventilación — disipa el calor activamente para un sueño fresco toda la noche'},
         matchTags: ['hot_sleeper', 'cooling'], matchScores: { cooling: 4, hot: 4, position_side: 2, position_back: 2 } },
 
@@ -4287,7 +4287,7 @@
         description: {en: 'Waterproof & breathable — wicks moisture so you stay cool and dry, extends mattress life', es: 'Barrera impermeable con tela transpirable — protege contra derrames y alérgenos sin retener calor'},
         matchTags: ['all'], matchScores: { default: 3, cooling: 1 } },
       { id: 'protector-activecool', name: {en: 'Active Cool Protector', es: 'Protector Active Cool'}, category: {en: 'Protectors', es: 'Protectores'}, price: 200,
-        image: 'https://beford782.github.io/DreamFinder/images/accessories/protector-activecool.webp',
+        image: 'https://beford782.github.io/DreamFinder/images/accessories/protector-activecool.jpg',
         description: {en: 'Advanced cooling + waterproof protection — hypoallergenic, helps you stay in deeper sleep stages longer', es: 'Capa impermeable con enfriamiento — combina protección del colchón con regulación de temperatura'},
         matchTags: ['hot_sleeper', 'cooling'], matchScores: { cooling: 4, hot: 4, default: 2 } },
     ];
@@ -5643,13 +5643,13 @@
   <tr><td style="padding:8px 32px 16px;">
     <div style="font-size:10px;letter-spacing:2px;color:#c9a84c;text-transform:uppercase;margin-bottom:14px;">${_eAccLabel}</div>
     <table width="100%" cellpadding="0" cellspacing="0"><tr>
-      ${accList.slice(0,3).map(a => `<td style="width:${Math.floor(100/Math.min(accList.length,3))}%;padding:0 4px;vertical-align:top;text-align:center;">
+      ${accList.slice(0,3).map(a => { var _w = Math.floor(536 / Math.min(accList.length, 3)) - 8; return `<td width="${_w+8}" style="padding:0 4px;vertical-align:top;text-align:center;">
         <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;overflow:hidden;">
-          ${a.imageUrl ? `<img src="${a.imageUrl}" alt="${a.name}" style="width:100%;height:60px;object-fit:cover;display:block;">` : '<div style="height:60px;background:#1a2744;"></div>'}
+          ${a.imageUrl ? `<img src="${a.imageUrl}" width="${_w}" height="90" alt="${a.name}" style="display:block;border:0;max-width:100%;height:auto;outline:none;text-decoration:none;">` : `<div style="height:90px;background:#1a2744;"></div>`}
           <div style="padding:6px 8px;font-size:11px;color:#ffffff;font-weight:600;">${a.name}</div>
           <div style="padding:0 8px 8px;font-size:10px;color:#a0b0c8;">${a.category}</div>
         </div>
-      </td>`).join('')}
+      </td>`; }).join('')}
     </tr></table>
   </td></tr>` : ''}
   <tr><td style="padding:20px 32px 28px;text-align:center;border-top:1px solid rgba(255,255,255,0.08);">
