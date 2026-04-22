@@ -10,6 +10,7 @@
   "welcome.reward_hint": "Your discount:",
   "welcome.reward_revealed": "revealed after quiz",
   "welcome.social_proof": "Recommended by your {storeName} sleep team",
+  "welcome.brand_logos_label": "Our Brands",
 
   "header.tagline": "Personalized Sleep Consultation",
   "header.restart": "↺ Restart Quiz",

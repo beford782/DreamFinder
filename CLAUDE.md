@@ -40,7 +40,8 @@ GAS endpoint) as a default or starting point for other retailers.
 colors, mattress models, or discount codes hardcoded in the HTML.
 
 All store identity lives in two files only:
-- `data/store-config.json` — branding, store name, colors, discount prefix, GAS URL
+- `data/store-config.json` — branding, store name, colors, brands list, GAS URL,
+  public asset root, and all retailer-specific copy (text / text_es blocks)
 - `data/mattresses.csv` / `data/mattresses.json` — this store's mattress lineup
 
 ### Each retailer gets its own repo
@@ -200,8 +201,12 @@ This area has had significant prior tuning.
 ## Backend — Google Apps Script
 
 Email delivery and lead logging use a Google Apps Script (GAS) web app.
-The GAS endpoint URL lives in the HTML (search for `GOOGLE_SCRIPT_URL`).
+The GAS endpoint URL lives in `data/store-config.json` under `gasUrl`.
 Each retailer deployment has its own GAS script and endpoint.
+
+Absolute image URLs for the HTML email body are built from
+`store-config.json`'s `publicAssetRoot` (each retailer's own public
+hostname); emails fall back to relative URLs if that field is missing.
 
 If GAS needs redeployment: Manage Deployments → pencil icon → New version.
 The GAS script builds email HTML server-side to avoid payload size limits.

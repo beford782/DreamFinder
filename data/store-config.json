@@ -10,6 +10,13 @@
     "storePrimaryLight": "#a52525",
     "storePrimaryGlow": "rgba(139, 26, 26, 0.15)"
   },
+  "gasUrl": "https://script.google.com/macros/s/AKfycbzLL1Lq6-g2WXglYBrsrfhKRtp0qJSDwfgkS14MLYbJVLkV5idrc7a2cH0jVSdbGDYd/exec",
+  "publicAssetRoot": "https://beford782.github.io/DreamFinder/",
+  "brands": [
+    { "name": "Restonic",    "logo": "images/brands/restonic.jpg" },
+    { "name": "Spring Air",  "logo": "images/brands/spring-air.jpg" },
+    { "name": "Bel-O-Pedic", "logo": "images/brands/bel-o-pedic.jpg" }
+  ],
   "text": {
     "pageTitle": "DreamFinder — Bel Furniture Sleep Quiz",
     "metaDescription": "Take the DreamFinder sleep quiz at Bel Furniture and get personalized mattress recommendations.",
