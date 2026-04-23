@@ -295,7 +295,9 @@
     body:has(#questionScreen.active) .accent-bar,
     body:has(#questionScreen.active) .header,
     body:has(#reviewScreen.active) .accent-bar,
-    body:has(#reviewScreen.active) .header {
+    body:has(#reviewScreen.active) .header,
+    body:has(#profileScreen.active) .accent-bar,
+    body:has(#profileScreen.active) .header {
       display: none;
     }
 
@@ -303,7 +305,8 @@
        so flex-centering and top-padding land where the design expects. */
     body:has(#welcomeScreen.active) #welcomeScreen.main,
     body:has(#questionScreen.active) #questionScreen,
-    body:has(#reviewScreen.active) #reviewScreen {
+    body:has(#reviewScreen.active) #reviewScreen,
+    body:has(#profileScreen.active) #profileScreen {
       min-height: 100vh;
       min-height: 100dvh;
     }
@@ -617,6 +620,211 @@
       border-color: var(--color-accent);
       color: var(--color-accent);
     }
+
+    /* ===== NOCTURNAL PROFILE REVEAL (v1) ===== */
+    .noct-profile {
+      max-width: 720px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 48px 48px 36px;
+      color: var(--color-text);
+      font-family: var(--font-serif);
+    }
+
+    .noct-profile-eyebrow {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .noct-profile-name {
+      font-family: var(--font-serif);
+      font-size: 72px;
+      font-weight: 400;
+      font-style: italic;
+      line-height: 1.0;
+      letter-spacing: -0.02em;
+      color: var(--color-accent);
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .noct-profile-subtitle {
+      font-family: var(--font-sans);
+      font-size: 15px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .noct-profile-summary {
+      font-family: var(--font-serif);
+      font-size: 22px;
+      line-height: 1.4;
+      color: var(--color-text);
+      text-align: center;
+      max-width: 560px;
+      margin: 0 auto 40px;
+    }
+
+    .noct-profile-meta-strip {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      padding: 20px 0;
+      border-top: 0.5px solid var(--color-border);
+      border-bottom: 0.5px solid var(--color-border);
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    .noct-profile-meta {
+      text-align: center;
+    }
+
+    .noct-profile-meta-value {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 26px;
+      color: var(--color-accent);
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+
+    .noct-profile-meta-label {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--color-text-subtle);
+    }
+
+    .noct-profile-priorities-heading {
+      font-family: var(--font-sans);
+      font-size: 12px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .noct-profile-priorities {
+      display: flex;
+      flex-direction: column;
+      border-top: 0.5px solid var(--color-border);
+      margin-bottom: 40px;
+    }
+
+    .noct-profile-priority-row {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 18px 0;
+      border-bottom: 0.5px solid var(--color-border);
+    }
+
+    .noct-profile-priority-rank {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 24px;
+      color: var(--color-accent);
+      width: 32px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .noct-profile-priority-body { flex: 1; min-width: 0; }
+
+    .noct-profile-priority-title {
+      font-family: var(--font-serif);
+      font-size: 20px;
+      color: var(--color-text);
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
+
+    .noct-profile-priority-desc {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      color: var(--color-text-muted);
+      line-height: 1.4;
+    }
+
+    .noct-profile-priority-tag {
+      font-family: var(--font-sans);
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      padding: 6px 12px;
+      border-radius: var(--radius);
+      white-space: nowrap;
+      flex-shrink: 0;
+      border: 0.5px solid var(--color-border);
+      color: var(--color-text-subtle);
+    }
+
+    .noct-profile-priority-tag.tag-key {
+      background: var(--color-accent);
+      color: var(--color-bg);
+      border-color: var(--color-accent);
+    }
+
+    .noct-profile-priority-tag.tag-high {
+      background: transparent;
+      color: var(--color-accent);
+      border-color: var(--color-accent);
+    }
+
+    .noct-profile-priority-tag.tag-preference {
+      background: transparent;
+      color: var(--color-text-subtle);
+      border-color: var(--color-border);
+    }
+
+    .noct-profile-cta {
+      background: transparent;
+      color: var(--color-text);
+      border: 0.5px solid var(--color-accent);
+      padding: 18px 40px;
+      font-family: var(--font-serif);
+      font-size: 18px;
+      letter-spacing: 0.01em;
+      border-radius: var(--radius);
+      cursor: pointer;
+      touch-action: manipulation;
+      display: block;
+      margin: 0 auto 16px;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .noct-profile-cta:hover {
+      background: var(--color-accent);
+      color: var(--color-bg);
+    }
+
+    .noct-profile-secondary {
+      background: transparent;
+      border: none;
+      color: var(--color-text-subtle);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      touch-action: manipulation;
+      display: block;
+      margin: 0 auto;
+      padding: 8px;
+    }
+
+    .noct-profile-secondary:hover { color: var(--color-text); }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -3883,66 +4091,17 @@
   </div>
 
   <!-- SCREEN: Profile Summary -->
-  <div class="profile-screen screen" id="profileScreen">
-    <div class="profile-bg-glow"></div>
-    <div class="profile-particles">
-      <div class="profile-particle"></div>
-      <div class="profile-particle"></div>
-      <div class="profile-particle"></div>
-      <div class="profile-particle"></div>
-    </div>
-
-    <div class="profile-content">
-
-      <!-- Badge -->
-      <div class="profile-reveal-badge">
-        <span class="profile-badge-text">
-          <span class="profile-checkmark"></span>
-          <span data-i18n="profile.badge">Your Sleep DNA, Decoded</span>
-        </span>
-      </div>
-
-      <!-- Icon + Name + Subtitle -->
-      <div class="profile-hero">
-        <div class="profile-reveal-icon" id="profileIcon"></div>
-        <div class="profile-reveal-title" id="profileTitle">The <span class="profile-highlight">Sleeper</span></div>
-        <div class="profile-subtitle" id="profileSubtitle"></div>
-        <div class="profile-confidence-pill" id="profileConfidencePill"></div>
-        <div class="profile-social-proof" id="profileSocialProof"></div>
-      </div>
-
-      <!-- Personalised opener (trigger + age + quality) -->
-      <div class="profile-opener" id="profileOpener"></div>
-
-      <!-- Quick-stat grid — salesperson reads in 2 seconds -->
-      <div class="profile-stat-grid" id="profileStatGrid"></div>
-
-      <!-- BIG ONE-LINER — salesperson hero statement -->
-      <div class="profile-statement-wrap">
-        <div class="profile-statement-eyebrow" data-i18n="profile.perfect_match">Your Perfect Match</div>
-        <div class="profile-statement" id="profileOneliner"></div>
-      </div>
-
-      <!-- Priority cards — plain English, no percentages -->
-      <div class="profile-priorities" id="profileScores"></div>
-
-      <!-- What's NOT a priority -->
-      <div class="profile-non-priority" id="profileNonPriority"></div>
-
-      <!-- Chips (hidden, kept for analytics use) -->
-      <div id="profileChips" style="display:none;"></div>
-      <div id="profileConfidence" style="display:none;"></div>
-
-      <!-- CTA -->
-      <div class="profile-cta-section">
-        <button class="profile-cta-btn" id="profileCtaBtn" onclick="showResults()" ontouchend="event.preventDefault();showResults();">
-          <span id="profileCtaText">Show Me My Top 3 Picks →</span>
-        </button>
-        <a href="#" class="profile-back-edit" id="profileBackEdit"
-          onclick="event.preventDefault();window.showScreen('reviewScreen');window.renderReview();"
-          ontouchend="event.preventDefault();window.showScreen('reviewScreen');window.renderReview();" data-i18n="profile.edit_answers">← Edit my answers</a>
-      </div>
-
+  <div class="screen" id="profileScreen">
+    <div class="noct-profile">
+      <div class="noct-profile-eyebrow" id="profileEyebrow">Your sleep DNA, decoded</div>
+      <h1 class="noct-profile-name" id="profileName"></h1>
+      <div class="noct-profile-subtitle" id="profileSubtitle"></div>
+      <p class="noct-profile-summary" id="profileSummary"></p>
+      <div class="noct-profile-meta-strip" id="profileMetaStrip"></div>
+      <div class="noct-profile-priorities-heading" id="profilePrioritiesHeading">Your top priorities</div>
+      <div class="noct-profile-priorities" id="profilePriorities"></div>
+      <button class="noct-profile-cta" id="profileCta" onclick="showResults()" ontouchend="event.preventDefault();showResults();"></button>
+      <button class="noct-profile-secondary" id="profileSecondary" onclick="event.preventDefault();window.showScreen('reviewScreen');window.renderReview();" ontouchend="event.preventDefault();window.showScreen('reviewScreen');window.renderReview();"></button>
     </div>
   </div>
 
@@ -4294,6 +4453,11 @@
       var reviewScreen = document.getElementById('reviewScreen');
       if (reviewScreen && reviewScreen.classList.contains('active')) {
         window.renderReview();
+      }
+      // If profile screen is the active screen, re-run its render to localise
+      var profileScreen = document.getElementById('profileScreen');
+      if (profileScreen && profileScreen.classList.contains('active')) {
+        showProfileScreen();
       }
     }
 
@@ -5227,27 +5391,74 @@
       'The Connoisseur':    {en: "For a discerning sleeper like you, we recommend a ", es: "Para un durmiente exigente como tú, recomendamos un "}
     };
 
-    // Builds the italic opener line based on trigger / mattress age / sleep quality.
-    // Only one line shows — prioritize the strongest emotional hook.
-    function buildProfileOpener(answers) {
-      const trigger = answers.trigger;
-      const quality = answers.sleep_quality;
-      const age = answers.current_mattress_age;
-      const es = currentLang === 'es';
-
-      // Highest-priority hooks: pain, moving, poor sleep, very old mattress
-      if (trigger === 'pain') return es ? 'El dolor es temporal — terminemos con él esta noche.' : 'Pain is temporary — let\'s end it tonight.';
-      if (quality === 'poor') return es ? 'Dijiste que duermes mal. Eso se acaba aquí.' : 'You said you\'re sleeping poorly. That ends here.';
-      if (trigger === 'moving') return es ? 'Casa nueva, cama nueva — la primera noche debe sentirse como hogar.' : 'New home, new bed — the first night should feel like home.';
-      if (age === 'fifteen_plus') return es ? 'Tu colchón se ganó su jubilación.' : 'Your mattress has earned its retirement.';
-      if (age === 'eight_fifteen') return es ? 'Es hora de jubilar ese colchón viejo.' : 'Time to retire that old mattress.';
-      if (trigger === 'worn_out') return es ? 'Has esperado suficiente para dormir mejor.' : 'You\'ve waited long enough for better sleep.';
-      if (trigger === 'upgrade') return es ? 'Estás listo para mejorar.' : 'You\'re ready to level up.';
-      if (quality === 'fair') return es ? 'Tu sueño merece más que solo \'bien\'.' : 'Your sleep deserves better than fine.';
-      if (trigger === 'browsing' && quality === 'well') return es ? '¿Ya duermes bien? Mantengamos eso así.' : 'Already sleeping well? Let\'s keep that going.';
-      if (trigger === 'browsing') return es ? 'Las mentes curiosas duermen mejor — esto es lo tuyo.' : 'Curious minds sleep better — here\'s what fits you.';
-      return '';
-    }
+    // Per-profile summary sentence shown large on the Nocturnal profile reveal.
+    // Keyed by English profile name (same pattern as PROFILE_META / PROFILE_OPENERS).
+    const PROFILE_SUMMARIES = {
+      'The Ache Fighter': {
+        en: "A mattress that relieves pressure, supports your spine, and gives your body a chance to recover overnight.",
+        es: "Un colchón que alivia la presión, sostiene la columna y le da a tu cuerpo la oportunidad de recuperarse durante la noche."
+      },
+      'The Back Saver': {
+        en: "A mattress that keeps your spine aligned and takes pressure off the places that hurt.",
+        es: "Un colchón que mantiene la columna alineada y quita presión de los lugares que te duelen."
+      },
+      'The Heat Beater': {
+        en: "A mattress that sleeps cool and doesn't trap heat under you.",
+        es: "Un colchón que duerme fresco y no atrapa el calor debajo de ti."
+      },
+      'The Cozy Nester': {
+        en: "A mattress that holds heat, wraps you in, and stays warm all night.",
+        es: "Un colchón que retiene el calor, te envuelve y se mantiene tibio toda la noche."
+      },
+      'The Peacekeeper': {
+        en: "A mattress that absorbs your partner's movement so you can actually sleep.",
+        es: "Un colchón que absorbe el movimiento de tu pareja para que puedas dormir de verdad."
+      },
+      'The Space Sharer': {
+        en: "A mattress that handles a full bed and still gives everyone their own space to rest.",
+        es: "Un colchón que soporta una cama llena y aún así le da a cada persona su espacio para descansar."
+      },
+      'The Cloud Chaser': {
+        en: "A soft surface that cradles your body without losing support underneath.",
+        es: "Una superficie suave que acuna tu cuerpo sin perder el soporte por debajo."
+      },
+      'The Rock Solid': {
+        en: "A firm, solid mattress that holds your body up instead of letting it sink in.",
+        es: "Un colchón firme y sólido que sostiene tu cuerpo en lugar de dejarlo hundirse."
+      },
+      'The Night Owl': {
+        en: "A responsive, breathable mattress that helps you stay comfortable even when sleep doesn't come easy.",
+        es: "Un colchón receptivo y transpirable que te ayuda a estar cómodo incluso cuando dormir no es fácil."
+      },
+      'The Restorer': {
+        en: "A mattress that supports your back, eases pressure, and gives your body the rest it's asking for.",
+        es: "Un colchón que sostiene tu espalda, alivia la presión y le da a tu cuerpo el descanso que está pidiendo."
+      },
+      'The Comeback': {
+        en: "A mattress with real support that holds its shape year after year — no more waking up in a dip.",
+        es: "Un colchón con soporte real que mantiene su forma año tras año — se acabó despertar en un hundimiento."
+      },
+      'The Fresh Start': {
+        en: "A clean, hypoallergenic mattress that keeps the irritants out and lets you breathe at night.",
+        es: "Un colchón limpio e hipoalergénico que mantiene los irritantes fuera y te deja respirar por la noche."
+      },
+      'The Goldilocks': {
+        en: "A balanced mattress — not too firm, not too soft — built for easy, consistent sleep.",
+        es: "Un colchón equilibrado — ni muy firme, ni muy suave — diseñado para un sueño fácil y constante."
+      },
+      'The Dreamer': {
+        en: "A comfortable, well-balanced mattress that just lets you sleep without thinking about it.",
+        es: "Un colchón cómodo y bien equilibrado que simplemente te deja dormir sin pensar en ello."
+      },
+      'The Steady Sleeper': {
+        en: "A solid, balanced mattress that works night after night without fuss.",
+        es: "Un colchón sólido y equilibrado que funciona noche tras noche sin complicaciones."
+      },
+      'The Connoisseur': {
+        en: "A thoughtfully-built mattress with premium materials and construction that lasts.",
+        es: "Un colchón de alta calidad construido con materiales premium y una construcción que dura."
+      }
+    };
 
     function showProfileScreen() {
       document.getElementById('progressFill').style.width = '100%';
@@ -5357,97 +5568,49 @@
         profileIconKey = 'moon';
       }
       
-      // Apply per-profile theme class (warm / cool / calm / energetic)
+      // Look up theme/rarity entry. Theme class is no longer applied to the screen
+      // (the Nocturnal reveal doesn't style by theme), but the object is still read
+      // so PROFILE_META keeps a single source of truth for per-profile metadata.
       var meta = PROFILE_META[profileName] || { theme: 'energetic', rarity: 10 };
 
-      // Update profile display
-      document.getElementById('profileIcon').innerHTML = icon(profileIconKey, 56);
-      var displayName = currentLang === 'es' && meta.name_es ? meta.name_es : profileName;
-      document.getElementById('profileTitle').innerHTML = '<span class="profile-highlight">' + displayName + '</span>';
-      document.getElementById('profileSubtitle').textContent = subtitle;
-      var profileScreenEl = document.getElementById('profileScreen');
-      profileScreenEl.classList.remove('theme-warm', 'theme-cool', 'theme-calm', 'theme-energetic');
-      profileScreenEl.classList.add('theme-' + meta.theme);
+      // ----- NOCTURNAL PROFILE REVEAL RENDER -----
+      var es = currentLang === 'es';
+      var displayName = es && meta.name_es ? meta.name_es : profileName;
+      var setProfileText = function(id, value) {
+        var el = document.getElementById(id);
+        if (el) el.textContent = value;
+      };
 
-      // Personalised italic opener (from trigger / sleep_quality / mattress age)
-      document.getElementById('profileOpener').textContent = buildProfileOpener(answers);
+      setProfileText('profileEyebrow', es ? 'Tu ADN del sueño, descifrado' : 'Your sleep DNA, decoded');
+      setProfileText('profileName', displayName);
+      setProfileText('profileSubtitle', subtitle);
 
-      // Store for use on results and accessories pages
+      var summaryEntry = PROFILE_SUMMARIES[profileName];
+      var summaryText = summaryEntry ? (summaryEntry[currentLang] || summaryEntry.en || '') : '';
+      setProfileText('profileSummary', summaryText);
+
+      // Preserved from legacy render — results and accessories screens read these.
       analytics.profileName = profileName;
       analytics.profileSubtitle = subtitle;
 
-      // ----- CONFIDENCE SIGNAL -----
-      var dataPoints = 1; // position always answered
-      if (temp && temp !== 'comfortable') dataPoints++;
-      if (issues.length > 0 && !issues.includes('none')) dataPoints += Math.min(issues.length, 3);
-      if (health.length > 0 && !health.includes('none')) dataPoints += Math.min(health.length, 2);
-      if (partnerSleep && partnerSleep !== 'solo') dataPoints++;
-      if (firmness !== 5) dataPoints++;
-      var confidence = Math.min(Math.round(70 + (dataPoints * 4)), 98);
-      document.getElementById('profileConfidence').textContent = currentLang === 'es'
-        ? confidence + '% confianza de perfil \u00B7 Basado en ' + visibleQuestions().length + ' respuestas'
-        : confidence + '% profile match confidence \u00B7 Based on ' + visibleQuestions().length + ' answers';
-      // Surface the confidence visibly as a pill under the subtitle
-      document.getElementById('profileConfidencePill').textContent = currentLang === 'es' ? confidence + '% Confianza' : confidence + '% Match Confidence';
-      // Social proof: "1 in N customers share this profile"
-      document.getElementById('profileSocialProof').textContent = currentLang === 'es'
-        ? '1 de ' + meta.rarity + ' clientes comparten este perfil'
-        : '1 in ' + meta.rarity + ' customers share this profile';
-
-      // ----- BUILD STAT GRID -----
+      // ----- METADATA STRIP (size / firmness / temperature preference) -----
       var sizeLabels = { twin: 'Twin', twin_xl: 'Twin XL', full: 'Full', queen: 'Queen', king: 'King', cal_king: 'Cal King' };
       var sizeVal = sizeLabels[answers.mattress_size] || '—';
-      var firmVal = firmness <= 3 ? (currentLang === 'es' ? 'Suave' : 'Plush') : firmness >= 7 ? (currentLang === 'es' ? 'Firme' : 'Firm') : (currentLang === 'es' ? 'Medio' : 'Medium');
-      var tempVal = temp === 'hot' ? (currentLang === 'es' ? 'Caliente' : 'Hot') : temp === 'cold' ? (currentLang === 'es' ? 'Frío' : 'Cold') : temp === 'opposite' ? (currentLang === 'es' ? 'Mixto' : 'Mixed') : 'Normal';
-      document.getElementById('profileStatGrid').innerHTML =
-        '<div class="profile-stat-cell"><div class="profile-stat-value">' + sizeVal + '</div><div class="profile-stat-label">' + (currentLang === 'es' ? 'Tamaño' : 'Size') + '</div></div>' +
-        '<div class="profile-stat-cell"><div class="profile-stat-value">' + firmVal + '</div><div class="profile-stat-label">' + (currentLang === 'es' ? 'Firmeza' : 'Firmness') + '</div></div>' +
-        '<div class="profile-stat-cell"><div class="profile-stat-value">' + tempVal + '</div><div class="profile-stat-label">' + (currentLang === 'es' ? 'Temp.' : 'Temp') + '</div></div>';
-      
-      // ----- BUILD CHIPS -----
-      const chips = [];
-      const shortPosLabels = { side: {en:'Side',es:'Lado'}, back: {en:'Back',es:'Espalda'}, stomach: {en:'Stomach',es:'Boca Abajo'}, combo: {en:'Combo',es:'Combo'}, no_idea: {en:'Restless',es:'Inquieto'} };
-      chips.push({ icon: position || 'side', label: L(shortPosLabels[position]) || (currentLang === 'es' ? 'Durmiente' : 'Sleeper') });
-      if (temp === 'hot') chips.push({ icon: 'flame', label: currentLang === 'es' ? 'Caliente' : 'Hot' });
-      else if (temp === 'cold') chips.push({ icon: 'snowflake', label: currentLang === 'es' ? 'Frío' : 'Cold' });
-      if (firmness <= 3) chips.push({ icon: 'cloud', label: currentLang === 'es' ? 'Suave' : 'Plush' });
-      else if (firmness >= 7) chips.push({ icon: 'rock', label: currentLang === 'es' ? 'Firme' : 'Firm' });
-      if (partnerSleep === 'partner' || partnerSleep === 'family') chips.push({ icon: 'partner', label: currentLang === 'es' ? 'Compartido' : 'Shared' });
-      if (issues.includes('back_pain')) chips.push({ icon: 'spine', label: currentLang === 'es' ? 'Espalda' : 'Back' });
-      if (issues.includes('hip_pain')) chips.push({ icon: 'pressure', label: currentLang === 'es' ? 'Cadera' : 'Hips' });
-      if (issues.includes('hot') && temp !== 'hot') chips.push({ icon: 'flame', label: currentLang === 'es' ? 'Caliente' : 'Hot' });
-      
-      document.getElementById('profileChips').innerHTML = chips.map(function(c) {
-        return '<div class="profile-chip">' + icon(c.icon, 14) + ' ' + c.label + '</div>';
-      }).join('');
-      
-      // ----- BUILD ONE-LINER -----
-      var recParts = [];
-      if (temp === 'hot' || issues.includes('hot')) recParts.push(currentLang === 'es' ? '<strong>colchón con enfriamiento</strong>' : '<strong>cooling mattress</strong>');
-      if (position === 'side' || firmness <= 3) recParts.push(currentLang === 'es' ? '<strong>alivio de presión suave</strong>' : '<strong>plush pressure relief</strong>');
-      else if (position === 'stomach' || firmness >= 7) recParts.push(currentLang === 'es' ? '<strong>soporte firme</strong>' : '<strong>firm support</strong>');
-      else recParts.push(currentLang === 'es' ? '<strong>comodidad equilibrada</strong>' : '<strong>balanced comfort</strong>');
-      if (partnerDisturbance === 'yes_often' || partnerDisturbance === 'sometimes' || partnerSleep === 'partner' || partnerSleep === 'family') recParts.push(currentLang === 'es' ? '<strong>aislamiento de movimiento</strong>' : '<strong>motion isolation</strong>');
-      if (issues.includes('back_pain') || health.includes('extra_support')) recParts.push(currentLang === 'es' ? '<strong>soporte lumbar</strong>' : '<strong>lumbar support</strong>');
-
-      var openerObj = PROFILE_OPENERS[profileName] || {en: "We'll find you a ", es: "Te encontraremos un "};
-      var oneliner = L(openerObj);
-      var withConn = currentLang === 'es' ? ' con ' : ' with ';
-      var andConn = currentLang === 'es' ? ' y ' : ', and ';
-      if (recParts.length === 1) {
-        oneliner += recParts[0];
-      } else if (recParts.length === 2) {
-        oneliner += recParts[0] + withConn + recParts[1];
-      } else {
-        var lastPart = recParts.pop();
-        oneliner += recParts.join(', ') + andConn + lastPart;
+      var firmVal = firmness <= 3 ? (es ? 'Suave' : 'Plush') : firmness >= 7 ? (es ? 'Firme' : 'Firm') : (es ? 'Medio' : 'Medium');
+      var tempVal = temp === 'hot' ? (es ? 'Caliente' : 'Hot') : temp === 'cold' ? (es ? 'Frío' : 'Cold') : temp === 'opposite' ? (es ? 'Mixto' : 'Mixed') : (es ? 'Templado' : 'Normal');
+      var metaStrip = document.getElementById('profileMetaStrip');
+      if (metaStrip) {
+        metaStrip.innerHTML =
+          '<div class="noct-profile-meta"><div class="noct-profile-meta-value">' + sizeVal + '</div><div class="noct-profile-meta-label">' + (es ? 'Tamaño' : 'Size') + '</div></div>' +
+          '<div class="noct-profile-meta"><div class="noct-profile-meta-value">' + firmVal + '</div><div class="noct-profile-meta-label">' + (es ? 'Firmeza' : 'Firmness') + '</div></div>' +
+          '<div class="noct-profile-meta"><div class="noct-profile-meta-value">' + tempVal + '</div><div class="noct-profile-meta-label">' + (es ? 'Temp.' : 'Temp') + '</div></div>';
       }
-      oneliner += '.';
-      document.getElementById('profileOneliner').innerHTML = oneliner;
-      
+
+      setProfileText('profilePrioritiesHeading', es ? 'Tus prioridades principales' : 'Your top priorities');
+
       // ----- INFER PRIORITIES FOR CARDS -----
+      // (scoring logic unchanged — uses `es` declared at top of function)
       const priorities = [];
-      var es = currentLang === 'es';
 
       var coolingScore = 0;
       if (temp === 'hot') coolingScore += 40;
@@ -5486,57 +5649,44 @@
         topPriorities.push({ icon: 'comfort', name: es ? 'Comodidad General' : 'Overall Comfort', why: es ? 'Adaptado a tu perfil de sueño' : 'Matched to your sleep profile', badge: es ? 'RECOMENDADO' : 'RECOMMENDED', fill: 60 });
       }
       
-      document.getElementById('profileScores').innerHTML = topPriorities.map(function(p) {
-        return '<div class="profile-priority-item">'
-          + '<div class="profile-priority-icon-wrap">' + icon(p.icon, 20) + '</div>'
-          + '<div class="profile-priority-text">'
-          + '<div class="profile-priority-name">' + p.name + '</div>'
-          + '<div class="profile-priority-why">' + p.why + '</div>'
-          + '</div>'
-          + '<div class="profile-priority-badge">' + p.badge + '</div>'
-          + '</div>';
-      }).join('');
-
-      // ----- WHAT'S NOT A PRIORITY (P13) -----
-      // Help set expectations: mention one or two tradeoffs the customer
-      // is implicitly making based on what didn't land in the top 3.
-      var topNames = topPriorities.map(function(p) { return p.name; });
-      var nonPriorityMsg = '';
-      var hasCooling = topNames.indexOf(es ? 'Regulación de Temperatura' : 'Temperature Regulation') > -1;
-      var hasSupport = topNames.indexOf(es ? 'Soporte Espinal' : 'Spinal Support') > -1;
-      var hasPressure = topNames.indexOf(es ? 'Alivio de Presión' : 'Pressure Relief') > -1;
-      var hasMotion = topNames.indexOf(es ? 'Aislamiento de Movimiento' : 'Motion Isolation') > -1;
-      if (!hasCooling && (temp === 'comfortable' || temp === 'cold')) {
-        nonPriorityMsg = es ? 'El enfriamiento es menor prioridad para ti — nos enfocamos en sensación y soporte.' : 'Cooling is a lower priority for you — we\'re focused on feel and support.';
-      } else if (!hasSupport && !hasPressure && !hasMotion && hasCooling) {
-        nonPriorityMsg = es ? 'La temperatura es tu mayor necesidad — sensación y soporte son secundarios.' : 'Temperature is your biggest need — feel and support come second.';
-      } else if (!hasMotion && partnerSleep === 'solo') {
-        nonPriorityMsg = es ? 'Sin pareja, así que no optimizamos para aislamiento de movimiento.' : 'No partner, so we\'re not optimizing for motion isolation.';
+      // ----- RENDER PRIORITY ROWS -----
+      // Classify each tag so CSS can apply three-level visual hierarchy:
+      // KEY NEED = filled brass, HIGH PRIORITY / RECOMMENDED = brass outline, PREFERENCE = muted.
+      function priorityTagClass(badge) {
+        if (!badge) return 'tag-preference';
+        var normalized = badge.toUpperCase();
+        if (normalized === 'KEY NEED' || normalized === 'NECESIDAD CLAVE') return 'tag-key';
+        if (normalized === 'RECOMMENDED' || normalized === 'RECOMENDADO' || normalized === 'HIGH PRIORITY' || normalized === 'ALTA PRIORIDAD') return 'tag-high';
+        return 'tag-preference';
       }
-      document.getElementById('profileNonPriority').textContent = nonPriorityMsg;
+      var prioritiesEl = document.getElementById('profilePriorities');
+      if (prioritiesEl) {
+        prioritiesEl.innerHTML = topPriorities.map(function(p, i) {
+          return '<div class="noct-profile-priority-row">'
+            + '<div class="noct-profile-priority-rank">' + (i + 1) + '</div>'
+            + '<div class="noct-profile-priority-body">'
+            + '<div class="noct-profile-priority-title">' + p.name + '</div>'
+            + '<div class="noct-profile-priority-desc">' + p.why + '</div>'
+            + '</div>'
+            + '<div class="noct-profile-priority-tag ' + priorityTagClass(p.badge) + '">' + p.badge + '</div>'
+            + '</div>';
+        }).join('');
+      }
 
-      // ----- ANTICIPATION PACING (P8) -----
+      // ----- CTA + SECONDARY ACTION -----
       // Brief "scoring mattresses…" hold on the CTA so the reveal feels earned.
-      var ctaBtn = document.getElementById('profileCtaBtn');
-      var ctaText = document.getElementById('profileCtaText');
-      if (ctaBtn && ctaText) {
+      var secondaryBtn = document.getElementById('profileSecondary');
+      if (secondaryBtn) secondaryBtn.textContent = es ? '← Editar mis respuestas' : '← Edit my answers';
+      var ctaBtn = document.getElementById('profileCta');
+      if (ctaBtn) {
         var finalLabel = es ? 'Muéstrame Mis 3 Mejores Opciones →' : 'Show Me My Top 3 Picks →';
-        ctaText.textContent = es ? 'Evaluando colchones según tu perfil…' : 'Scoring mattresses against your profile…';
-        ctaBtn.classList.add('loading');
+        ctaBtn.textContent = es ? 'Evaluando colchones según tu perfil…' : 'Scoring mattresses against your profile…';
         setTimeout(function() {
-          ctaBtn.classList.remove('loading');
-          ctaText.textContent = finalLabel;
+          ctaBtn.textContent = finalLabel;
         }, 1800);
       }
 
-      // Show the profile screen
       showScreen('profileScreen');
-
-      // Trigger animations after screen is visible
-      var ps = document.getElementById('profileScreen');
-      ps.classList.remove('animate');
-      void ps.offsetHeight; // force reflow
-      ps.classList.add('animate');
     }
 
     // ----- SHOW RESULTS -----
