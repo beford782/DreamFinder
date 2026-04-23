@@ -1755,7 +1755,7 @@
 
     /* Discount banner */
     .discount-banner {
-      background: linear-gradient(135deg, #8B1A1A 0%, #a52525 100%);
+      background: linear-gradient(135deg, var(--store-primary) 0%, var(--store-primary-light) 100%);
       border-radius: 10px;
       padding: 0.55rem 0.85rem;
       display: flex;
@@ -5607,47 +5607,52 @@
       const _eMatch = _es ? 'Compatibilidad' : 'Match';
       const _eAccLabel = _es ? 'Accesorios Recomendados' : 'Recommended Accessories';
       const _eDiscountWaiting = _es ? `Tu ${STORE_DISCOUNT}% de descuento te está esperando` : `Your ${STORE_DISCOUNT}% discount is waiting for you`;
+      // Email accent color — email clients can't resolve CSS variables, so substitute at template time.
+      // Retailers override via STORE_CONFIG.colors.emailAccent / emailAccentDark; defaults preserve the original gold.
+      const _storeColors = (STORE_CONFIG && STORE_CONFIG.colors) || {};
+      const _emailAccent = _storeColors.emailAccent || '#c9a84c';
+      const _emailAccentDark = _storeColors.emailAccentDark || '#a8893d';
       const emailHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="margin:0;padding:0;background:#f4f4f4;font-family:Arial,sans-serif;">
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f4;padding:20px 0;"><tr><td align="center">
 <table width="600" cellpadding="0" cellspacing="0" style="background:#0d1730;border-radius:12px;overflow:hidden;max-width:600px;">
-  <tr><td style="background:linear-gradient(135deg,#1a2744,#0d1730);padding:32px 32px 24px;text-align:center;border-bottom:2px solid #c9a84c;">
-    <div style="font-size:11px;letter-spacing:3px;color:#c9a84c;text-transform:uppercase;margin-bottom:8px;">${_emailHeader}</div>
+  <tr><td style="background:linear-gradient(135deg,#1a2744,#0d1730);padding:32px 32px 24px;text-align:center;border-bottom:2px solid ${_emailAccent};">
+    <div style="font-size:11px;letter-spacing:3px;color:${_emailAccent};text-transform:uppercase;margin-bottom:8px;">${_emailHeader}</div>
     <div style="font-size:24px;font-weight:700;color:#ffffff;margin-bottom:6px;">${_eTitle}</div>
     <div style="font-size:13px;color:#a0b0c8;">${_eSubtitle}</div>
   </td></tr>
-  <tr><td style="background:linear-gradient(135deg,#c9a84c,#a8893d);padding:14px 32px;text-align:center;">
+  <tr><td style="background:linear-gradient(135deg,${_emailAccent},${_emailAccentDark});padding:14px 32px;text-align:center;">
     <span style="font-size:17px;font-weight:700;color:#0d1730;">${_eDiscount}</span><br>
     <span style="font-size:12px;color:#0d1730;">${_eShowCode}</span>
   </td></tr>
   <tr><td style="padding:16px 32px 8px; text-align:center;">
-    <div style="display:inline-block; border:2px dashed #c9a84c; border-radius:12px; padding:12px 28px; background:rgba(201,168,76,0.08);">
-      <div style="font-size:10px;letter-spacing:2px;color:#c9a84c;text-transform:uppercase;margin-bottom:6px;">${_eCodeLabel}</div>
+    <div style="display:inline-block; border:2px dashed ${_emailAccent}; border-radius:12px; padding:12px 28px; background:rgba(201,168,76,0.08);">
+      <div style="font-size:10px;letter-spacing:2px;color:${_emailAccent};text-transform:uppercase;margin-bottom:6px;">${_eCodeLabel}</div>
       <div style="font-size:26px;font-weight:800;letter-spacing:0.12em;color:#ffffff;font-family:monospace;">${generateDreamCode(analytics.sessionId)}</div>
       <div style="font-size:11px;color:#a0b0c8;margin-top:4px;">${_eCodeRedeem}</div>
     </div>
   </td></tr>
   <tr><td style="padding:24px 32px 8px;">
-    <div style="font-size:10px;letter-spacing:2px;color:#c9a84c;text-transform:uppercase;margin-bottom:6px;">${_eProfileLabel}</div>
+    <div style="font-size:10px;letter-spacing:2px;color:${_emailAccent};text-transform:uppercase;margin-bottom:6px;">${_eProfileLabel}</div>
     <div style="font-size:14px;color:#ffffff;font-weight:600;">${profName}</div>
   </td></tr>
   <tr><td style="padding:16px 32px 8px;">
-    <div style="font-size:10px;letter-spacing:2px;color:#c9a84c;text-transform:uppercase;margin-bottom:14px;">${_eMatchesLabel}</div>
+    <div style="font-size:10px;letter-spacing:2px;color:${_emailAccent};text-transform:uppercase;margin-bottom:14px;">${_eMatchesLabel}</div>
     ${topMatches.map((m, i) => `
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:${i===0?'#1d3352':'rgba(255,255,255,0.04)'};border:${i===0?'1.5px solid #c9a84c':'1px solid rgba(255,255,255,0.08)'};border-radius:10px;overflow:hidden;margin-bottom:10px;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:${i===0?'#1d3352':'rgba(255,255,255,0.04)'};border:${i===0?`1.5px solid ${_emailAccent}`:'1px solid rgba(255,255,255,0.08)'};border-radius:10px;overflow:hidden;margin-bottom:10px;">
       <tr>
         ${m.imageUrl ? `<td width="90" style="vertical-align:top;padding:0;"><img src="${m.imageUrl}" width="90" height="80" alt="${m.name}" style="display:block;object-fit:cover;"></td>` : ''}
         <td style="padding:12px 14px;vertical-align:middle;">
-          ${i===0 ? `<div style="font-size:9px;letter-spacing:2px;color:#c9a84c;text-transform:uppercase;margin-bottom:3px;">&#11088; ${_eTopPick}</div>` : ''}
+          ${i===0 ? `<div style="font-size:9px;letter-spacing:2px;color:${_emailAccent};text-transform:uppercase;margin-bottom:3px;">&#11088; ${_eTopPick}</div>` : ''}
           <div style="font-size:15px;font-weight:700;color:#ffffff;">${m.name}</div>
           <div style="font-size:11px;color:#a0b0c8;margin-top:2px;">${m.brand}</div>
-          <div style="font-size:12px;color:#c9a84c;margin-top:4px;font-weight:600;">${m.matchPct}% ${_eMatch}</div>
+          <div style="font-size:12px;color:${_emailAccent};margin-top:4px;font-weight:600;">${m.matchPct}% ${_eMatch}</div>
         </td>
       </tr>
     </table>`).join('')}
   </td></tr>
   ${accList.length > 0 ? `
   <tr><td style="padding:8px 32px 16px;">
-    <div style="font-size:10px;letter-spacing:2px;color:#c9a84c;text-transform:uppercase;margin-bottom:14px;">${_eAccLabel}</div>
+    <div style="font-size:10px;letter-spacing:2px;color:${_emailAccent};text-transform:uppercase;margin-bottom:14px;">${_eAccLabel}</div>
     <table width="100%" cellpadding="0" cellspacing="0"><tr>
       ${accList.slice(0,3).map(a => { var _w = Math.floor(536 / Math.min(accList.length, 3)) - 8; return `<td width="${_w+8}" style="padding:0 4px;vertical-align:top;text-align:center;">
         <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;overflow:hidden;">
@@ -5660,7 +5665,7 @@
   </td></tr>` : ''}
   <tr><td style="padding:20px 32px 28px;text-align:center;border-top:1px solid rgba(255,255,255,0.08);">
     <div style="font-size:13px;color:#a0b0c8;margin-bottom:4px;">${_emailSubtext}</div>
-    <div style="font-size:13px;color:#c9a84c;font-weight:700;">${_eDiscountWaiting}</div>
+    <div style="font-size:13px;color:${_emailAccent};font-weight:700;">${_eDiscountWaiting}</div>
     <div style="margin-top:16px;font-size:10px;color:#4a5a6a;">Session: ${analytics.sessionId}</div>
   </td></tr>
 </table></td></tr></table></body></html>`;
