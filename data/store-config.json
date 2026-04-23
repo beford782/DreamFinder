@@ -8,7 +8,8 @@
   "colors": {
     "storePrimary": "#8B1A1A",
     "storePrimaryLight": "#a52525",
-    "storePrimaryGlow": "rgba(139, 26, 26, 0.15)"
+    "storePrimaryGlow": "rgba(139, 26, 26, 0.15)",
+    "accent": "#B8935D"
   },
   "gasUrl": "https://script.google.com/macros/s/AKfycbzLL1Lq6-g2WXglYBrsrfhKRtp0qJSDwfgkS14MLYbJVLkV5idrc7a2cH0jVSdbGDYd/exec",
   "publicAssetRoot": "https://beford782.github.io/DreamFinder/",
@@ -44,5 +45,29 @@
     "inStockText": "Disponible en Bel Furniture",
     "emailHeader": "Bel Furniture × DreamFinder",
     "emailSubtext": "Lleva este correo a tu tienda Bel Furniture"
+  },
+  "discount": {
+    "codePrefix": "DREAM",
+    "codeDigits": 3
+  },
+  "voice": {
+    "eyebrow": "Personalized mattress finder",
+    "headlineMain": "Sleep Better",
+    "headlineAccent": "Tonight.",
+    "subCopyBefore": "Nine questions. Three mattresses matched to how you actually sleep. And ",
+    "subCopyAccent": "a discount",
+    "subCopyAfter": " — revealed at the end.",
+    "ctaPrimary": "Find my mattress",
+    "timeEstimate": "≈ 4 minutes"
+  },
+  "voice_es": {
+    "eyebrow": "Buscador personalizado de colchón",
+    "headlineMain": "Duerme Mejor",
+    "headlineAccent": "Esta Noche.",
+    "subCopyBefore": "Nueve preguntas. Tres colchones elegidos según cómo duermes. Y ",
+    "subCopyAccent": "un descuento",
+    "subCopyAfter": " — revelado al final.",
+    "ctaPrimary": "Encuentra mi colchón",
+    "timeEstimate": "≈ 4 minutos"
   }
 }
