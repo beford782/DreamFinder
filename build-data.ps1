@@ -96,6 +96,8 @@ foreach ($row in $rows) {
     if ($row.firmnessLabel -and $row.firmnessLabel.Trim()) { $firmnessLbl = $row.firmnessLabel.Trim() }
     $highlight = ""
     if ($row.highlight -and $row.highlight.Trim()) { $highlight = $row.highlight.Trim() }
+    $topPickEn = ""
+    if ($row.topPickReason -and $row.topPickReason.Trim()) { $topPickEn = $row.topPickReason.Trim() }
 
     # Auto-resolve image URL from images/mattresses/ folder
     $imageUrl = ""
@@ -112,6 +114,7 @@ foreach ($row in $rows) {
     $tags_es = @()
     $highlight_es = ""
     $reasons_es = @{}
+    $topPickEs = ""
     $mattressId = $row.id.Trim()
     if ($esLookup.ContainsKey($mattressId)) {
         $esRow = $esLookup[$mattressId]
@@ -133,6 +136,20 @@ foreach ($row in $rows) {
                 $reasons_es[$rk.json] = $esVal.Trim()
             }
         }
+
+        # Spanish top-pick reason (single string, not an object of keys)
+        if ($esRow.topPickReason -and $esRow.topPickReason.Trim()) {
+            $topPickEs = $esRow.topPickReason.Trim()
+        }
+    }
+
+    # Assemble bilingual {en, es} object. Only emit if at least one language is populated.
+    $topPickReason = $null
+    if ($topPickEn -or $topPickEs) {
+        $topPickReason = [ordered]@{
+            en = $topPickEn
+            es = $topPickEs
+        }
     }
 
     $mattress = [ordered]@{
@@ -151,6 +168,9 @@ foreach ($row in $rows) {
         imageUrl      = $imageUrl
         reasons       = $reasons
         reasons_es    = $reasons_es
+    }
+    if ($null -ne $topPickReason) {
+        $mattress["topPickReason"] = $topPickReason
     }
 
     $result[$tier] += $mattress
