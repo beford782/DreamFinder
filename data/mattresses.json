@@ -53,7 +53,11 @@
                                         "plush":  "Sensación suave y acogedora para quienes duermen de lado",
                                         "motionIsolation":  "Los resortes encapsulados minimizan la perturbación de la pareja",
                                         "pressureRelief":  "Espuma de memoria con cobre y espuma Hyper-Gel"
-                                    }
+                                    },
+                     "topPickReason":  {
+                                           "en":  "Plush comfort with copper-infused foam that pulls heat away from your body all night.",
+                                           "es":  "Comodidad suave con espuma infundida con cobre que aleja el calor de tu cuerpo toda la noche."
+                                       }
                  },
                  {
                      "id":  "g2",
@@ -107,7 +111,11 @@
                                         "medium":  "Sensación media perfecta para la mayoría",
                                         "motionIsolation":  "Los resortes encapsulados minimizan la perturbación de la pareja",
                                         "pressureRelief":  "Espuma de memoria con cobre y espuma Hyper-Gel"
-                                    }
+                                    },
+                     "topPickReason":  {
+                                           "en":  "Balanced feel with copper cooling — the middle ground between sink and support.",
+                                           "es":  "Sensación equilibrada con enfriamiento de cobre — el punto medio entre hundirse y soporte."
+                                       }
                  },
                  {
                      "id":  "g3",
@@ -161,7 +169,11 @@
                                         "durability":  "Espumas y resortes premium",
                                         "motionIsolation":  "Los resortes encapsulados minimizan la perturbación de la pareja",
                                         "pressureRelief":  "Espuma de memoria con cobre y espuma Hyper-Gel"
-                                    }
+                                    },
+                     "topPickReason":  {
+                                           "en":  "Firm support with copper-infused cooling — solid underneath, cool on top.",
+                                           "es":  "Soporte firme con enfriamiento de cobre — sólido por debajo, fresco por encima."
+                                       }
                  },
                  {
                      "id":  "g4",
@@ -215,7 +227,11 @@
                                         "medium":  "Sensación media perfecta para la mayoría",
                                         "motionIsolation":  "Los resortes encapsulados minimizan la perturbación de la pareja",
                                         "pressureRelief":  "Látex Talalay para una capa de confort natural, duradera y que alivia la presión. Transpirable, antimicrobiano e hipoalergénico"
-                                    }
+                                    },
+                     "topPickReason":  {
+                                           "en":  "Latex-hybrid construction with hand-tufted finish — responsive support built to last.",
+                                           "es":  "Construcción híbrida de látex con acabado cosido a mano — soporte receptivo construido para durar."
+                                       }
                  },
                  {
                      "id":  "g5",
@@ -267,7 +283,11 @@
                                         "durability":  "Cosido a mano, garantía de por vida",
                                         "motionIsolation":  "Los resortes encapsulados minimizan la perturbación de la pareja",
                                         "pressureRelief":  "Látex Talalay para una capa de confort natural, duradera y que alivia la presión. Transpirable, antimicrobiano e hipoalergénico"
-                                    }
+                                    },
+                     "topPickReason":  {
+                                           "en":  "The firmest mattress we make — hand-tufted hybrid built for serious support.",
+                                           "es":  "El colchón más firme que hacemos — híbrido cosido a mano construido para soporte serio."
+                                       }
                  },
                  {
                      "id":  "g6",
@@ -320,7 +340,11 @@
                                         "plush":  "Sensación suave tipo nube para quienes duermen de lado",
                                         "motionIsolation":  "Los resortes encapsulados minimizan la perturbación de la pareja",
                                         "pressureRelief":  "Látex Talalay para una capa de confort natural, duradera y que alivia la presión. Transpirable, antimicrobiano e hipoalergénico"
-                                    }
+                                    },
+                     "topPickReason":  {
+                                           "en":  "Hand-tufted plush comfort with hybrid support underneath — softness that doesn\u0027t sacrifice structure.",
+                                           "es":  "Comodidad suave cosida a mano con soporte híbrido por debajo — suavidad que no sacrifica la estructura."
+                                       }
                  },
                  {
                      "id":  "g7",
@@ -376,7 +400,11 @@
                                         "plush":  "Sensación suave y acogedora para quienes duermen de lado",
                                         "motionIsolation":  "Los resortes encapsulados minimizan la perturbación de la pareja",
                                         "pressureRelief":  "Capas completas de espuma Serene y espuma de memoria Cool-Gel"
-                                    }
+                                    },
+                     "topPickReason":  {
+                                           "en":  "Latex-over-Back Supporter coils — soft cradle, clinical-grade spinal alignment.",
+                                           "es":  "Látex sobre resortes Back Supporter — abrazo suave, alineación espinal de grado clínico."
+                                       }
                  },
                  {
                      "id":  "g8",
@@ -431,7 +459,11 @@
                                         "medium":  "Sensación media perfecta para la mayoría",
                                         "motionIsolation":  "Los resortes encapsulados minimizan la perturbación de la pareja",
                                         "pressureRelief":  "Capas completas de espuma Serene y espuma de memoria Cool-Gel"
-                                    }
+                                    },
+                     "topPickReason":  {
+                                           "en":  "Latex comfort with zoned Back Supporter coils targeted for lumbar alignment.",
+                                           "es":  "Comodidad de látex con resortes Back Supporter zonificados dirigidos a la alineación lumbar."
+                                       }
                  },
                  {
                      "id":  "g9",
@@ -486,7 +518,11 @@
                                         "durability":  "Cosido a mano",
                                         "motionIsolation":  "Los resortes encapsulados minimizan la perturbación de la pareja",
                                         "pressureRelief":  "Capas completas de espuma Serene y espuma de memoria Cool-Gel"
-                                    }
+                                    },
+                     "topPickReason":  {
+                                           "en":  "Firm latex surface over Back Supporter coils — serious support with no pressure points.",
+                                           "es":  "Superficie firme de látex sobre resortes Back Supporter — soporte serio sin puntos de presión."
+                                       }
                  }
              ],
     "silver":  [
@@ -541,7 +577,11 @@
                                           "plush":  "Verdadera sensación suave tipo nube para quienes duermen de lado",
                                           "motionIsolation":  "Los resortes encapsulados minimizan la perturbación de la pareja",
                                           "pressureRelief":  "Espuma Hyper Soft + Espuma Serene + Espuma de Memoria Gel para alivio excepcional de presión"
-                                      }
+                                      },
+                       "topPickReason":  {
+                                             "en":  "Plush cooling hybrid with Back Supporter coils — soft surface, supported spine.",
+                                             "es":  "Híbrido de enfriamiento suave con resortes Back Supporter — superficie suave, columna apoyada."
+                                         }
                    },
                    {
                        "id":  "g11",
@@ -594,7 +634,11 @@
                                           "medium":  "Sensación media perfecta para la mayoría",
                                           "motionIsolation":  "Los resortes encapsulados minimizan la perturbación de la pareja",
                                           "pressureRelief":  "Espuma Hyper Soft + Espuma Serene + Espuma de Memoria Gel para alivio de presión"
-                                      }
+                                      },
+                       "topPickReason":  {
+                                             "en":  "Balanced cooling hybrid with Back Supporter coils — works for most sleep styles.",
+                                             "es":  "Híbrido de enfriamiento equilibrado con resortes Back Supporter — funciona para la mayoría de estilos de sueño."
+                                         }
                    },
                    {
                        "id":  "g12",
@@ -647,7 +691,11 @@
                                           "support":  "Resorte Back Supporter de doble calibre — resortes centrales más firmes para soporte lumbar",
                                           "motionIsolation":  "Los resortes encapsulados minimizan la perturbación de la pareja",
                                           "pressureRelief":  "Espuma Hyper Soft + Espuma Serene + Espuma de Memoria Gel para alivio de presión"
-                                      }
+                                      },
+                       "topPickReason":  {
+                                             "en":  "Firm cooling hybrid with reinforced Back Supporter coils for solid lumbar support.",
+                                             "es":  "Híbrido de enfriamiento firme con resortes Back Supporter reforzados para soporte lumbar sólido."
+                                         }
                    },
                    {
                        "id":  "g13",
@@ -699,7 +747,11 @@
                                           "plush":  "Sensación suave y con soporte para quienes duermen de lado",
                                           "motionIsolation":  "Los resortes encapsulados minimizan la perturbación de la pareja",
                                           "pressureRelief":  "Espuma de Memoria Gel reduce la presión + capas de espuma de confort"
-                                      }
+                                      },
+                       "topPickReason":  {
+                                             "en":  "Plush feel with a phase-change cooling cover — draws heat away the moment you lie down.",
+                                             "es":  "Sensación suave con cubierta de enfriamiento de cambio de fase — aleja el calor desde que te acuestas."
+                                         }
                    },
                    {
                        "id":  "g14",
@@ -750,7 +802,11 @@
                                           "medium":  "Sensación media perfecta para la mayoría",
                                           "motionIsolation":  "Los resortes encapsulados minimizan la perturbación de la pareja",
                                           "pressureRelief":  "Espuma de Memoria Gel reduce la presión + capas de espuma de confort"
-                                      }
+                                      },
+                       "topPickReason":  {
+                                             "en":  "Medium feel with phase-change cooling cover — regulates your temperature through the night.",
+                                             "es":  "Sensación media con cubierta de enfriamiento de cambio de fase — regula tu temperatura durante la noche."
+                                         }
                    },
                    {
                        "id":  "g15",
@@ -801,7 +857,11 @@
                                           "support":  "Resorte Back Supporter de doble calibre — resortes centrales más firmes para soporte lumbar",
                                           "motionIsolation":  "Los resortes encapsulados minimizan la perturbación de la pareja",
                                           "pressureRelief":  "Espuma de Memoria Gel reduce la presión + capas de espuma de confort"
-                                      }
+                                      },
+                       "topPickReason":  {
+                                             "en":  "Firm support with active phase-change cooling — stays cool even when you don\u0027t move.",
+                                             "es":  "Soporte firme con enfriamiento activo de cambio de fase — se mantiene fresco incluso cuando no te mueves."
+                                         }
                    },
                    {
                        "id":  "g27",
@@ -850,7 +910,11 @@
                                           "medium":  "Sensación media perfecta adaptable para todas las posiciones de sueño",
                                           "motionIsolation":  "Los resortes encapsulados individualmente minimizan la transferencia de movimiento",
                                           "pressureRelief":  "La capa euro top suave más espumas de confort responsivas alivian la presión en hombros y caderas"
-                                      }
+                                      },
+                       "topPickReason":  {
+                                             "en":  "Medium cooling hybrid with Euro top — gentle start, solid foundation.",
+                                             "es":  "Híbrido de enfriamiento medio con pillow top europeo — inicio suave, base sólida."
+                                         }
                    },
                    {
                        "id":  "g28",
@@ -898,7 +962,11 @@
                                           "plush":  "Sensación suave profundamente acolchada para quienes duermen de lado y personas con dolor articular",
                                           "motionIsolation":  "El sistema de resortes encapsulados minimiza la transferencia de movimiento para un sueño sin interrupciones",
                                           "pressureRelief":  "Múltiples capas de espuma de confort con enfriamiento se adaptan profundamente a hombros y caderas"
-                                      }
+                                      },
+                       "topPickReason":  {
+                                             "en":  "Plush cooling hybrid — soft, cool, and built for deep restorative sleep.",
+                                             "es":  "Híbrido de enfriamiento suave — suave, fresco, y construido para un sueño reparador profundo."
+                                         }
                    }
                ],
     "bronze":  [
@@ -949,7 +1017,11 @@
                                           "support":  "Marvelous Middle brinda 25% más soporte central",
                                           "motionIsolation":  "Los resortes encapsulados minimizan la perturbación de la pareja",
                                           "pressureRelief":  "La espuma de gel fresco se adapta al cuerpo para aliviar la presión"
-                                      }
+                                      },
+                       "topPickReason":  {
+                                             "en":  "Extra-firm hybrid with zoned support — built for back and stomach sleepers who need solid structure.",
+                                             "es":  "Híbrido extra firme con soporte zonificado — construido para quienes duermen boca arriba o boca abajo y necesitan estructura sólida."
+                                         }
                    },
                    {
                        "id":  "g17",
@@ -998,7 +1070,11 @@
                                           "medium":  "Sensación media-suave perfecta para la mayoría",
                                           "motionIsolation":  "Los resortes encapsulados minimizan la perturbación de la pareja",
                                           "pressureRelief":  "La espuma de gel fresco se adapta al cuerpo para aliviar la presión"
-                                      }
+                                      },
+                       "topPickReason":  {
+                                             "en":  "Medium-plush hybrid with zoned cooling support — balanced comfort for mixed sleep positions.",
+                                             "es":  "Híbrido medio-suave con soporte de enfriamiento zonificado — comodidad equilibrada para posiciones de sueño mixtas."
+                                         }
                    },
                    {
                        "id":  "g18",
@@ -1042,7 +1118,11 @@
                                           "default":  "Espuma de gel fresco, resortes encapsulados zonificados, soporte dirigido y alineación espinal",
                                           "cooling":  "La lujosa funda de enfriamiento absorbe la humedad y el calor",
                                           "support":  "Marvelous Middle brinda 25% más soporte central"
-                                      }
+                                      },
+                       "topPickReason":  {
+                                             "en":  "Medium-plush cooling hybrid — approachable comfort at an approachable price.",
+                                             "es":  "Híbrido de enfriamiento medio-suave — comodidad accesible a un precio accesible."
+                                         }
                    },
                    {
                        "id":  "g19",
@@ -1086,7 +1166,11 @@
                                           "default":  "Espuma de gel fresco, resortes encapsulados zonificados, soporte dirigido y alineación espinal",
                                           "cooling":  "La lujosa funda de enfriamiento absorbe la humedad y el calor",
                                           "support":  "Marvelous Middle brinda 25% más soporte central"
-                                      }
+                                      },
+                       "topPickReason":  {
+                                             "en":  "Firm cooling hybrid — solid support without the premium price.",
+                                             "es":  "Híbrido de enfriamiento firme — soporte sólido sin el precio premium."
+                                         }
                    },
                    {
                        "id":  "g20",
@@ -1129,7 +1213,11 @@
                                           "support":  "Marvelous Middle brinda 25% más soporte central",
                                           "default":  "Espuma de gel fresco, resortes, soporte dirigido y alineación espinal",
                                           "cooling":  "Funda fresca para control de temperatura"
-                                      }
+                                      },
+                       "topPickReason":  {
+                                             "en":  "Plush innerspring with Back Supporter coils — soft comfort, proven spinal support.",
+                                             "es":  "Innerspring suave con resortes Back Supporter — comodidad suave, soporte espinal comprobado."
+                                         }
                    },
                    {
                        "id":  "g21",
@@ -1171,7 +1259,11 @@
                                           "support":  "Marvelous Middle brinda 25% más soporte central",
                                           "medium":  "Sensación media-suave perfecta para la mayoría",
                                           "cooling":  "Funda fresca para control de temperatura"
-                                      }
+                                      },
+                       "topPickReason":  {
+                                             "en":  "Balanced innerspring feel with Back Supporter coils — reliable support, no-frills value.",
+                                             "es":  "Sensación equilibrada de innerspring con resortes Back Supporter — soporte confiable, valor sin lujos."
+                                         }
                    },
                    {
                        "id":  "g22",
@@ -1209,7 +1301,11 @@
                                           "plush":  "Sensación media-suave perfecta para la mayoría",
                                           "motionIsolation":  "Resorte Back Supporter de doble calibre — resortes centrales más firmes para soporte lumbar",
                                           "default":  "Colchón de resortes de calidad con soporte central dirigido y alineación espinal"
-                                      }
+                                      },
+                       "topPickReason":  {
+                                             "en":  "Medium-plush innerspring with Back Supporter coils — gentle cradle with structured support.",
+                                             "es":  "Innerspring medio-suave con resortes Back Supporter — abrazo suave con soporte estructurado."
+                                         }
                    },
                    {
                        "id":  "g24",
@@ -1261,7 +1357,11 @@
                                           "support":  "Resortes Amstar-Adaptive (8\" de altura) con opciones de soporte lumbar para alineación de espalda",
                                           "motionIsolation":  "Los Micro Pocket Coils y los resortes Amstar-Adaptive minimizan la transferencia de movimiento",
                                           "pressureRelief":  "La espuma Amstar-Aero Cool Gel de Memoria y la tecnología SilkFoam se adaptan al cuerpo para aliviar la presión"
-                                      }
+                                      },
+                       "topPickReason":  {
+                                             "en":  "Cushion-firm cooling hybrid backed by lifetime warranty — built to outlast.",
+                                             "es":  "Híbrido de enfriamiento firme con cojín respaldado por garantía de por vida — construido para durar."
+                                         }
                    },
                    {
                        "id":  "g25",
@@ -1312,7 +1412,11 @@
                                           "plush":  "Sensación suave tipo nube ideal para quienes duermen de lado y personas con dolor de hombros o caderas",
                                           "motionIsolation":  "Los resortes encapsulados en espuma (~900) se mueven independientemente para reducir la transferencia de movimiento",
                                           "pressureRelief":  "La espuma de confort Amstar-Flex y la espuma ergonómica de 7 zonas se enfocan en puntos de presión en cabeza, hombros, caderas y rodillas"
-                                      }
+                                      },
+                       "topPickReason":  {
+                                             "en":  "Plush comfort over 7-zone cooling support — soft surface, zoned spinal alignment.",
+                                             "es":  "Comodidad suave sobre soporte de enfriamiento de 7 zonas — superficie suave, alineación espinal por zonas."
+                                         }
                    },
                    {
                        "id":  "g26",
@@ -1362,7 +1466,11 @@
                                           "support":  "La espuma ergonómica de 7 zonas brinda soporte lumbar y de caderas más firme para una excelente alineación espinal",
                                           "motionIsolation":  "Los resortes encapsulados en espuma (~900) se mueven independientemente para reducir la transferencia de movimiento",
                                           "pressureRelief":  "La espuma de confort Amstar-Flex y la espuma ergonómica de 7 zonas amortiguan los puntos de presión en cabeza, hombros, caderas y rodillas"
-                                      }
+                                      },
+                       "topPickReason":  {
+                                             "en":  "Firm cooling hybrid with 7-zone support — targeted firmness where your body needs it most.",
+                                             "es":  "Híbrido de enfriamiento firme con soporte de 7 zonas — firmeza dirigida donde tu cuerpo más la necesita."
+                                         }
                    },
                    {
                        "id":  "g29",
@@ -1409,7 +1517,11 @@
                                           "support":  "Los resortes encapsulados individualmente brindan soporte firme de borde a borde y alineación espinal",
                                           "motionIsolation":  "El sistema de resortes encapsulados minimiza la transferencia de movimiento",
                                           "pressureRelief":  "Las capas de espuma de confort alivian la presión manteniendo una sensación firme"
-                                      }
+                                      },
+                       "topPickReason":  {
+                                             "en":  "Firm cooling hybrid — straightforward solid support for firmness-first sleepers.",
+                                             "es":  "Híbrido de enfriamiento firme — soporte sólido y directo para quienes priorizan la firmeza."
+                                         }
                    },
                    {
                        "id":  "g30",
@@ -1457,7 +1569,11 @@
                                           "support":  "El sistema de resortes encapsulados brinda soporte firme zonificado y estabilidad de borde a borde",
                                           "motionIsolation":  "Los resortes encapsulados individualmente minimizan la transferencia de movimiento",
                                           "pressureRelief":  "La capa Euro Top de confort más espumas responsivas amortiguan los puntos de presión sin sacrificar firmeza"
-                                      }
+                                      },
+                       "topPickReason":  {
+                                             "en":  "Firm cooling hybrid with Euro top — firm core, gentle surface transition.",
+                                             "es":  "Híbrido de enfriamiento firme con pillow top europeo — núcleo firme, transición suave en la superficie."
+                                         }
                    },
                    {
                        "id":  "g31",
@@ -1508,7 +1624,11 @@
                                           "plush":  "Sensación ultra suave tipo nube para quienes duermen de lado y personas con dolor de hombros o caderas",
                                           "motionIsolation":  "El sistema de Micro Pocket Coils y los resortes Amstar-Adaptive minimizan la transferencia de movimiento",
                                           "pressureRelief":  "La espuma Amstar-Aero de Memoria con Carbón (3 pulgadas, 2.5lb) y la tecnología SilkFoam se adaptan profundamente al cuerpo"
-                                      }
+                                      },
+                       "topPickReason":  {
+                                             "en":  "Ultra-plush cooling hybrid — the softest cradle in the Bel-O-Pedic line.",
+                                             "es":  "Híbrido de enfriamiento ultra suave — el abrazo más suave de la línea Bel-O-Pedic."
+                                         }
                    },
                    {
                        "id":  "g32",
@@ -1555,7 +1675,11 @@
                                           "support":  "La capa de transición Amstar-Flex añade soporte resistente y estabilidad en toda la superficie",
                                           "motionIsolation":  "La construcción totalmente de espuma absorbe y aísla el movimiento para un sueño sin interrupciones",
                                           "pressureRelief":  "La espuma de memoria de grado médico de 4lb se adapta lentamente para reducir puntos de presión y mantener la alineación"
-                                      }
+                                      },
+                       "topPickReason":  {
+                                             "en":  "Firm cooling memory foam — all-foam construction with targeted cooling and solid support.",
+                                             "es":  "Espuma con memoria de enfriamiento firme — construcción de toda espuma con enfriamiento dirigido y soporte sólido."
+                                         }
                    }
                ]
 }
