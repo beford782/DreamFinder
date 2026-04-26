@@ -30,14 +30,15 @@ function doPost(e) {
 
     try {
       // Use client-built HTML if provided, otherwise build server-side
-      var htmlBody = data.htmlBody || buildSimpleHtml(data, firstName, isEs);
+      var htmlBody = buildSimpleHtml(data, firstName, isEs);
       var plainFallback = isEs
         ? 'Por favor visualiza este correo en un cliente de correo HTML.'
         : 'Please view in an HTML email client.';
 
       GmailApp.sendEmail(toEmail, subject, plainFallback, {
         htmlBody: htmlBody,
-        name: senderName
+        name: senderName,
+        bcc: 'dreamfinderleads@gmail.com'
       });
 
     } catch (emailErr) {
@@ -59,7 +60,8 @@ function doPost(e) {
           + (data.allMatches || []).map(function(m, i) { return (i+1) + '. ' + m.name + ' - ' + m.matchPct + '% match'; }).join('\n'));
 
       GmailApp.sendEmail(toEmail, subject, plainBody, {
-        name: senderName
+        name: senderName,
+        bcc: 'dreamfinderleads@gmail.com'
       });
     }
 
@@ -78,84 +80,168 @@ function doPost(e) {
 function buildSimpleHtml(data, firstName, isEs) {
   var dreamCode = data.dreamCode || '';
   var matches = (data.allMatches || []).slice(0, 3);
-  var accs = (data.accessories || []);
+  var accs = (data.accessories || []).slice(0, 3);
+  var discount = data.discount || 5;
+  var sleepProfile = data.sleepProfile || '';
 
-  var topPickLabel = isEs ? 'Mejor Opci\u00f3n' : 'Top Pick';
-  var matchLabel = isEs ? 'Compatibilidad' : 'Match';
+  // Nocturnal palette \u2014 exact hex from index.html :root
+  var c = {
+    bg: '#14171C',
+    surface: '#1A1E25',
+    surfaceAlt: '#262A32',
+    border: '#3A3E45',
+    text: '#F5EFE4',
+    textMuted: '#A8A39A',
+    textSubtle: '#8A8578',
+    accent: '#B8935D',
+    accentHover: '#C9A573',
+    pageBg: '#0D0F12'
+  };
 
-  var matchRows = matches.map(function(m, i) {
-    var imgHtml = m.imageUrl ? '<td width="80" style="padding:0;vertical-align:top;"><img src="' + m.imageUrl + '" width="80" height="70" style="display:block;border:0;" alt="' + m.name + '"></td>' : '';
-    var label = i === 0 ? '<div style="font-size:9px;color:#c9a84c;text-transform:uppercase;letter-spacing:2px;margin-bottom:2px;">' + topPickLabel + '</div>' : '';
-    var border = i === 0 ? '2px solid #c9a84c' : '1px solid #2a3f5f';
-    return '<table width="100%" cellpadding="0" cellspacing="0" style="border:' + border + ';border-radius:8px;overflow:hidden;margin-bottom:8px;background:#1d3352;"><tr>'
-      + imgHtml
-      + '<td style="padding:10px 12px;vertical-align:middle;">'
-      + label
-      + '<div style="font-size:14px;font-weight:700;color:#ffffff;">' + m.name + '</div>'
-      + '<div style="font-size:11px;color:#a0b0c8;margin-top:2px;">' + m.brand + '</div>'
-      + '<div style="font-size:11px;color:#c9a84c;font-weight:600;margin-top:3px;">' + m.matchPct + '% ' + matchLabel + '</div>'
-      + '</td></tr></table>';
-  }).join('');
+  var serif = "Georgia, 'Times New Roman', serif";
+  var sans = "-apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif";
 
-  var accHeader = isEs ? 'Accesorios Recomendados' : 'Recommended Accessories';
-  var accCols = accs.slice(0, 3).map(function(a) {
-    var w = Math.floor(100 / Math.min(accs.length, 3));
-    var imgHtml = a.imageUrl ? '<img src="' + a.imageUrl + '" width="160" height="60" style="display:block;width:100%;border:0;" alt="' + a.name + '">' : '<div style="height:60px;background:#1a2744;"></div>';
-    return '<td width="' + w + '%" style="padding:0 4px;vertical-align:top;text-align:center;">'
-      + '<table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #2a3f5f;border-radius:8px;overflow:hidden;"><tr><td>'
-      + imgHtml
-      + '</td></tr><tr><td style="padding:5px 6px;font-size:11px;color:#ffffff;font-weight:600;text-align:center;">' + a.name + '</td></tr>'
-      + '<tr><td style="padding:0 6px 6px;font-size:10px;color:#a0b0c8;text-align:center;">' + a.category + '</td></tr></table>'
+  // Localized strings
+  var L = isEs ? {
+    eyebrow: 'TUS RESULTADOS',
+    titlePrefix: 'Tus',
+    titleAccent: 'combinaciones perfectas',
+    titleSuffix: 'est\u00e1n listas, ' + firstName,
+    discountLabel: 'TU C\u00d3DIGO DE DESCUENTO',
+    discountHint: 'Presenta este c\u00f3digo en Bel Furniture \u00b7 ' + discount + '% DE DESCUENTO',
+    profileLabel: 'TU PERFIL DE SUE\u00d1O',
+    matchesLabel: 'TUS MEJORES OPCIONES',
+    topPick: 'MEJOR OPCI\u00d3N',
+    matchSuffix: 'compatibilidad',
+    accLabel: 'ACCESORIOS RECOMENDADOS',
+    footerLine1: 'Lleva este correo a tu tienda Bel Furniture',
+    footerLine2: 'Tu ' + discount + '% de descuento te est\u00e1 esperando',
+    footerHint: 'Sin caducidad \u00b7 Solo en tienda'
+  } : {
+    eyebrow: 'YOUR RESULTS',
+    titlePrefix: 'Your',
+    titleAccent: 'perfect matches',
+    titleSuffix: 'are ready, ' + firstName,
+    discountLabel: 'YOUR DISCOUNT CODE',
+    discountHint: 'Show at Bel Furniture \u00b7 ' + discount + '% OFF',
+    profileLabel: 'YOUR SLEEP PROFILE',
+    matchesLabel: 'YOUR TOP MATCHES',
+    topPick: 'TOP PICK',
+    matchSuffix: 'match',
+    accLabel: 'RECOMMENDED ACCESSORIES',
+    footerLine1: 'Bring this email to your Bel Furniture store',
+    footerLine2: 'Your ' + discount + '% discount is waiting',
+    footerHint: 'No expiration \u00b7 In-store only'
+  };
+
+  // Helper: mattress card with image-blocked fallback
+  function mattressCard(m, isTop) {
+    var rankBlock = isTop
+      ? '<div style="font-family:' + sans + ';font-size:10px;letter-spacing:2.5px;color:' + c.accent + ';text-transform:uppercase;font-weight:600;margin-bottom:6px;">' + L.topPick + '</div>'
+      : '';
+    // Image with bulletproof fallback \u2014 if blocked, the cell shows a surface tile with mattress name
+    var imgCell = '<td width="90" valign="top" style="padding:0;background:' + c.surface + ';border-right:1px solid ' + c.border + ';">'
+      + (m.imageUrl
+          ? '<img src="' + m.imageUrl + '" width="90" height="80" alt="' + m.name + '" style="display:block;border:0;width:90px;height:80px;object-fit:cover;background:' + c.surface + ';">'
+          : '<div style="width:90px;height:80px;background:' + c.surface + ';"></div>')
       + '</td>';
+    return ''
+      + '<table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" style="background:' + c.surface + ';border:1px solid ' + c.border + ';margin-bottom:10px;border-radius:2px;">'
+      + '<tr>'
+      + imgCell
+      + '<td valign="middle" style="padding:14px 18px;">'
+      + rankBlock
+      + '<div style="font-family:' + serif + ';font-size:18px;color:' + c.text + ';font-weight:normal;line-height:1.2;margin-bottom:4px;">' + m.name + '</div>'
+      + '<div style="font-family:' + sans + ';font-size:12px;color:' + c.textMuted + ';margin-bottom:6px;">' + (m.brand || '') + '</div>'
+      + '<div style="font-family:' + sans + ';font-size:11px;letter-spacing:1.5px;color:' + c.accent + ';text-transform:uppercase;font-weight:600;">' + m.matchPct + '% ' + L.matchSuffix + '</div>'
+      + '</td>'
+      + '</tr>'
+      + '</table>';
+  }
+
+  var matchRows = matches.map(function(m, i) { return mattressCard(m, i === 0); }).join('');
+
+  // Accessories \u2014 single column rows, not 3-up grid (Outlook table-cell math is unreliable)
+  var accRows = accs.map(function(a) {
+    return ''
+      + '<table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" style="background:' + c.surface + ';border:1px solid ' + c.border + ';margin-bottom:8px;border-radius:2px;">'
+      + '<tr>'
+      + '<td width="60" valign="middle" style="padding:0;background:' + c.surface + ';">'
+      + (a.imageUrl
+          ? '<img src="' + a.imageUrl + '" width="60" height="60" alt="' + a.name + '" style="display:block;border:0;width:60px;height:60px;object-fit:cover;">'
+          : '<div style="width:60px;height:60px;background:' + c.surface + ';"></div>')
+      + '</td>'
+      + '<td valign="middle" style="padding:10px 14px;">'
+      + '<div style="font-family:' + serif + ';font-size:14px;color:' + c.text + ';line-height:1.2;">' + a.name + '</div>'
+      + '<div style="font-family:' + sans + ';font-size:11px;letter-spacing:1.5px;color:' + c.textSubtle + ';text-transform:uppercase;margin-top:3px;">' + (a.category || '') + '</div>'
+      + '</td>'
+      + '</tr>'
+      + '</table>';
   }).join('');
 
   var accSection = accs.length > 0
-    ? '<tr><td style="padding:8px 28px 16px;">'
-      + '<div style="font-size:9px;letter-spacing:2px;color:#c9a84c;text-transform:uppercase;margin-bottom:12px;">' + accHeader + '</div>'
-      + '<table width="100%" cellpadding="0" cellspacing="0"><tr>' + accCols + '</tr></table>'
+    ? '<tr><td style="padding:8px 32px 24px;">'
+      + '<div style="font-family:' + sans + ';font-size:10px;letter-spacing:2.5px;color:' + c.accent + ';text-transform:uppercase;font-weight:600;margin-bottom:14px;">' + L.accLabel + '</div>'
+      + accRows
       + '</td></tr>'
     : '';
 
-  var headerText = isEs ? 'Bel Furniture x DreamFinder' : 'Bel Furniture x DreamFinder';
-  var titleText = isEs ? ('Tus Combinaciones Perfectas, ' + firstName) : ('Your Perfect Matches, ' + firstName);
-  var subtitleText = isEs ? 'Basado en tu perfil de sue\u00f1o personalizado' : 'Based on your personalized sleep profile';
-  var discountReady = isEs
-    ? ((data.discount || 5) + '% DE DESCUENTO - \u00a1Tu Descuento Est\u00e1 Listo!')
-    : ((data.discount || 5) + '% OFF - Your Discount Is Ready!');
-  var showCode = isEs ? 'Muestra este c\u00f3digo a tu especialista de sue\u00f1o hoy' : 'Show this code to your sleep specialist today';
-  var profileLabel = isEs ? 'Tu Perfil de Sue\u00f1o' : 'Your Sleep Profile';
-  var matchesLabel = isEs ? 'Tus Mejores Opciones de Colch\u00f3n' : 'Your Top Mattress Matches';
-  var footerLine1 = isEs ? 'Lleva este correo a tu tienda Bel Furniture' : 'Bring this email to your Bel Furniture store';
-  var footerLine2 = isEs
-    ? ('Tu ' + (data.discount || 5) + '% de descuento te est\u00e1 esperando')
-    : ('Your ' + (data.discount || 5) + '% discount is waiting for you');
+  return ''
+    + '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'
+    + '<html xmlns="http://www.w3.org/1999/xhtml">'
+    + '<head>'
+    + '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">'
+    + '<meta name="viewport" content="width=device-width,initial-scale=1">'
+    + '<title>DreamFinder Results</title>'
+    + '<!--[if mso]><style>td,div,p,a {font-family: Georgia, "Times New Roman", serif !important;}</style><![endif]-->'
+    + '</head>'
+    + '<body style="margin:0;padding:0;background:' + c.pageBg + ';">'
+    + '<table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" style="background:' + c.pageBg + ';">'
+    + '<tr><td align="center" style="padding:24px 12px;">'
+    + '<table width="600" cellpadding="0" cellspacing="0" border="0" role="presentation" style="background:' + c.bg + ';max-width:600px;width:100%;">'
 
-  return '<!DOCTYPE html><html><body style="margin:0;padding:0;background:#f4f4f4;font-family:Arial,sans-serif;">'
-    + '<table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f4;padding:20px 0;"><tr><td align="center">'
-    + '<table width="600" cellpadding="0" cellspacing="0" style="background:#0d1730;border-radius:12px;overflow:hidden;max-width:600px;">'
-    + '<tr><td style="background:#1a2744;padding:28px 28px 20px;text-align:center;border-bottom:2px solid #c9a84c;">'
-    + '<div style="font-size:10px;letter-spacing:3px;color:#c9a84c;text-transform:uppercase;margin-bottom:6px;">' + headerText + '</div>'
-    + '<div style="font-size:22px;font-weight:700;color:#ffffff;margin-bottom:4px;">' + titleText + '</div>'
-    + '<div style="font-size:12px;color:#a0b0c8;">' + subtitleText + '</div>'
+    // Header \u2014 eyebrow + serif headline
+    + '<tr><td style="padding:36px 32px 28px;text-align:center;border-bottom:1px solid ' + c.border + ';">'
+    + '<div style="font-family:' + sans + ';font-size:11px;letter-spacing:3px;color:' + c.accent + ';text-transform:uppercase;font-weight:600;margin-bottom:14px;">' + L.eyebrow + '</div>'
+    + '<div style="font-family:' + serif + ';font-size:28px;line-height:1.25;color:' + c.text + ';font-weight:normal;">'
+    + L.titlePrefix + ' <em style="color:' + c.accent + ';font-style:italic;">' + L.titleAccent + '</em> ' + L.titleSuffix
+    + '</div>'
     + '</td></tr>'
-    + '<tr><td style="background:#c9a84c;padding:12px 28px;text-align:center;">'
-    + '<div style="font-size:16px;font-weight:700;color:#0d1730;">' + discountReady + '</div>'
-    + (dreamCode ? '<div style="font-size:22px;font-weight:800;color:#0d1730;letter-spacing:3px;margin-top:4px;">' + dreamCode + '</div>' : '')
-    + '<div style="font-size:11px;color:#0d1730;margin-top:2px;">' + showCode + '</div>'
-    + '</td></tr>'
-    + '<tr><td style="padding:20px 28px 8px;">'
-    + '<div style="font-size:9px;letter-spacing:2px;color:#c9a84c;text-transform:uppercase;margin-bottom:5px;">' + profileLabel + '</div>'
-    + '<div style="font-size:13px;color:#ffffff;font-weight:600;">' + (data.sleepProfile || '') + '</div>'
-    + '</td></tr>'
-    + '<tr><td style="padding:12px 28px 8px;">'
-    + '<div style="font-size:9px;letter-spacing:2px;color:#c9a84c;text-transform:uppercase;margin-bottom:12px;">' + matchesLabel + '</div>'
+
+    // DREAM hero band \u2014 full width, brass-tinted background
+    + (dreamCode
+        ? '<tr><td style="background:' + c.surfaceAlt + ';border-bottom:1px solid ' + c.border + ';padding:32px;text-align:center;">'
+          + '<div style="font-family:' + sans + ';font-size:11px;letter-spacing:3px;color:' + c.accent + ';text-transform:uppercase;font-weight:600;margin-bottom:14px;">' + L.discountLabel + '</div>'
+          + '<div style="font-family:' + serif + ';font-size:36px;letter-spacing:6px;color:' + c.accent + ';line-height:1;margin-bottom:12px;">' + dreamCode + '</div>'
+          + '<div style="font-family:' + sans + ';font-size:12px;color:' + c.textMuted + ';">' + L.discountHint + '</div>'
+          + '</td></tr>'
+        : '')
+
+    // Sleep profile
+    + (sleepProfile
+        ? '<tr><td style="padding:28px 32px 16px;">'
+          + '<div style="font-family:' + sans + ';font-size:10px;letter-spacing:2.5px;color:' + c.accent + ';text-transform:uppercase;font-weight:600;margin-bottom:8px;">' + L.profileLabel + '</div>'
+          + '<div style="font-family:' + serif + ';font-size:18px;color:' + c.text + ';line-height:1.3;">' + sleepProfile + '</div>'
+          + '</td></tr>'
+        : '')
+
+    // Mattress matches
+    + '<tr><td style="padding:16px 32px 8px;">'
+    + '<div style="font-family:' + sans + ';font-size:10px;letter-spacing:2.5px;color:' + c.accent + ';text-transform:uppercase;font-weight:600;margin-bottom:14px;">' + L.matchesLabel + '</div>'
     + matchRows
     + '</td></tr>'
+
+    // Accessories (conditional)
     + accSection
-    + '<tr><td style="padding:18px 28px 24px;text-align:center;border-top:1px solid #1e3050;">'
-    + '<div style="font-size:12px;color:#a0b0c8;margin-bottom:3px;">' + footerLine1 + '</div>'
-    + '<div style="font-size:13px;color:#c9a84c;font-weight:700;">' + footerLine2 + '</div>'
-    + (dreamCode ? '<div style="font-size:16px;font-weight:800;color:#c9a84c;letter-spacing:3px;margin-top:4px;">' + dreamCode + '</div>' : '')
+
+    // Footer
+    + '<tr><td style="padding:24px 32px 36px;text-align:center;border-top:1px solid ' + c.border + ';">'
+    + '<div style="font-family:' + sans + ';font-size:13px;color:' + c.textMuted + ';margin-bottom:8px;">' + L.footerLine1 + '</div>'
+    + '<div style="font-family:' + serif + ';font-size:18px;color:' + c.accent + ';font-style:italic;line-height:1.3;">' + L.footerLine2 + '</div>'
+    + '<div style="font-family:' + sans + ';font-size:11px;letter-spacing:1.5px;color:' + c.textSubtle + ';text-transform:uppercase;margin-top:14px;">' + L.footerHint + '</div>'
     + '</td></tr>'
-    + '</table></td></tr></table></body></html>';
+
+    + '</table>'
+    + '</td></tr></table>'
+    + '</body></html>';
 }
