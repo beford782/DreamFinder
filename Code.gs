@@ -29,7 +29,8 @@ function doPost(e) {
     var firstName = (data.name || (isEs ? 'amigo' : 'there')).split(' ')[0];
 
     try {
-      // Use client-built HTML if provided, otherwise build server-side
+      // Always build HTML server-side. Client previously sent data.htmlBody but
+      // that path was deprecated in 5e — kiosk no longer ships pre-built HTML.
       var htmlBody = buildSimpleHtml(data, firstName, isEs);
       var plainFallback = isEs
         ? 'Por favor visualiza este correo en un cliente de correo HTML.'
@@ -79,7 +80,9 @@ function doPost(e) {
 
 function buildSimpleHtml(data, firstName, isEs) {
   var dreamCode = data.dreamCode || '';
-  var matches = (data.allMatches || []).slice(0, 3);
+  // Cap at whatever kiosk sent (kiosk already pre-slices: 6 if saved, 3 if recommendations).
+  // Hard ceiling of 6 as a server-side safety net.
+  var matches = (data.allMatches || []).slice(0, 6);
   var accs = (data.accessories || []).slice(0, 3);
   var discount = data.discount || 5;
   var sleepProfile = data.sleepProfile || '';
