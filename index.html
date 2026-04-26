@@ -1732,50 +1732,7 @@
       text-align: right;
     }
 
-    /* Sales cheat sheet */
-    .noct-handoff-cheatsheet {
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius);
-      padding: 16px 18px;
-      margin-bottom: 20px;
-    }
-
-    .noct-handoff-cheatsheet__title {
-      font-family: var(--font-serif);
-      font-size: 1rem;
-      color: var(--color-text);
-      margin-bottom: 10px;
-    }
-
-    .noct-handoff-cheatsheet__list {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .noct-handoff-cheatsheet__item {
-      font-family: var(--font-sans);
-      font-size: 0.8rem;
-      line-height: 1.5;
-      color: var(--color-text-muted);
-      padding-left: 16px;
-      position: relative;
-    }
-
-    .noct-handoff-cheatsheet__item::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 0.55em;
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--color-accent);
-    }
+    /* Talking points block removed in 5c-2d — redundant with Sales Cheat Sheet */
 
     /* Saved picks list */
     .noct-handoff-picks {
@@ -1786,19 +1743,31 @@
     }
 
     .noct-handoff-pick {
+      position: relative;
       background: var(--color-surface);
       border: 1px solid var(--color-border);
       border-radius: var(--radius);
       padding: 14px 16px;
       display: grid;
-      grid-template-columns: 1fr auto;
+      grid-template-columns: auto 1fr auto;
       grid-template-rows: auto auto auto;
       column-gap: 16px;
       row-gap: 4px;
     }
 
+    .noct-handoff-pick__photo {
+      grid-column: 1;
+      grid-row: 1 / span 3;
+      align-self: center;
+      width: 70px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: var(--radius);
+      flex-shrink: 0;
+    }
+
     .noct-handoff-pick__rank {
-      grid-column: 1 / 2;
+      grid-column: 2;
       grid-row: 1;
       font-family: var(--font-sans);
       font-size: 10px;
@@ -1809,7 +1778,7 @@
     }
 
     .noct-handoff-pick__name {
-      grid-column: 1 / 2;
+      grid-column: 2;
       grid-row: 2;
       font-family: var(--font-serif);
       font-size: 1.05rem;
@@ -1818,7 +1787,7 @@
     }
 
     .noct-handoff-pick__why {
-      grid-column: 1 / 2;
+      grid-column: 2;
       grid-row: 3;
       font-family: var(--font-sans);
       font-size: 0.78rem;
@@ -1827,13 +1796,38 @@
     }
 
     .noct-handoff-pick__price {
-      grid-column: 2;
+      grid-column: 3;
       grid-row: 1 / span 3;
       align-self: center;
       text-align: right;
       font-family: var(--font-sans);
       font-size: 0.85rem;
       font-weight: 500;
+      color: var(--color-accent);
+      padding-right: 28px; /* leave room for circular remove button */
+    }
+
+    .noct-handoff-pick__remove {
+      position: absolute;
+      top: 0.6rem;
+      right: 0.6rem;
+      width: 28px;
+      height: 28px;
+      background: transparent;
+      border: 1px solid color-mix(in srgb, var(--color-text-muted) 35%, transparent);
+      border-radius: 50%;
+      color: var(--color-text-muted);
+      font-size: 1rem;
+      line-height: 1;
+      font-family: var(--font-sans);
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      transition: border-color 0.2s ease, color 0.2s ease;
+    }
+
+    .noct-handoff-pick__remove:hover {
+      border-color: var(--color-accent);
       color: var(--color-accent);
     }
 
@@ -1901,7 +1895,7 @@
       color: var(--color-text);
       cursor: pointer;
       touch-action: manipulation;
-      transition: border-color 0.2s ease, transform 0.1s ease;
+      transition: border-color 0.2s ease, transform 0.1s ease, bottom 0.2s ease;
       -webkit-tap-highlight-color: transparent;
     }
 
@@ -1934,6 +1928,24 @@
     /* Hide pill on the handoff screen itself — you're already viewing your selections */
     body:has(#savedPicksScreen.active) .noct-picks-pill {
       display: none !important;
+    }
+
+    /* 5c-2d-fix: pill lifts above the cart bar when the bar is rendered.
+       Both stay tappable — pill = saved-mattress gateway, bar = accessories context. */
+    body:has(#accCartBar.visible) .noct-picks-pill--visible {
+      bottom: calc(1rem + 56px);
+    }
+
+    /* 5c-2d-fix: cart bar is now a tappable gateway to handoff. */
+    #accCartBar {
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      transition: background-color 0.2s ease;
+    }
+
+    #accCartBar:active {
+      background-color: color-mix(in srgb, var(--color-accent) 10%, var(--color-bg));
     }
 
     /* ===== LOADING SPLASH ===== */
@@ -5278,30 +5290,22 @@
   <div class="screen noct-handoff" id="savedPicksScreen">
 
     <header class="noct-handoff__intro">
-      <p class="noct-handoff__eyebrow" data-i18n="handoff.summary_label">Salesperson Summary</p>
-      <h2 class="noct-handoff__title" data-i18n="handoff.title">Customer's <em>interested</em> picks</h2>
-      <p class="noct-handoff__subtitle" data-i18n="handoff.subtitle">Mattresses the customer marked as interested</p>
+      <p class="noct-handoff__eyebrow" data-i18n="handoff.summary_label">Your Selections</p>
+      <h2 class="noct-handoff__title" data-i18n="handoff.title" data-i18n-html="true">Your <em>interested</em> picks</h2>
+      <p class="noct-handoff__subtitle" data-i18n="handoff.subtitle">Mattresses you marked as interested.</p>
     </header>
 
-    <!-- DREAM CODE HERO &mdash; biggest workflow gap, placeholder content; JS wiring in 5c-2c -->
+    <!-- DREAM CODE HERO -->
     <section class="noct-handoff-hero" id="handoffHero">
       <p class="noct-handoff-hero__label" data-i18n="handoff.code_label">Customer's Discount Code</p>
       <p class="noct-handoff-hero__code" id="handoffDreamCode">DREAM&mdash;&mdash;&mdash;</p>
       <p class="noct-handoff-hero__hint" data-i18n="handoff.code_hint">Apply at checkout for the customer</p>
     </section>
 
-    <!-- Customer context &mdash; populated by renderCustomerContextCard() (still old style until 5c-2c) -->
+    <!-- Customer context &mdash; populated by renderCustomerContextCard() -->
     <div id="customerContextCard"></div>
 
-    <!-- Sales cheat sheet &mdash; placeholder list; JS wiring in 5c-2c -->
-    <section class="noct-handoff-cheatsheet" id="handoffCheatsheet">
-      <h3 class="noct-handoff-cheatsheet__title" data-i18n="handoff.cheatsheet_title">Talking points</h3>
-      <ul class="noct-handoff-cheatsheet__list" id="handoffCheatsheetList">
-        <li class="noct-handoff-cheatsheet__item">Loading talking points&hellip;</li>
-      </ul>
-    </section>
-
-    <!-- Saved picks &mdash; populated by showSavedPicks() (still old style until 5c-2c) -->
+    <!-- Saved picks &mdash; populated by showSavedPicks() with .noct-handoff-pick markup -->
     <div class="noct-handoff-picks" id="savedPicksList"></div>
 
     <div class="noct-handoff-actions">
@@ -5397,7 +5401,7 @@
       .acc-card-animated { opacity:0; animation: accCardIn 0.4s ease-out forwards; }
     </style>
     <div class="accessories-grid" id="accessoriesGrid"></div>
-    <div id="accCartBar" style="display:none; position:sticky; bottom:0; left:0; right:0; background:linear-gradient(135deg,#1a2744,#0d1730); border-top:2px solid var(--gold); padding:0.75rem 1.25rem; display:none; align-items:center; justify-content:space-between; z-index:50; box-shadow:0 -4px 20px rgba(0,0,0,0.4);">
+    <div id="accCartBar" onclick="window.showSavedPicks()" ontouchend="event.preventDefault();window.showSavedPicks();" style="display:none; position:sticky; bottom:0; left:0; right:0; background:linear-gradient(135deg,#1a2744,#0d1730); border-top:2px solid var(--gold); padding:0.75rem 1.25rem; display:none; align-items:center; justify-content:space-between; z-index:50; box-shadow:0 -4px 20px rgba(0,0,0,0.4);">
       <div style="display:flex; align-items:center; gap:0.6rem;">
         <span style="font-size:1.1rem;">🛒</span>
         <span id="accCartCount" style="font-size:0.85rem; color:var(--cream); font-weight:600;">0 items added to your list</span>
@@ -8367,6 +8371,13 @@
 
     window.showSavedPicks = function() {
       renderCustomerContextCard();
+
+      // Wire real DREAM code into hero (replaces the DREAM--- placeholder)
+      var codeEl = document.getElementById('handoffDreamCode');
+      if (codeEl && analytics && analytics.sessionId) {
+        codeEl.textContent = generateDreamCode(analytics.sessionId);
+      }
+
       var list = document.getElementById('savedPicksList');
       if (!list) return;
       var html = '';
@@ -8374,20 +8385,25 @@
       // Mattresses
       var _esH = currentLang === 'es';
       if (window._savedPicks.length === 0) {
-        html += '<div style="text-align:center; color:var(--cream-dim); font-size:0.82rem; padding:1rem 0;">' + (_esH ? 'No hay colchones guardados — toca "Me Interesa" en cualquier colchón.' : 'No mattresses saved yet — tap "I\'m Interested" on any mattress.') + '</div>';
+        html += '<div style="text-align:center; color:var(--color-text-muted); font-size:0.82rem; padding:1rem 0;">' + (_esH ? 'No hay colchones guardados — toca "Me Interesa" en cualquier colchón.' : 'No mattresses saved yet — tap a Save button on any mattress.') + '</div>';
       } else {
-        html += '<div style="font-size:0.65rem; text-transform:uppercase; letter-spacing:2px; color:var(--gold); font-weight:600; margin-bottom:0.5rem;">' + (_esH ? 'Colchones' : 'Mattresses') + '</div>';
         html += window._savedPicks.map(function(p, i) {
-          return '<div style="display:flex; align-items:center; gap:0.75rem; background:linear-gradient(135deg,#1d3352,#162845); border:1.5px solid rgba(212,168,75,0.4); border-radius:12px; padding:0.75rem; position:relative; margin-bottom:0.5rem;">'
-            + (p.imageUrl ? '<img src="' + p.imageUrl + '" style="width:70px; height:60px; object-fit:cover; border-radius:8px; flex-shrink:0;">' : '')
-            + '<div style="flex:1;">'
-            + '<div style="font-size:0.65rem; color:var(--gold); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:0.15rem;">' + (_esH ? 'Selección #' : 'Pick #') + (i+1) + '</div>'
-            + '<div style="font-size:1rem; font-weight:700; color:var(--cream);">' + p.name + (p.tier ? ' <span class="price-tier">' + priceTierSymbol(p.tier) + '</span>' : '') + '</div>'
-            + '<div style="font-size:0.72rem; color:var(--cream-dim);">' + p.brand + '</div>'
-            + '<div style="font-size:0.72rem; color:var(--gold); margin-top:0.2rem;">' + p.pct + '% Match · ' + p.firmFeel + '</div>'
-            + '</div>'
-            + '<button onclick="window._removePick(\'' + p.id + '\')" ontouchend="event.preventDefault();window._removePick(\'' + p.id + '\');" style="position:absolute; top:0.5rem; right:0.5rem; background:none; border:none; color:rgba(255,255,255,0.3); font-size:1rem; cursor:pointer; font-family:inherit; touch-action:manipulation;">✕</button>'
-            + '</div>';
+          var pickLabel = (_esH ? 'SELECCIÓN #' : 'PICK #') + (i + 1);
+          var matchLine = p.pct + '% ' + (_esH ? 'Compatibilidad' : 'Match') + ' &middot; ' + p.firmFeel;
+          var photo = p.imageUrl
+            ? '<img class="noct-handoff-pick__photo" src="' + p.imageUrl + '" alt="">'
+            : '';
+          var price = p.tier
+            ? '<div class="noct-handoff-pick__price">' + priceTierSymbol(p.tier) + '</div>'
+            : '<div class="noct-handoff-pick__price"></div>';
+          return '<article class="noct-handoff-pick" data-pick-id="' + p.id + '">'
+            + photo
+            + '<div class="noct-handoff-pick__rank">' + pickLabel + '</div>'
+            + '<div class="noct-handoff-pick__name">' + p.name + '</div>'
+            + '<div class="noct-handoff-pick__why">' + p.brand + '<br>' + matchLine + '</div>'
+            + price
+            + '<button class="noct-handoff-pick__remove" onclick="window._removePick(\'' + p.id + '\')" ontouchend="event.preventDefault();window._removePick(\'' + p.id + '\');" aria-label="' + (_esH ? 'Eliminar selección' : 'Remove this pick') + '">&times;</button>'
+            + '</article>';
         }).join('');
       }
 
@@ -8439,7 +8455,10 @@
       const count = Object.keys(window._accCart).length;
       const bar = document.getElementById('accCartBar');
       const countEl = document.getElementById('accCartCount');
-      if (bar) bar.style.display = count > 0 ? 'flex' : 'none';
+      if (bar) {
+        bar.style.display = count > 0 ? 'flex' : 'none';
+        bar.classList.toggle('visible', count > 0);
+      }
       if (countEl) countEl.textContent = currentLang === 'es'
         ? count + (count === 1 ? ' artículo agregado a tu lista' : ' artículos agregados a tu lista')
         : count + (count === 1 ? ' item added to your list' : ' items added to your list');
@@ -8461,7 +8480,10 @@
       // Reset cart
       window._accCart = {};
       const bar = document.getElementById('accCartBar');
-      if (bar) bar.style.display = 'none';
+      if (bar) {
+        bar.style.display = 'none';
+        bar.classList.remove('visible');
+      }
 
       // Reset saved picks
       window._savedPicks = [];

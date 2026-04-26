@@ -52,9 +52,9 @@
   "discount.off": "% OFF",
   "discount.show_specialist": "Show this screen to your sleep specialist",
 
-  "handoff.summary_label": "Salesperson Summary",
-  "handoff.title": "Customer's Interested Picks",
-  "handoff.subtitle": "Mattresses the customer marked as interested",
+  "handoff.summary_label": "Your Selections",
+  "handoff.title": "Your <em>interested</em> picks",
+  "handoff.subtitle": "Mattresses you marked as interested.",
   "handoff.back_to_results": "← Back to Results",
   "handoff.send_results": "Send Results to Customer →",
 
