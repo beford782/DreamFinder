@@ -1585,7 +1585,12 @@
     /* === 5c-2a Handoff screen — class definitions === */
     /* Defined but not yet applied. Markup wiring follows in 5c-2b. */
     .noct-handoff {
+      display: flex;
+      flex-direction: column;
       width: 100%;
+      height: calc(100vh - var(--header-height) - var(--accent-bar-height));
+      overflow-y: auto;
+      padding: 1.25rem;
       color: var(--color-text);
       font-family: var(--font-serif);
     }
@@ -5217,19 +5222,48 @@
   </div>
 
   <!-- SCREEN: Saved Picks (Salesperson View) -->
-  <div class="screen" id="savedPicksScreen" style="flex-direction:column; height:calc(100vh - var(--header-height) - var(--accent-bar-height)); overflow-y:auto; padding:1.25rem;">
-    <div style="text-align:center; margin-bottom:1rem;">
-      <div style="font-size:0.65rem; text-transform:uppercase; letter-spacing:2px; color:var(--gold); font-weight:600; margin-bottom:0.3rem;" data-i18n="handoff.summary_label">Salesperson Summary</div>
-      <h3 style="font-size:1.1rem; font-weight:700; color:var(--cream); margin-bottom:0.2rem;" data-i18n="handoff.title">Customer's Interested Picks</h3>
-      <p style="font-size:0.75rem; color:var(--cream-dim);" data-i18n="handoff.subtitle">Mattresses the customer marked as interested</p>
+  <div class="screen noct-handoff" id="savedPicksScreen">
+
+    <header class="noct-handoff__intro">
+      <p class="noct-handoff__eyebrow" data-i18n="handoff.summary_label">Salesperson Summary</p>
+      <h2 class="noct-handoff__title" data-i18n="handoff.title">Customer's <em>interested</em> picks</h2>
+      <p class="noct-handoff__subtitle" data-i18n="handoff.subtitle">Mattresses the customer marked as interested</p>
+    </header>
+
+    <!-- DREAM CODE HERO &mdash; biggest workflow gap, placeholder content; JS wiring in 5c-2c -->
+    <section class="noct-handoff-hero" id="handoffHero">
+      <p class="noct-handoff-hero__label" data-i18n="handoff.code_label">Customer's Discount Code</p>
+      <p class="noct-handoff-hero__code" id="handoffDreamCode">DREAM&mdash;&mdash;&mdash;</p>
+      <p class="noct-handoff-hero__hint" data-i18n="handoff.code_hint">Apply at checkout for the customer</p>
+    </section>
+
+    <!-- Customer context &mdash; populated by renderCustomerContextCard() (still old style until 5c-2c) -->
+    <div id="customerContextCard"></div>
+
+    <!-- Sales cheat sheet &mdash; placeholder list; JS wiring in 5c-2c -->
+    <section class="noct-handoff-cheatsheet" id="handoffCheatsheet">
+      <h3 class="noct-handoff-cheatsheet__title" data-i18n="handoff.cheatsheet_title">Talking points</h3>
+      <ul class="noct-handoff-cheatsheet__list" id="handoffCheatsheetList">
+        <li class="noct-handoff-cheatsheet__item">Loading talking points&hellip;</li>
+      </ul>
+    </section>
+
+    <!-- Saved picks &mdash; populated by showSavedPicks() (still old style until 5c-2c) -->
+    <div class="noct-handoff-picks" id="savedPicksList"></div>
+
+    <div class="noct-handoff-actions">
+      <button
+        class="noct-handoff-btn noct-handoff-btn--ghost"
+        onclick="showScreen('resultsScreen')"
+        ontouchend="event.preventDefault();showScreen('resultsScreen');"
+        data-i18n="handoff.back_to_results">&larr; Back to Results</button>
+      <button
+        class="noct-handoff-btn noct-handoff-btn--primary"
+        onclick="showEmailCapture()"
+        ontouchend="event.preventDefault();showEmailCapture();"
+        data-i18n="handoff.send_results">Send Results to Customer &rarr;</button>
     </div>
-    <!-- Customer context card (built in showSavedPicks) -->
-    <div id="customerContextCard" style="margin-bottom:1rem;"></div>
-    <div id="savedPicksList" style="display:flex; flex-direction:column; gap:0.75rem; margin-bottom:1.5rem;"></div>
-    <div style="text-align:center; display:flex; flex-direction:column; gap:0.6rem; align-items:center;">
-      <button onclick="showScreen('resultsScreen')" ontouchend="event.preventDefault();showScreen('resultsScreen');" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:var(--cream); font-family:inherit; font-size:0.82rem; font-weight:600; padding:0.6rem 1.5rem; border-radius:10px; cursor:pointer; touch-action:manipulation;" data-i18n="handoff.back_to_results">← Back to Results</button>
-      <button onclick="showEmailCapture()" ontouchend="event.preventDefault();showEmailCapture();" style="background:linear-gradient(180deg,var(--gold-light),var(--gold)); color:var(--navy); font-family:inherit; font-size:0.82rem; font-weight:700; padding:0.6rem 1.5rem; border-radius:10px; cursor:pointer; touch-action:manipulation; border:2px solid var(--gold-pale);" data-i18n="handoff.send_results">Send Results to Customer →</button>
-    </div>
+
   </div>
 
   <!-- SCREEN: Email Results -->
