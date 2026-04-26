@@ -1880,6 +1880,62 @@
       color: var(--color-bg);
     }
 
+    /* === 5c-2c Floating selections pill === */
+    .noct-picks-pill {
+      position: fixed;
+      bottom: 1rem;
+      right: 1rem;
+      z-index: 100;
+      display: none;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.55rem 0.95rem;
+      background: var(--color-surface);
+      border: 1px solid color-mix(in srgb, var(--color-accent) 45%, transparent);
+      border-radius: var(--radius);
+      font-family: var(--font-sans);
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--color-text);
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: border-color 0.2s ease, transform 0.1s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .noct-picks-pill:hover {
+      border-color: var(--color-accent);
+    }
+
+    .noct-picks-pill:active {
+      transform: scale(0.97);
+    }
+
+    .noct-picks-pill--visible {
+      display: inline-flex;
+    }
+
+    .noct-picks-pill__count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      background: var(--color-accent);
+      color: var(--color-bg);
+      border-radius: 50%;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    /* Hide pill on the handoff screen itself — you're already viewing your selections */
+    body:has(#savedPicksScreen.active) .noct-picks-pill {
+      display: none !important;
+    }
+
     /* ===== LOADING SPLASH ===== */
     .splash {
       position: fixed;
@@ -4999,9 +5055,6 @@
       <span id="locationText"></span>
     </div>
     <button id="headerStartOverBtn" class="js-start-over" style="display:none; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:var(--cream); font-family:inherit; font-size:0.75rem; font-weight:600; padding:0.4rem 0.9rem; border-radius:8px; cursor:pointer; touch-action:manipulation; letter-spacing:0.2px;" data-i18n="header.restart">↺ Restart Quiz</button>
-    <button id="savedPicksBtn" onclick="window.showSavedPicks()" ontouchend="event.preventDefault();window.showSavedPicks();" style="display:none; background:linear-gradient(135deg,#c9a84c,#a8893d); color:#0d1730; font-family:inherit; font-size:0.75rem; font-weight:700; padding:0.4rem 0.9rem; border-radius:8px; cursor:pointer; touch-action:manipulation; border:none; gap:0.4rem; align-items:center;">
-      ⭐ <span data-i18n="header.picks">Picks</span> <span id="savedPicksCount" style="background:#0d1730; color:#c9a84c; border-radius:50%; width:18px; height:18px; display:inline-flex; align-items:center; justify-content:center; font-size:0.65rem; font-weight:700; margin-left:0.2rem;">0</span>
-    </button>
   </header>
 
   <!-- Geolocation -->
@@ -8132,7 +8185,7 @@
       var total = mattressCount + accCount;
       var btn = document.getElementById('savedPicksBtn');
       var countEl = document.getElementById('savedPicksCount');
-      if (btn) btn.style.display = total > 0 ? 'inline-flex' : 'none';
+      if (btn) btn.classList.toggle('noct-picks-pill--visible', total > 0);
       if (countEl) countEl.textContent = total;
     };
 
@@ -8744,5 +8797,15 @@
       window.openMattressDrawer(nextId);
     };
   </script>
+
+  <!-- Floating selections pill — gateway to savedPicksScreen, visible across all post-welcome screens -->
+  <button class="noct-picks-pill"
+          id="savedPicksBtn"
+          onclick="window.showSavedPicks()"
+          ontouchend="event.preventDefault();window.showSavedPicks();"
+          aria-label="View your selections">
+    <span class="noct-picks-pill__count" id="savedPicksCount">0</span>
+    <span class="noct-picks-pill__label" data-i18n="header.picks">Selections</span>
+  </button>
 </body>
 </html>
