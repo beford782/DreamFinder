@@ -92,6 +92,11 @@ foreach ($row in $rows) {
 
     $subBrand = ""
     if ($row.subBrand -and $row.subBrand.Trim()) { $subBrand = $row.subBrand.Trim() }
+    # pitchKey is internal-only — used by SUBBRAND_NOTES lookup cascade in the renderer
+    # (pitchKey || subBrand). Customer display reads subBrand. Most rows leave this empty;
+    # populated only when one subBrand banner needs to split into multiple sales pitches.
+    $pitchKey = ""
+    if ($row.pitchKey -and $row.pitchKey.Trim()) { $pitchKey = $row.pitchKey.Trim() }
     $firmnessLbl = ""
     if ($row.firmnessLabel -and $row.firmnessLabel.Trim()) { $firmnessLbl = $row.firmnessLabel.Trim() }
     $highlight = ""
@@ -157,6 +162,7 @@ foreach ($row in $rows) {
         name          = $row.name.Trim()
         brand         = $row.brand.Trim()
         subBrand      = $subBrand
+        pitchKey      = $pitchKey
         firmness      = $firmness
         firmnessLabel = $firmnessLbl
         locallyMade   = $locallyMade
