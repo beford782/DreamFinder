@@ -5728,12 +5728,23 @@
       // See docs/5d-content-spec.md "Renderer Behavior Decisions → Bel-O-Pedic brand panel".
     };
 
-    // 5d: Lookup helper for differentiation content. Cascade is pitchKey → subBrand → null.
-    // pitchKey is internal-only (never customer-facing); subBrand is the customer-facing
-    // display string. Most picks have empty pitchKey and fall through to subBrand.
+    // Spanish counterparts — INTENTIONALLY EMPTY pending proper translation work.
+    // Cascade in getPitchContent / brand panel prefers ES when currentLang === 'es'
+    // and an entry exists, otherwise falls back to the English constants. Filling
+    // these in needs bilingual RSA review of Lead/Demo/Close voice in idiomatic
+    // Spanish, not machine translation — kept as a separate scoped pass.
+    const SUBBRAND_NOTES_ES = {};
+    const BRAND_NOTES_ES = {};
+
+    // 5d: Lookup helper for differentiation content. Cascade resolves the lookup
+    // key as pitchKey → subBrand → null. Then a language fallback wraps it:
+    // when currentLang === 'es' and SUBBRAND_NOTES_ES has the entry, return that;
+    // otherwise fall through to SUBBRAND_NOTES (English). pitchKey is internal-only
+    // (never customer-facing); subBrand is the customer-facing display string.
     function getPitchContent(pick) {
       var key = (pick && pick.pitchKey) || (pick && pick.subBrand) || null;
       if (!key) return null;
+      if (currentLang === 'es' && SUBBRAND_NOTES_ES[key]) return SUBBRAND_NOTES_ES[key];
       return SUBBRAND_NOTES[key] || null;
     }
 
@@ -8491,11 +8502,16 @@
         // entries simply don't appear (no error, no placeholder). See spec
         // "Renderer Behavior Decisions → Bel-O-Pedic brand panel".
         // Iterates orderedPicks so panel order matches pick order.
+        // Language cascade: BRAND_NOTES_ES (when Spanish) → BRAND_NOTES → skip.
+        function brandStoryFor(brand) {
+          if (currentLang === 'es' && BRAND_NOTES_ES[brand]) return BRAND_NOTES_ES[brand];
+          return BRAND_NOTES[brand] || null;
+        }
         var seenBrands = {};
         var orderedBrands = [];
         orderedPicks.forEach(function(pick) {
           var brand = pick && pick.manufacturerBrand;
-          if (brand && !seenBrands[brand] && BRAND_NOTES[brand]) {
+          if (brand && !seenBrands[brand] && brandStoryFor(brand)) {
             seenBrands[brand] = true;
             orderedBrands.push(brand);
           }
@@ -8506,7 +8522,7 @@
           orderedBrands.forEach(function(brand) {
             html += '<div class="noct-handoff-brand-panel__entry">'
               + '<div class="noct-handoff-brand-panel__name">' + escapeHtml(brand) + '</div>'
-              + '<div class="noct-handoff-brand-panel__story">' + renderPitchProse(BRAND_NOTES[brand].story) + '</div>'
+              + '<div class="noct-handoff-brand-panel__story">' + renderPitchProse(brandStoryFor(brand).story) + '</div>'
               + '</div>';
           });
           html += '</div>';
