@@ -5637,6 +5637,24 @@
       // See docs/5d-content-spec.md "Renderer Behavior Decisions → Bel-O-Pedic brand panel".
     };
 
+    // 5d: Lookup helper for differentiation content. Cascade is pitchKey → subBrand → null.
+    // pitchKey is internal-only (never customer-facing); subBrand is the customer-facing
+    // display string. Most picks have empty pitchKey and fall through to subBrand.
+    function getPitchContent(pick) {
+      var key = (pick && pick.pitchKey) || (pick && pick.subBrand) || null;
+      if (!key) return null;
+      return SUBBRAND_NOTES[key] || null;
+    }
+
+    // 5d: Environment detection for empty-content placeholder behavior.
+    // Production renders nothing; dev/staging renders a placeholder so missing
+    // content is visible during retailer onboarding. See spec doc
+    // "Renderer Behavior Decisions → Empty subBrand".
+    function isDevelopmentMode() {
+      var host = window.location.hostname;
+      return host === 'localhost' || host === '127.0.0.1' || host.startsWith('192.168.') || host === '';
+    }
+
     // ===== SVG ICON LIBRARY =====
     function icon(name, size) {
       size = size || 24;
@@ -7263,7 +7281,10 @@
         window._savedPicks.push({
           id: mattress.id,
           name: mattress.name,
-          brand: mattress.brand + (mattress.subBrand ? ' · ' + mattress.subBrand : ''),
+          brand: mattress.brand + (mattress.subBrand ? ' · ' + mattress.subBrand : ''),  // display
+          manufacturerBrand: mattress.brand,           // 5d: BRAND_NOTES key + brand-panel dedupe
+          subBrand: mattress.subBrand || '',           // 5d: SUBBRAND_NOTES fallback
+          pitchKey: mattress.pitchKey || '',           // 5d: SUBBRAND_NOTES primary lookup
           pct: mattress.pct,
           firmFeel: firmnessFeel(mattress.firmness),
           imageUrl: mattress.imageUrl || '',
@@ -8175,7 +8196,10 @@
         window._savedPicks.push({
           id: mattressId,
           name: d.m.name,
-          brand: d.m.brand + (d.m.subBrand ? ' · ' + d.m.subBrand : ''),
+          brand: d.m.brand + (d.m.subBrand ? ' · ' + d.m.subBrand : ''),  // display
+          manufacturerBrand: d.m.brand,           // 5d: BRAND_NOTES key + brand-panel dedupe
+          subBrand: d.m.subBrand || '',           // 5d: SUBBRAND_NOTES fallback
+          pitchKey: d.m.pitchKey || '',           // 5d: SUBBRAND_NOTES primary lookup
           pct: d.pct,
           firmFeel: d.firmFeel,
           imageUrl: d.m.imageUrl || '',
@@ -8351,20 +8375,11 @@
       if (qualityLbl) pills.push((_esC ? 'Duerme ' : 'Sleeps ') + qualityLbl);
       pills.push(issuesLbl);
 
-      // Sales cheat sheet for this profile archetype
-      var notes = PROFILE_SALES_NOTES[analytics.profileName] || null;
+      // 5d: PROFILE_SALES_NOTES rendering replaced by per-pick SUBBRAND_NOTES
+      // lookup inside showSavedPicks() (see getPitchContent helper). The
+      // PROFILE_SALES_NOTES constant is left in place; dead-code removal
+      // deferred to a future cleanup pass.
       var notesHtml = '';
-      if (notes) {
-        notesHtml =
-          '<div style="margin-top:0.75rem; padding-top:0.75rem; border-top:1px dashed rgba(212,168,75,0.3);">'
-          + '<div style="font-size:0.6rem; text-transform:uppercase; letter-spacing:1.8px; color:var(--gold); font-weight:700; margin-bottom:0.5rem;">' + (_esC ? 'Guía de Ventas' : 'Sales Cheat Sheet') + '</div>'
-          + '<div style="display:flex; flex-direction:column; gap:0.4rem;">'
-          + '<div><span style="font-size:0.6rem; color:var(--gold); font-weight:700; letter-spacing:1px; text-transform:uppercase;">Lead with</span><div style="font-size:0.78rem; color:var(--cream); line-height:1.4; margin-top:0.15rem;">' + notes.lead + '</div></div>'
-          + '<div><span style="font-size:0.6rem; color:var(--gold); font-weight:700; letter-spacing:1px; text-transform:uppercase;">Demo hook</span><div style="font-size:0.78rem; color:var(--cream); line-height:1.4; margin-top:0.15rem;">' + notes.demo + '</div></div>'
-          + '<div><span style="font-size:0.6rem; color:var(--gold); font-weight:700; letter-spacing:1px; text-transform:uppercase;">Close angle</span><div style="font-size:0.78rem; color:var(--cream); line-height:1.4; margin-top:0.15rem;">' + notes.close + '</div></div>'
-          + '</div>'
-          + '</div>';
-      }
 
       el.innerHTML =
         '<div style="background:linear-gradient(135deg, rgba(212,168,75,0.12), rgba(212,168,75,0.04)); border:1px solid rgba(212,168,75,0.35); border-radius:14px; padding:0.85rem 1rem;">'
@@ -8398,7 +8413,19 @@
       if (window._savedPicks.length === 0) {
         html += '<div style="text-align:center; color:var(--color-text-muted); font-size:0.82rem; padding:1rem 0;">' + (_esH ? 'No hay colchones guardados — toca "Me Interesa" en cualquier colchón.' : 'No mattresses saved yet — tap a Save button on any mattress.') + '</div>';
       } else {
-        html += window._savedPicks.map(function(p, i) {
+        // 5d: Order full-pitch picks before coaching-only picks regardless of save order.
+        // Save order is preserved on window._savedPicks itself (mutation-free .slice).
+        // Picks with no SUBBRAND_NOTES content sort with full-pitch (rare/error-state;
+        // putting them last would visually demote a pick for the wrong reason).
+        var orderedPicks = window._savedPicks.slice().sort(function(a, b) {
+          var aContent = getPitchContent(a);
+          var bContent = getPitchContent(b);
+          var aIsCoaching = aContent && aContent.format === 'coaching' ? 1 : 0;
+          var bIsCoaching = bContent && bContent.format === 'coaching' ? 1 : 0;
+          return aIsCoaching - bIsCoaching;
+        });
+
+        html += orderedPicks.map(function(p, i) {
           var pickLabel = (_esH ? 'SELECCIÓN #' : 'PICK #') + (i + 1);
           var matchLine = p.pct + '% ' + (_esH ? 'Compatibilidad' : 'Match') + ' &middot; ' + p.firmFeel;
           var photo = p.imageUrl
@@ -8407,6 +8434,29 @@
           var price = p.tier
             ? '<div class="noct-handoff-pick__price">' + priceTierSymbol(p.tier) + '</div>'
             : '<div class="noct-handoff-pick__price"></div>';
+
+          // 5d: Per-pick differentiation block. Full-pitch picks emit
+          // Lead/Demo/Close; coaching-only picks emit a single RSA Note.
+          // Empty content: dev shows placeholder; production renders nothing.
+          // Italic markers (*word*) ship as literal asterisks in this pass —
+          // sub-prompt 3 handles styling + asterisk-to-em conversion.
+          var pitchContent = getPitchContent(p);
+          var differentiationHtml = '';
+          if (pitchContent) {
+            if (pitchContent.format === 'full') {
+              differentiationHtml =
+                '<div class="noct-handoff-pick__lead"><strong>LEAD WITH:</strong> ' + escapeHtml(pitchContent.lead) + '</div>'
+                + '<div class="noct-handoff-pick__demo"><strong>DEMO HOOK:</strong> ' + escapeHtml(pitchContent.demo) + '</div>'
+                + '<div class="noct-handoff-pick__close"><strong>CLOSE ANGLE:</strong> ' + escapeHtml(pitchContent.close) + '</div>';
+            } else if (pitchContent.format === 'coaching') {
+              differentiationHtml =
+                '<div class="noct-handoff-pick__rsa-note"><strong>RSA NOTE:</strong> ' + escapeHtml(pitchContent.rsaNote) + '</div>';
+            }
+          } else if (isDevelopmentMode()) {
+            differentiationHtml =
+              '<div class="noct-handoff-pick__missing">Coaching content not yet drafted for this mattress. Discuss build features with the customer based on the spec sheet.</div>';
+          }
+
           return '<article class="noct-handoff-pick" data-pick-id="' + p.id + '">'
             + photo
             + '<div class="noct-handoff-pick__rank">' + pickLabel + '</div>'
@@ -8414,8 +8464,35 @@
             + '<div class="noct-handoff-pick__why">' + p.brand + '<br>' + matchLine + '</div>'
             + price
             + '<button class="noct-handoff-pick__remove" onclick="window._removePick(\'' + p.id + '\')" ontouchend="event.preventDefault();window._removePick(\'' + p.id + '\');" aria-label="' + (_esH ? 'Eliminar selección' : 'Remove this pick') + '">&times;</button>'
+            + differentiationHtml
             + '</article>';
         }).join('');
+
+        // 5d: Brand panel — deduped by pick.manufacturerBrand, only brands
+        // with BRAND_NOTES entries. Bel-O-Pedic and other brands without
+        // entries simply don't appear (no error, no placeholder). See spec
+        // "Renderer Behavior Decisions → Bel-O-Pedic brand panel".
+        // Iterates orderedPicks so panel order matches pick order.
+        var seenBrands = {};
+        var orderedBrands = [];
+        orderedPicks.forEach(function(pick) {
+          var brand = pick && pick.manufacturerBrand;
+          if (brand && !seenBrands[brand] && BRAND_NOTES[brand]) {
+            seenBrands[brand] = true;
+            orderedBrands.push(brand);
+          }
+        });
+        if (orderedBrands.length > 0) {
+          html += '<div class="noct-handoff-brand-panel">'
+            + '<div class="noct-handoff-brand-panel__heading">' + (_esH ? 'Sobre estas marcas' : 'About these brands') + '</div>';
+          orderedBrands.forEach(function(brand) {
+            html += '<div class="noct-handoff-brand-panel__entry">'
+              + '<div class="noct-handoff-brand-panel__name">' + escapeHtml(brand) + '</div>'
+              + '<div class="noct-handoff-brand-panel__story">' + escapeHtml(BRAND_NOTES[brand].story) + '</div>'
+              + '</div>';
+          });
+          html += '</div>';
+        }
       }
 
       // Accessories from cart
