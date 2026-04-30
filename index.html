@@ -5199,22 +5199,22 @@
       </div>
 
       <!-- Eyebrow -->
-      <div class="landing-eyebrow" id="landingEyebrow"></div>
+      <div class="landing-eyebrow" id="landingEyebrow">Personalized mattress finder</div>
 
       <!-- Headline: two lines, second in italic brass -->
-      <div class="landing-headline" id="landingHeadlineMain"></div>
-      <div class="landing-headline landing-headline-accent" id="landingHeadlineAccent"></div>
+      <div class="landing-headline" id="landingHeadlineMain">Sleep Better</div>
+      <div class="landing-headline landing-headline-accent" id="landingHeadlineAccent">Tonight.</div>
 
       <!-- Sub-copy with inline italic-brass accent -->
-      <div class="landing-subcopy" id="landingSubcopy"></div>
+      <div class="landing-subcopy" id="landingSubcopy">Tell us how you sleep — we'll find your perfect match.</div>
 
       <!-- CTA row -->
       <div class="landing-cta-row">
         <button class="landing-cta-btn" id="startBtn" onclick="startQuiz()" ontouchend="event.preventDefault();startQuiz();">
-          <span id="landingCtaText"></span>
+          <span id="landingCtaText">Find My Mattress</span>
           <span class="landing-cta-arrow">&rarr;</span>
         </button>
-        <span class="landing-time-estimate" id="landingTimeEstimate"></span>
+        <span class="landing-time-estimate" id="landingTimeEstimate">≈ 4 minutes</span>
       </div>
 
       <!-- Discount tease row -->
@@ -5223,9 +5223,9 @@
           <path d="M1.5 7 L7 1.5 L14.5 1.5 L14.5 9 L9 14.5 L1.5 9 Z" fill="none" stroke="currentColor" stroke-width="0.8" stroke-linejoin="round"/>
           <circle cx="11" cy="5" r="1.1" fill="none" stroke="currentColor" stroke-width="0.8"/>
         </svg>
-        <span class="landing-discount-label" id="landingDiscountLabel"></span>
+        <span class="landing-discount-label" id="landingDiscountLabel">Your discount</span>
         <div class="landing-code-tiles" id="landingCodeTiles"></div>
-        <span class="landing-discount-hint" id="landingDiscountHint"></span>
+        <span class="landing-discount-hint" id="landingDiscountHint">revealed after the quiz</span>
       </div>
 
       <!-- Footer row -->
@@ -6077,19 +6077,19 @@
       };
 
       setText('landingRetailerName', STORE_CONFIG.storeName || '');
-      setText('landingEyebrow', voice.eyebrow || '');
-      setText('landingHeadlineMain', voice.headlineMain || '');
-      setText('landingHeadlineAccent', voice.headlineAccent || '');
-      setText('landingCtaText', voice.ctaPrimary || '');
-      setText('landingTimeEstimate', voice.timeEstimate || '');
+      setText('landingEyebrow', voice.eyebrow);
+      setText('landingHeadlineMain', voice.headlineMain);
+      setText('landingHeadlineAccent', voice.headlineAccent);
+      setText('landingCtaText', voice.ctaPrimary);
+      setText('landingTimeEstimate', voice.timeEstimate);
       setText('landingDiscountLabel', es ? 'Tu descuento' : 'Your discount');
       setText('landingDiscountHint', es ? 'revelado al final' : 'revealed after the quiz');
-      setText('landingHeritage', textBlock.trustSignal || '');
+      setText('landingHeritage', textBlock.trustSignal);
 
       // Sub-copy with inline accent span.
       // Source values come from STORE_CONFIG (trusted, same-origin config), not user input — safe to innerHTML.
       var subcopy = document.getElementById('landingSubcopy');
-      if (subcopy) {
+      if (subcopy && (voice.subCopyBefore !== undefined || voice.subCopyAccent !== undefined || voice.subCopyAfter !== undefined)) {
         var before = voice.subCopyBefore || '';
         var accent = voice.subCopyAccent || '';
         var after = voice.subCopyAfter || '';
