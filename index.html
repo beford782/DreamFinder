@@ -6401,7 +6401,7 @@
             ${currentQuestion > 0
               ? '<button class="noct-quiz-back" onclick="prevQuestion()" ontouchend="event.preventDefault();prevQuestion();">' + backLabel + '</button>'
               : '<span></span>'}
-            <button class="noct-quiz-next" id="nextBtn" onclick="nextQuestion()" ontouchend="event.preventDefault();nextQuestion();" ${!isMulti && !selected ? 'disabled' : ''}>${nextLabel}</button>
+            <button class="noct-quiz-next" id="nextBtn" onclick="nextQuestion()" ontouchend="event.preventDefault();if(!this.disabled)nextQuestion();" ${!isMulti && !selected ? 'disabled' : ''}>${nextLabel}</button>
           </div>
         `;
       }
