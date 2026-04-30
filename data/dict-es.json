@@ -57,6 +57,10 @@
   "handoff.subtitle": "Colchones que el cliente marcó como interesado",
   "handoff.back_to_results": "← Volver a Resultados",
   "handoff.send_results": "Enviar Resultados al Cliente →",
+  "handoff.lead_with": "EMPIEZA CON:",
+  "handoff.demo_hook": "GANCHO DE DEMOSTRACIÓN:",
+  "handoff.close_angle": "CIERRA CON:",
+  "handoff.rsa_note": "NOTA PARA EL VENDEDOR:",
 
   "email.title": "No olvides tus resultados",
   "email.subtitle": "Recibe tu perfil de sueño, colchones recomendados y descuento directamente — para que puedas revisarlos en casa o compartirlos con tu pareja.",

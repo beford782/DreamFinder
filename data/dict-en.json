@@ -57,6 +57,10 @@
   "handoff.subtitle": "Mattresses you marked as interested.",
   "handoff.back_to_results": "← Back to Results",
   "handoff.send_results": "Send Results to Customer →",
+  "handoff.lead_with": "LEAD WITH:",
+  "handoff.demo_hook": "DEMO HOOK:",
+  "handoff.close_angle": "CLOSE ANGLE:",
+  "handoff.rsa_note": "RSA NOTE:",
 
   "email.title": "Don't forget your results",
   "email.subtitle": "Get your sleep profile, mattress matches, and discount sent straight to you — so you can review at home or share with your partner.",

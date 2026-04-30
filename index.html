@@ -8474,12 +8474,12 @@
           if (pitchContent) {
             if (pitchContent.format === 'full') {
               differentiationHtml =
-                '<div class="noct-handoff-pick__lead"><strong>LEAD WITH:</strong> ' + renderPitchProse(pitchContent.lead) + '</div>'
-                + '<div class="noct-handoff-pick__demo"><strong>DEMO HOOK:</strong> ' + renderPitchProse(pitchContent.demo) + '</div>'
-                + '<div class="noct-handoff-pick__close"><strong>CLOSE ANGLE:</strong> ' + renderPitchProse(pitchContent.close) + '</div>';
+                '<div class="noct-handoff-pick__lead"><strong data-i18n="handoff.lead_with">LEAD WITH:</strong> ' + renderPitchProse(pitchContent.lead) + '</div>'
+                + '<div class="noct-handoff-pick__demo"><strong data-i18n="handoff.demo_hook">DEMO HOOK:</strong> ' + renderPitchProse(pitchContent.demo) + '</div>'
+                + '<div class="noct-handoff-pick__close"><strong data-i18n="handoff.close_angle">CLOSE ANGLE:</strong> ' + renderPitchProse(pitchContent.close) + '</div>';
             } else if (pitchContent.format === 'coaching') {
               differentiationHtml =
-                '<div class="noct-handoff-pick__rsa-note"><strong>RSA NOTE:</strong> ' + renderPitchProse(pitchContent.rsaNote) + '</div>';
+                '<div class="noct-handoff-pick__rsa-note"><strong data-i18n="handoff.rsa_note">RSA NOTE:</strong> ' + renderPitchProse(pitchContent.rsaNote) + '</div>';
             }
           } else if (isDevelopmentMode()) {
             differentiationHtml =
