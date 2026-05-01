@@ -8641,6 +8641,8 @@
       // Reset dream code box
       const dcBox = document.getElementById('dreamCodeBox');
       if (dcBox) dcBox.style.display = '';
+      const dcVal = document.getElementById('dreamCodeValue');
+      if (dcVal) dcVal.textContent = '';
 
       showScreen('welcomeScreen');
     };
