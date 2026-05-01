@@ -6236,6 +6236,8 @@
       // Scroll to top on screen change
       window.scrollTo(0, 0);
       document.getElementById(id).scrollTop = 0;
+      // Notify idle-timer of the new screen; module decides the duration.
+      if (window._setIdleScreen) window._setIdleScreen(id);
     }
 
     // ----- START QUIZ -----
@@ -8654,13 +8656,21 @@
     })();
 
     // ===== Idle auto-reset (showroom tablet) =====
+    // Default 2 min on every screen; handoff (savedPicksScreen) gets 5 min so an
+    // RSA reading the Lead/Demo/Close pitch aloud doesn't get reset mid-sentence.
     (function() {
-      const IDLE_TIMEOUT = 120000;
+      const DEFAULT_IDLE = 120000;
+      const HANDOFF_IDLE = 300000;
       let idleTimer;
+      let currentTimeout = DEFAULT_IDLE;
       function resetIdleTimer() {
         clearTimeout(idleTimer);
-        idleTimer = setTimeout(() => { window.startOver(); }, IDLE_TIMEOUT);
+        idleTimer = setTimeout(() => { window.startOver(); }, currentTimeout);
       }
+      window._setIdleScreen = function(screenId) {
+        currentTimeout = (screenId === 'savedPicksScreen') ? HANDOFF_IDLE : DEFAULT_IDLE;
+        resetIdleTimer();
+      };
       ['touchstart', 'mousemove', 'click', 'keydown', 'scroll'].forEach(evt => { document.addEventListener(evt, resetIdleTimer, { passive: true }); });
       resetIdleTimer();
     })();
