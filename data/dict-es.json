@@ -2,16 +2,6 @@
   "lang.toggle_en": "EN",
   "lang.toggle_es": "ES",
 
-  "welcome.hero": "Duerme Mejor",
-  "welcome.hero_accent": "Esta Noche.",
-  "welcome.subtitle": "Dinos cómo duermes — encontraremos tu combinación perfecta.",
-  "welcome.cta_main": "Encuentra Mi Colchón Ideal",
-  "welcome.cta_sub": "Cuestionario rápido. Combinación perfecta. Más tu descuento.",
-  "welcome.reward_hint": "Tu descuento:",
-  "welcome.reward_revealed": "revelado después del cuestionario",
-  "welcome.social_proof": "Recomendado por tu equipo de descanso de {storeName}",
-  "welcome.brand_logos_label": "Nuestras Marcas",
-
   "header.tagline": "Consulta Personalizada de Sueño",
   "header.restart": "↺ Reiniciar",
   "header.picks": "Favoritos",

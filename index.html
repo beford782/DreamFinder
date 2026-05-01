@@ -47,7 +47,7 @@
 
       /* Typography */
       --font-serif: Georgia, 'Times New Roman', serif;
-      --font-sans: -apple-system, 'Segoe UI', 'Helvetica Neue', 'Poppins', sans-serif;
+      --font-sans: -apple-system, 'Segoe UI', 'Helvetica Neue', sans-serif;
       --radius: 2px;
 
       /* Legacy aliases — maps old variable names to Nocturnal equivalents.
@@ -2332,35 +2332,6 @@
       margin-right: auto;
     }
 
-    .reward-hint {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.6rem;
-      font-size: 1.05rem;
-      font-weight: 600;
-      color: var(--gold);
-      margin-bottom: 2rem;
-    }
-
-    .reward-hint .discount-mystery {
-      display: inline-flex;
-      gap: 3px;
-      background: rgba(212,168,75,0.15);
-      padding: 0.3rem 0.6rem;
-      border-radius: 6px;
-      border: 1px solid rgba(212,168,75,0.3);
-    }
-
-    .reward-hint .dot {
-      width: 6px;
-      height: 6px;
-      background: var(--gold);
-      border-radius: 50%;
-    }
-
-    .reward-hint .dot:nth-child(2) { animation-delay: 0.15s; }
-    .reward-hint .dot:nth-child(3) { animation-delay: 0.3s; }
-
     /* CTA Button */
     .cta-btn {
       display: inline-flex;
@@ -2429,13 +2400,6 @@
       opacity: 0.6;
     }
 
-    .social-proof {
-      margin-top: 1.25rem;
-      font-size: 0.78rem;
-      color: rgba(244,239,233,0.45);
-      font-weight: 300;
-    }
-
     /* Features row */
     .features-row {
       display: flex;
@@ -2467,39 +2431,6 @@
       color: var(--gold);
       font-size: 0.72rem;
       font-weight: 600;
-    }
-
-    /* Trust signal */
-    .trust-signal {
-      margin-top: 0.6rem;
-      font-size: 0.75rem;
-      color: rgba(255,255,255,0.6);
-      font-weight: 300;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-    }
-
-    .made-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      background: rgba(212, 168, 75, 0.1);
-      border: 1px solid rgba(212, 168, 75, 0.25);
-      padding: 0.4rem 0.85rem;
-      border-radius: 20px;
-      font-size: 0.7rem;
-      color: var(--gold);
-      font-weight: 500;
-      margin-top: 0.75rem;
-    }
-
-    .made-badge svg {
-      width: 12px;
-      height: 12px;
-    }
-
-    .cta-btn.pulse {
-      /* pulse glow removed — Nocturnal restraint */
     }
 
     /* ===== FOOTER ===== */
@@ -4642,7 +4573,6 @@
       display: flex;
       align-items: center;
       gap: 0.6rem;
-      animation: topPickGlow 3s ease-in-out infinite;
     }
     .top-pick-badge .top-pick-icon {
       font-size: 1.8rem;
@@ -6034,21 +5964,6 @@
         if (metaDesc && textBlock.metaDescription) metaDesc.setAttribute('content', textBlock.metaDescription);
         var ogTitle = document.getElementById('ogTitle');
         if (ogTitle && textBlock.ogTitle) ogTitle.setAttribute('content', textBlock.ogTitle);
-        document.querySelectorAll('[data-store="name"]').forEach(function(el) {
-          el.textContent = STORE_CONFIG.storeName || el.textContent;
-        });
-        document.querySelectorAll('[data-store="trust-signal"]').forEach(function(el) {
-          if (textBlock.trustSignal) el.textContent = textBlock.trustSignal;
-        });
-        document.querySelectorAll('[data-store="made-badge"]').forEach(function(el) {
-          if (textBlock.madeBadge) el.textContent = textBlock.madeBadge;
-        });
-        document.querySelectorAll('[data-store="social-proof"]').forEach(function(el) {
-          el.textContent = textBlock.socialProof || el.textContent;
-        });
-        document.querySelectorAll('[data-store="footer"]').forEach(function(el) {
-          el.innerHTML = textBlock.footer || el.innerHTML;
-        });
         document.querySelectorAll('[data-store="email-privacy"]').forEach(function(el) {
           el.textContent = textBlock.emailPrivacy || el.textContent;
         });
@@ -8646,16 +8561,6 @@
 
       showScreen('welcomeScreen');
     };
-
-    // ===== CTA pulse after idle =====
-    (function() {
-      const btn = document.getElementById('startBtn');
-      let pulseTimer;
-      function startPulse() { btn.classList.add('pulse'); }
-      function resetPulse() { btn.classList.remove('pulse'); clearTimeout(pulseTimer); pulseTimer = setTimeout(startPulse, 5000); }
-      pulseTimer = setTimeout(startPulse, 5000);
-      ['touchstart', 'mousemove', 'click', 'keydown'].forEach(evt => { document.addEventListener(evt, resetPulse, { passive: true }); });
-    })();
 
     // ===== Idle auto-reset (showroom tablet) =====
     // Default 2 min on every screen; handoff (savedPicksScreen) gets 5 min so an

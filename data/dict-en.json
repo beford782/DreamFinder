@@ -2,16 +2,6 @@
   "lang.toggle_en": "EN",
   "lang.toggle_es": "ES",
 
-  "welcome.hero": "Sleep Better",
-  "welcome.hero_accent": "Tonight.",
-  "welcome.subtitle": "Tell us how you sleep — we'll find your perfect match.",
-  "welcome.cta_main": "Find My Perfect Mattress",
-  "welcome.cta_sub": "Quick quiz. Perfect match. Plus your discount.",
-  "welcome.reward_hint": "Your discount:",
-  "welcome.reward_revealed": "revealed after quiz",
-  "welcome.social_proof": "Recommended by your {storeName} sleep team",
-  "welcome.brand_logos_label": "Our Brands",
-
   "header.tagline": "Personalized Sleep Consultation",
   "header.restart": "↺ Restart Quiz",
   "header.picks": "Selections",
