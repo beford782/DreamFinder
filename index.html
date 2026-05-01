@@ -5939,7 +5939,7 @@
       },
       {
         id: 'sleep_issues', category: {en: "What You're Solving", es: "Lo Que Buscas Resolver"}, question: {en: "Any issues with your current mattress?", es: "\u00bfAlg\u00fan problema con tu colch\u00f3n actual?"},
-        helpText: {en: "Pick your top 3", es: "Elige los 3 principales"}, type: 'multiple',
+        helpText: {en: "Tap any that apply", es: "Toca las que apliquen"}, type: 'multiple',
         options: [
           { id: 'back_pain', label: {en: 'Back Pain', es: 'Dolor de Espalda'}, icon: 'spine', sublabel: {en: 'Lower or upper back', es: 'Espalda baja o alta'}, scores: { support: 3, zoned: 2, firm: 1 } },
           { id: 'hip_pain', label: {en: 'Hip or Shoulder Pain', es: 'Dolor de Cadera u Hombro'}, icon: 'pressure', sublabel: {en: 'Pressure points', es: 'Puntos de presi\u00f3n'}, scores: { pressureRelief: 3, plush: 2 } },
@@ -5953,7 +5953,7 @@
       },
       {
         id: 'health_conditions', category: {en: "What You're Solving", es: "Lo Que Buscas Resolver"}, question: {en: "Anything else going on that affects your sleep?", es: "\u00bfAlgo m\u00e1s que afecte tu sue\u00f1o?"},
-        helpText: {en: "Pick your top 3", es: "Elige los 3 principales"}, type: 'multiple',
+        helpText: {en: "Tap any that apply", es: "Toca las que apliquen"}, type: 'multiple',
         options: [
           { id: 'nerve_pain', label: {en: 'Nerve Pain or Tingling', es: 'Dolor Nervioso u Hormigueo'}, icon: 'lightning', sublabel: {en: 'Shooting pain, numbness', es: 'Dolor punzante, entumecimiento'}, scores: { support: 3, firm: 2, zoned: 2 } },
           { id: 'allergies', label: {en: 'Allergies', es: 'Alergias'}, icon: 'sneeze', sublabel: {en: 'Dust, sneezing, stuffy', es: 'Polvo, estornudos, congesti\u00f3n'}, scores: { hypoallergenic: 3 } },
@@ -6374,7 +6374,7 @@
         const nextLabel = currentQuestion === total - 1
           ? (es ? 'Ver Mis Resultados →' : 'See My Results →')
           : (es ? 'Siguiente →' : 'Next →');
-        const multiNote = es ? 'Elige los 3 principales' : 'Pick up to 3';
+        const multiNote = es ? 'Elige hasta 3' : 'Pick up to 3';
 
         container.innerHTML = `
           <div class="noct-quiz-eyebrow">${eyebrow}</div>
