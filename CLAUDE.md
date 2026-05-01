@@ -33,6 +33,35 @@ GAS endpoint) as a default or starting point for other retailers.
 
 ---
 
+## Working pattern: terminal + web review
+
+Claude Code in terminal does the work. Web Claude (claude.ai) reviews
+the work for non-mechanical changes. Sequential, not parallel.
+
+- Terminal Claude Code is the primary surface for DreamFinder work —
+  file edits, greps, commits, pushes, local dev server.
+- Web Claude is the second pair of eyes for high-stakes changes:
+  schema additions, white-label boundary changes, new public API
+  fields, anything where "trust the wiring" feels tempting.
+- Skip web review for genuinely mechanical work (typo fixes, dict
+  string updates, single-property CSS tweaks).
+- Handoff: paste terminal output (proposals, diffs, grep results,
+  git status) into web chat verbatim. Do not summarize — the value
+  is in raw output, including narration the terminal session might
+  gloss over.
+- Do not run both surfaces editing files in parallel on the same
+  task. Sequential only.
+
+Cadence that has shipped clean: discovery → proposal → web review →
+approval → implement → verify → commit → push. Single commit at a
+time, browser-verify between commits, no back-to-back-without-review.
+
+Reference: 2026-04-30 / 2026-05-01 sessions shipping commits 72424d1
+(handoff idle timeout), 9e2f256 (dream code wipe), 7f766fd (Nocturnal
+dead code retire) all followed this pattern.
+
+---
+
 ## White-Label Architecture — Critical Rules
 
 ### The store-agnostic boundary
@@ -312,24 +341,12 @@ Always confirm main was updated before reporting that a change is live.
 
 ---
 
-## Division of Labour — Regular Claude vs Claude Code
+## Don't touch without checking with Blake first
 
-**Regular Claude (claude.ai)** — design, logic, new features, producing updated
-HTML and scripts. Works across sessions without access to the repo directly.
-
-**Claude Code** — applying file changes, running build scripts, committing, pushing.
-
-### Handoff workflow
-When Regular Claude produces a new `index.html` or `build-data.ps1`:
-1. Replace the existing file in the repo
-2. If CSV was also updated, run `.\build-data.ps1` to regenerate the JSON
-3. Verify no regressions in touch events, scoring, or GAS integration
-4. Commit and push
-
-### What Claude Code should never do without checking with Blake first
 - Modify scoring weights or logic in the quiz engine
 - Change touch event handling
 - Hardcode any store-specific content into `index.html`
 - Copy mattress data or config between retailer repos
 - Edit `data/mattresses.json` directly (always regenerate from CSV)
-- Add store names, colors, or branding anywhere except `store-config.json`
+- Add store names, colors, or branding anywhere except
+  `store-config.json`
