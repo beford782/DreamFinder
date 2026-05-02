@@ -5558,6 +5558,100 @@
 
   </div>
 
+  <!-- SCREEN: Handoff v2 (redesign) — parallel to savedPicksScreen, swapped in step 4. -->
+  <!-- No .active class so it's invisible by default. Preview via showScreen('hf2Screen'). -->
+  <div class="screen" id="hf2Screen">
+
+    <!-- 1. RSA attribution strip + closed picker panel (hidden attribute toggled by step-4 JS). -->
+    <div class="hf2-rsa-strip">
+      <button class="hf2-rsa-strip__btn">
+        <span class="hf2-rsa-strip__label">helping:</span>
+        <span class="hf2-rsa-strip__name">Maria Hernandez</span>
+        <span class="hf2-rsa-strip__chevron">▾</span>
+      </button>
+      <div class="hf2-rsa-panel" hidden>
+        <ul class="hf2-rsa-panel__list">
+          <li class="hf2-rsa-panel__item hf2-rsa-panel__item--current">Maria Hernandez</li>
+          <li class="hf2-rsa-panel__item">Carlos Rivera</li>
+          <li class="hf2-rsa-panel__item">Diana Chen</li>
+        </ul>
+        <button class="hf2-rsa-panel__add">+ add salesperson</button>
+      </div>
+    </div>
+
+    <!-- 2. Customer brief — placeholder divs. No step-2 CSS for these classes; step 4 owns the layout. -->
+    <div class="hf2-brief">
+      <div class="hf2-brief__row">queen · back pain · restless sleep</div>
+      <div class="hf2-brief__row">Hot sleeper · side · partner-sensitive · medium firm</div>
+    </div>
+
+    <!-- 3. Timeline rail with three steps (Lead with / For the close / Close). -->
+    <div class="hf2-timeline">
+
+      <div class="hf2-timeline-step">
+        <span class="hf2-timeline-step__dot hf2-timeline-step__dot--filled"></span>
+        <div class="hf2-timeline-step__body">
+          <h3>Lead with</h3>
+
+          <div class="hf2-pick hf2-pick--gold">
+            <div class="hf2-pick__tier">gold · cool premium</div>
+            <div class="hf2-pick__name">Spring Air · Caitlin</div>
+            <div class="hf2-pick__reason">She runs hot, sleeps on her side with shoulder pain. Copper cooling + multi-foam pressure relief on a zoned coil — exactly what she described.</div>
+            <div class="hf2-pick__chips">
+              <span class="hf2-chip">copper cool cover</span>
+              <span class="hf2-chip">3-foam pressure stack</span>
+              <span class="hf2-chip">zoned 948-coil</span>
+              <span class="hf2-chip">premium build</span>
+            </div>
+          </div>
+
+          <div class="hf2-pick">
+            <div class="hf2-pick__tier">silver · sleep-in</div>
+            <div class="hf2-pick__name">Spring Air · Hailey</div>
+            <div class="hf2-pick__reason">If the Caitlin feels like more bed than she wants — H-collection sinks her in deeper, three-foam stack contours the shoulder.</div>
+            <div class="hf2-pick__chips">
+              <span class="hf2-chip">phase-change cover</span>
+              <span class="hf2-chip">triple foam stack</span>
+              <span class="hf2-chip">Back Supporter coils</span>
+              <span class="hf2-chip">sink-in feel</span>
+            </div>
+          </div>
+
+          <div class="hf2-pick">
+            <div class="hf2-pick__tier">bronze · core hybrid</div>
+            <div class="hf2-pick__name">Restonic · Veronica</div>
+            <div class="hf2-pick__reason">If she wants more cradle than the Caitlin — gel foam sinks deeper, Marvelous Middle holds the lumbar.</div>
+            <div class="hf2-pick__chips">
+              <span class="hf2-chip">cool gel foam</span>
+              <span class="hf2-chip">Marvelous Middle</span>
+              <span class="hf2-chip">pocketed coils</span>
+              <span class="hf2-chip">cooling cover</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="hf2-timeline-step">
+        <span class="hf2-timeline-step__dot hf2-timeline-step__dot--outlined"></span>
+        <div class="hf2-timeline-step__body">
+          <h3>For the close</h3>
+          <button>DREAM discount  —  Reveal for customer →</button>
+        </div>
+      </div>
+
+      <div class="hf2-timeline-step">
+        <span class="hf2-timeline-step__dot hf2-timeline-step__dot--outlined"></span>
+        <div class="hf2-timeline-step__body">
+          <h3>Close</h3>
+          <button>Send picks to Sarah</button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
   <!-- SCREEN: Email Results -->
   <div class="screen email-screen" id="emailScreen">
     <div class="noct-email">
