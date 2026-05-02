@@ -8872,19 +8872,16 @@
       btn.disabled = true;
     }
 
-    // Send button: bind to existing showEmailCapture flow. Label uses customer's
-    // first name from analytics.profileName when available.
+    // Send button: bind to existing showEmailCapture flow. Static label — at
+    // handoff time the customer's first name isn't captured anywhere (no quiz
+    // question collects it; the email-capture screen captures it but fires
+    // *after* the handoff). The personalized artifact is the email itself,
+    // which carries the customer's name in subject line and greeting; the
+    // button is RSA-facing UI where "Send picks" is a complete CTA.
     function renderHf2SendButton() {
       var btn = document.getElementById('hf2SendBtn');
       if (!btn) return;
-      var es = currentLang === 'es';
-      var firstName = '';
-      if (analytics && analytics.profileName) {
-        firstName = String(analytics.profileName).trim().split(/\s+/)[0] || '';
-      }
-      btn.textContent = firstName
-        ? ((es ? 'Enviar selecciones a ' : 'Send picks to ') + firstName)
-        : (es ? 'Enviar selecciones' : 'Send picks');
+      btn.textContent = currentLang === 'es' ? 'Enviar selecciones' : 'Send picks';
       btn.onclick = function() { showEmailCapture(); };
     }
 
