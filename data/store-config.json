@@ -1,5 +1,6 @@
 {
   "storeName": "Bel Furniture",
+  "storeKey": "bel",
   "languages": ["en", "es"],
   "logo": {
     "main": "bel",
@@ -18,6 +19,7 @@
     { "name": "Spring Air",  "logo": "images/brands/spring-air.jpg" },
     { "name": "Bel-O-Pedic", "logo": "images/brands/bel-o-pedic.jpg" }
   ],
+  "rsaList": [],
   "text": {
     "pageTitle": "DreamFinder — Bel Furniture Sleep Quiz",
     "metaDescription": "Take the DreamFinder sleep quiz at Bel Furniture and get personalized mattress recommendations.",
