@@ -5452,7 +5452,10 @@
     // Usage: add ?discount=10 to the URL to set 10% off (default: 5)
     const STORE_DISCOUNT = parseInt(new URLSearchParams(window.location.search).get('discount')) || 5;
 
-    // Generate a unique DREAM code from the session ID (set after analytics init)
+    // Generate a unique DREAM code + the active discount percentage.
+    // Returns { code: "DREAM472", percentage: 5 } so the handoff redesign's
+    // reveal button can render both ("DREAM discount · 5% off") without a
+    // separate STORE_DISCOUNT lookup. Existing callers use .code only.
     function generateDreamCode(sessionId) {
       let hash = 0;
       for (let i = 0; i < sessionId.length; i++) {
@@ -5460,7 +5463,7 @@
         hash |= 0;
       }
       const digits = String(Math.abs(hash) % 900 + 100); // always 3 digits (100–999)
-      return 'DREAM' + digits;
+      return { code: 'DREAM' + digits, percentage: STORE_DISCOUNT };
     }
 
     // ===== i18n INFRASTRUCTURE =====
@@ -7415,7 +7418,7 @@
       if (sep) sep.classList.remove('locked');
 
       // Get dream code digits
-      const dreamCode = generateDreamCode(analytics.sessionId); // e.g. "DREAM472"
+      const dreamCode = generateDreamCode(analytics.sessionId).code; // e.g. "DREAM472"
       const d0 = dreamCode[5], d1 = dreamCode[6], d2 = dreamCode[7];
 
       // Build reels (each reel = 20 random digits + the real digit at bottom)
@@ -7695,7 +7698,7 @@
       document.getElementById('emailConfirmation').classList.remove('visible');
 
       // Show DREAM code (label/hint set by renderEmailChrome; value/pct are dynamic)
-      var dreamCode = generateDreamCode(analytics.sessionId);
+      var dreamCode = generateDreamCode(analytics.sessionId).code;
       document.getElementById('dreamCodeValue').textContent = dreamCode;
       document.getElementById('dreamCodePct').textContent = STORE_DISCOUNT + (_esE ? '% DESCUENTO' : '% OFF');
       document.getElementById('dreamCodeBox').style.display = '';
@@ -7789,7 +7792,7 @@
         topMatch: topPick ? topPick.name : '',
         matchPct: topPick ? topPick.matchPct : '',
         discount: STORE_DISCOUNT,
-        dreamCode: generateDreamCode(analytics.sessionId),
+        dreamCode: generateDreamCode(analytics.sessionId).code,
         sessionId: analytics.sessionId,
         lang: currentLang,
         allMatches: allMatches,
@@ -8349,7 +8352,7 @@
       // Wire real DREAM code into hero (replaces the DREAM--- placeholder)
       var codeEl = document.getElementById('handoffDreamCode');
       if (codeEl && analytics && analytics.sessionId) {
-        codeEl.textContent = generateDreamCode(analytics.sessionId);
+        codeEl.textContent = generateDreamCode(analytics.sessionId).code;
       }
 
       var list = document.getElementById('savedPicksList');
