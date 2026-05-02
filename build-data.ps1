@@ -97,6 +97,17 @@ foreach ($row in $rows) {
     # populated only when one subBrand banner needs to split into multiple sales pitches.
     $pitchKey = ""
     if ($row.pitchKey -and $row.pitchKey.Trim()) { $pitchKey = $row.pitchKey.Trim() }
+    # archetype is customer/RSA-visible — renders as the chip tag "[tier] · [archetype]"
+    # in the handoff redesign. See docs/5d-content-spec.md "Handoff Screen Redesign".
+    $archetype = ""
+    if ($row.archetype -and $row.archetype.Trim()) { $archetype = $row.archetype.Trim() }
+    # displayPriority is a sequencing tiebreaker — lower = earlier. Manufacturer brands
+    # default to 1, retailer-house brands to 2, so a tied score never elevates a house
+    # pick above a manufacturer pick. Defaults to 1 if missing.
+    $displayPriority = 1
+    if ($row.displayPriority -and $row.displayPriority.Trim()) {
+        $displayPriority = [int]$row.displayPriority.Trim()
+    }
     $firmnessLbl = ""
     if ($row.firmnessLabel -and $row.firmnessLabel.Trim()) { $firmnessLbl = $row.firmnessLabel.Trim() }
     $highlight = ""
@@ -158,22 +169,24 @@ foreach ($row in $rows) {
     }
 
     $mattress = [ordered]@{
-        id            = $row.id.Trim()
-        name          = $row.name.Trim()
-        brand         = $row.brand.Trim()
-        subBrand      = $subBrand
-        pitchKey      = $pitchKey
-        firmness      = $firmness
-        firmnessLabel = $firmnessLbl
-        locallyMade   = $locallyMade
-        features      = $features
-        tags          = $tags
-        highlight     = $highlight
-        tags_es       = $tags_es
-        highlight_es  = $highlight_es
-        imageUrl      = $imageUrl
-        reasons       = $reasons
-        reasons_es    = $reasons_es
+        id              = $row.id.Trim()
+        name            = $row.name.Trim()
+        brand           = $row.brand.Trim()
+        subBrand        = $subBrand
+        pitchKey        = $pitchKey
+        archetype       = $archetype
+        displayPriority = $displayPriority
+        firmness        = $firmness
+        firmnessLabel   = $firmnessLbl
+        locallyMade     = $locallyMade
+        features        = $features
+        tags            = $tags
+        highlight       = $highlight
+        tags_es         = $tags_es
+        highlight_es    = $highlight_es
+        imageUrl        = $imageUrl
+        reasons         = $reasons
+        reasons_es      = $reasons_es
     }
     if ($null -ne $topPickReason) {
         $mattress["topPickReason"] = $topPickReason
