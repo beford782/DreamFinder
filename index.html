@@ -2205,6 +2205,13 @@
       font-size: 0.85rem;
       color: var(--color-text-muted);
       line-height: 1.5;
+      /* Lowercase rendering — quiz labels are properly cased for the customer-facing
+         quiz UI (Queen, Waking Up Stiff or Sore, etc.), but on the RSA-facing handoff
+         brief that capitalization competes visually with the surrounding lowercase
+         tier tags and reason templates. CSS transform preserves source data integrity
+         for any future use that wants original casing. Existing quiz labels are
+         common nouns / adjective phrases, no proper-noun sensitivity. */
+      text-transform: lowercase;
     }
     .hf2-brief__row:not(:last-child) {
       margin-bottom: 0.25rem;
@@ -2305,8 +2312,13 @@
       letter-spacing: 0;
     }
 
-    /* Hide pill on the handoff screen itself — you're already viewing your selections */
-    body:has(#savedPicksScreen.active) .noct-picks-pill {
+    /* Hide pill on the handoff screen itself — you're already viewing your selections.
+       Both screen IDs gated during the parallel-shipping window: savedPicksScreen
+       (legacy markup, still in DOM but unreachable through normal flow post step 4)
+       and hf2Screen (the redesign target). When the legacy markup gets cleaned up
+       post step 5, the savedPicksScreen selector becomes a harmless no-op. */
+    body:has(#savedPicksScreen.active) .noct-picks-pill,
+    body:has(#hf2Screen.active) .noct-picks-pill {
       display: none !important;
     }
 
