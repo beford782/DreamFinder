@@ -1970,6 +1970,15 @@
        All values reference Nocturnal tokens (--color-*, --gold-glow, --font-serif)
        so deployment-level theme overrides apply uniformly. */
 
+    /* Screen-level layout override mirroring .noct-handoff's column override
+       of the .screen.active flex-row default. Added 2026-05-02 after step 3
+       visual verification surfaced row-layout issues (RSA strip on left,
+       brief and timeline side-by-side, timeline rail line not drawing). */
+    #hf2Screen.active {
+      flex-direction: column;
+      padding: 1.25rem;
+    }
+
     /* Timeline rail: vertical line on the left, three steps stacked beside dots */
     .hf2-timeline {
       position: relative;
