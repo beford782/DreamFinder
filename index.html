@@ -7781,6 +7781,14 @@
         imageUrl: toAbsoluteImageUrl(a.imageUrl)
       }));
 
+      // RSA attribution for the handoff redesign — set via the salesperson picker
+      // on the handoff screen, persisted in localStorage as
+      // dreamfinder.<storeKey>.deviceRsa. Empty string if no RSA has been picked
+      // yet (first-use, or until step 4 ships the picker UI). Backend treats as
+      // optional; payload shape is stable whether the field is populated or not.
+      const _storeKey = (STORE_CONFIG && STORE_CONFIG.storeKey) || 'unknown';
+      const _rsa = localStorage.getItem('dreamfinder.' + _storeKey + '.deviceRsa') || '';
+
       // Email HTML built server-side in Apps Script (Code.gs buildSimpleHtml). Cap mirrored at server.
       // Compile payload
       const payload = {
@@ -7794,6 +7802,7 @@
         discount: STORE_DISCOUNT,
         dreamCode: generateDreamCode(analytics.sessionId).code,
         sessionId: analytics.sessionId,
+        rsa: _rsa,
         lang: currentLang,
         allMatches: allMatches,
         accessories: accList
