@@ -8238,8 +8238,27 @@
         if (previewWrap) previewWrap.style.display = 'none';
         var dreamEl = document.getElementById('dreamCodeBox');
         if (dreamEl) dreamEl.style.display = 'none';
+
+        // Auto-navigate back to hf2Screen after 2s so the RSA can continue the
+        // close conversation with picks + revealed discount visible. The
+        // customer's "✓ You're all set" reassurance beat plays for the full 2s
+        // on the email screen first. Race-safe via state-check, not timer-
+        // cancel: if startOver (or any other navigation) fires during the
+        // window, the .active class on emailScreen is gone and showSavedPicks
+        // is skipped — no module-level timer state, no startOver coupling.
+        // window.showSavedPicks is the documented routing chokepoint at
+        // index.html:8770-8779 — it runs renderHf2 (all sub-renderers) and
+        // then showScreen('hf2Screen'). Idempotency guards in 1e7520d
+        // preserve the discount button's revealed state, and the CSS-default
+        // flip from that same commit keeps the discount overlay hidden post-nav.
+        setTimeout(function() {
+          var emailScreenEl = document.getElementById('emailScreen');
+          if (emailScreenEl && emailScreenEl.classList.contains('active')) {
+            window.showSavedPicks();
+          }
+        }, 2000);
       }
-      
+
       function showError(msg) {
         sendBtn.textContent = currentLang === 'es' ? 'Enviar Mis Resultados' : 'Send My Results';
         sendBtn.classList.remove('sending');
