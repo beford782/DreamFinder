@@ -8780,6 +8780,13 @@
       var total = mattressCount + accCount;
       var btn = document.getElementById('savedPicksBtn');
       var countEl = document.getElementById('savedPicksCount');
+      // Defensive: clear any inline display override before applying the
+      // class. The .noct-picks-pill--visible modifier (display:inline-flex
+      // at index.html:2369-2371) is the single source of truth for pill
+      // visibility, with .noct-picks-pill base (display:none at 2342)
+      // handling the hidden state. Inline overrides win the cascade and
+      // break the toggle, so we always reset to '' before re-toggling.
+      if (btn) btn.style.display = '';
       if (btn) btn.classList.toggle('noct-picks-pill--visible', total > 0);
       if (countEl) countEl.textContent = total;
     };
@@ -9405,8 +9412,6 @@
       // Reset saved picks
       window._savedPicks = [];
       window._updatePicksBadge();
-      const savedBtn = document.getElementById('savedPicksBtn');
-      if (savedBtn) savedBtn.style.display = 'none';
 
       // Reset all state
       currentQuestion = 0;
