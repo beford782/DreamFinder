@@ -4388,7 +4388,7 @@
       align-items: center;
       gap: 0.6rem;
       padding: 0.5rem 0 0.15rem 0;
-      border-bottom: 1px solid rgba(212,168,75,0.15);
+      border-bottom: 1px solid color-mix(in srgb, var(--color-accent) 15%, transparent);
       margin-top: 0.3rem;
     }
     .acc-section-header:first-child {
@@ -4401,12 +4401,12 @@
     .acc-section-title {
       font-size: 0.85rem;
       font-weight: 700;
-      color: var(--cream);
+      color: var(--color-text);
       letter-spacing: 0.5px;
     }
     .acc-section-sub {
       font-size: 0.6rem;
-      color: var(--cream-dim);
+      color: var(--color-text-muted);
       margin-top: 0.05rem;
     }
 
@@ -4415,9 +4415,9 @@
       padding: 0.75rem 0 0.25rem 0;
     }
     .acc-next-btn {
-      background: linear-gradient(135deg, rgba(212,168,75,0.15) 0%, rgba(212,168,75,0.05) 100%);
-      border: 1.5px solid rgba(212,168,75,0.4);
-      color: var(--gold);
+      background: linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 15%, transparent) 0%, color-mix(in srgb, var(--color-accent) 5%, transparent) 100%);
+      border: 1.5px solid color-mix(in srgb, var(--color-accent) 40%, transparent);
+      color: var(--color-accent);
       padding: 0.7rem 1.8rem;
       border-radius: 12px;
       font-family: inherit;
@@ -4425,15 +4425,15 @@
       font-weight: 600;
       cursor: pointer;
       transition: all 0.25s ease;
-      box-shadow: 0 3px 16px rgba(212,168,75,0.1);
+      box-shadow: 0 3px 16px color-mix(in srgb, var(--color-accent) 10%, transparent);
     }
     .acc-next-btn:active {
       transform: scale(0.97);
-      background: rgba(212,168,75,0.25);
+      background: color-mix(in srgb, var(--color-accent) 25%, transparent);
     }
 
     .accessory-card {
-      background: linear-gradient(180deg, #1d3352 0%, var(--navy-mid) 100%);
+      background: linear-gradient(180deg, #1d3352 0%, var(--color-surface) 100%);
       border: 1.5px solid rgba(255,255,255,0.1);
       border-radius: 16px;
       padding: 1.25rem;
@@ -4444,8 +4444,8 @@
       cursor: pointer;
     }
     .accessory-card.acc-selected {
-      border-color: var(--gold) !important;
-      box-shadow: 0 4px 0 #0a1525, 0 0 0 2px rgba(212,168,75,0.3), 0 6px 16px rgba(0,0,0,0.35);
+      border-color: var(--color-accent) !important;
+      box-shadow: 0 4px 0 #0a1525, 0 0 0 2px color-mix(in srgb, var(--color-accent) 30%, transparent), 0 6px 16px rgba(0,0,0,0.35);
     }
 
     .accessory-card:hover {
@@ -4495,13 +4495,13 @@
     .accessory-name {
       font-size: 1.1rem;
       font-weight: 600;
-      color: var(--cream);
+      color: var(--color-text);
       margin-bottom: 0.5rem;
     }
 
     .accessory-description {
       font-size: 0.85rem;
-      color: var(--cream-dim);
+      color: var(--color-text-muted);
       line-height: 1.5;
       margin-bottom: 1rem;
     }
@@ -4539,7 +4539,7 @@
 
     .accessories-intro p {
       font-size: 0.9rem;
-      color: var(--cream-dim);
+      color: var(--color-text-muted);
     }
 
     .accessory-category-section {
@@ -4549,7 +4549,7 @@
     .accessory-category-title {
       font-size: 1.1rem;
       font-weight: 600;
-      color: var(--cream);
+      color: var(--color-text);
       margin-bottom: 1rem;
       padding-bottom: 0.5rem;
       border-bottom: 1px solid rgba(255,255,255,0.1);
