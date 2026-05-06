@@ -1835,11 +1835,11 @@
        placeholder). All span the full grid width so they don't collapse into the
        parent's metadata columns. Stacked below the existing header (photo + rank/name/
        why + price) via auto-row placement. */
-    .noct-handoff-pick__lead,
-    .noct-handoff-pick__demo,
-    .noct-handoff-pick__close,
-    .noct-handoff-pick__rsa-note,
-    .noct-handoff-pick__missing {
+    .noct-handoff-pitch__lead,
+    .noct-handoff-pitch__demo,
+    .noct-handoff-pitch__close,
+    .noct-handoff-pitch__rsa-note,
+    .noct-handoff-pitch__missing {
       grid-column: 1 / -1;
       min-width: 0;
       font-family: var(--font-sans);
@@ -1850,10 +1850,10 @@
       overflow-wrap: anywhere;
     }
 
-    .noct-handoff-pick__lead strong,
-    .noct-handoff-pick__demo strong,
-    .noct-handoff-pick__close strong,
-    .noct-handoff-pick__rsa-note strong {
+    .noct-handoff-pitch__lead strong,
+    .noct-handoff-pitch__demo strong,
+    .noct-handoff-pitch__close strong,
+    .noct-handoff-pitch__rsa-note strong {
       display: block;
       font-family: var(--font-sans);
       font-size: 10px;
@@ -1865,14 +1865,14 @@
     }
 
     /* RSA Note — internal coaching, visually distinct from customer-facing pitch */
-    .noct-handoff-pick__rsa-note {
+    .noct-handoff-pitch__rsa-note {
       padding: 12px 14px;
       background: color-mix(in srgb, var(--color-accent) 4%, transparent);
       border-left: 2px solid color-mix(in srgb, var(--color-accent) 50%, transparent);
     }
 
     /* Dev-only placeholder for picks with no SUBBRAND_NOTES content */
-    .noct-handoff-pick__missing {
+    .noct-handoff-pitch__missing {
       font-style: italic;
       font-size: 12px;
       color: var(--color-text-subtle);
@@ -8981,8 +8981,7 @@
     // to full-pitch (3 stacked blocks: lead/demo/close) or coaching-only (single
     // rsaNote block) by content.format. Empty content shows __missing placeholder
     // in dev (isDevelopmentMode at ~6157), renders nothing in production.
-    // Uses the surviving .noct-handoff-pick__* classes (1838-1880); sub-prompt 3
-    // will rename to a card-agnostic prefix in a separate commit.
+    // Uses the .noct-handoff-pitch__* classes (1838-1880).
     // Spec: docs/5d-content-spec.md.
     function renderHf2PickDiff(m) {
       var content = getPitchContent(m);
@@ -8992,19 +8991,19 @@
         : { lead: 'Lead with', demo: 'Demo hook', close: 'Close angle', rsaNote: 'RSA note' };
       if (!content) {
         if (isDevelopmentMode()) {
-          return '<div class="noct-handoff-pick__missing">⚠ pitch content missing: '
+          return '<div class="noct-handoff-pitch__missing">⚠ pitch content missing: '
             + escapeHtml(m.subBrand || '(no subBrand)')
             + '</div>';
         }
         return '';
       }
       if (content.format === 'full') {
-        return '<div class="noct-handoff-pick__lead"><strong>' + labels.lead + '</strong>' + renderPitchProse(content.lead) + '</div>'
-             + '<div class="noct-handoff-pick__demo"><strong>' + labels.demo + '</strong>' + renderPitchProse(content.demo) + '</div>'
-             + '<div class="noct-handoff-pick__close"><strong>' + labels.close + '</strong>' + renderPitchProse(content.close) + '</div>';
+        return '<div class="noct-handoff-pitch__lead"><strong>' + labels.lead + '</strong>' + renderPitchProse(content.lead) + '</div>'
+             + '<div class="noct-handoff-pitch__demo"><strong>' + labels.demo + '</strong>' + renderPitchProse(content.demo) + '</div>'
+             + '<div class="noct-handoff-pitch__close"><strong>' + labels.close + '</strong>' + renderPitchProse(content.close) + '</div>';
       }
       if (content.format === 'coaching') {
-        return '<div class="noct-handoff-pick__rsa-note"><strong>' + labels.rsaNote + '</strong>'
+        return '<div class="noct-handoff-pitch__rsa-note"><strong>' + labels.rsaNote + '</strong>'
              + renderPitchProse(content.rsaNote) + '</div>';
       }
       return '';
