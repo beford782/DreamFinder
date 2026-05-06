@@ -4375,7 +4375,7 @@
 
 
 
-    .accessories-grid {
+    .noct-accessories__grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
       gap: 1rem;
@@ -4383,7 +4383,7 @@
       margin: 0 auto;
     }
 
-    .acc-section-header {
+    .noct-accessories__section-header {
       grid-column: 1 / -1;
       display: flex;
       align-items: center;
@@ -4392,30 +4392,30 @@
       border-bottom: 1px solid color-mix(in srgb, var(--color-accent) 15%, transparent);
       margin-top: 0.3rem;
     }
-    .acc-section-header:first-child {
+    .noct-accessories__section-header:first-child {
       margin-top: 0;
     }
-    .acc-section-icon {
+    .noct-accessories__section-icon {
       font-size: 1.3rem;
       line-height: 1;
     }
-    .acc-section-title {
+    .noct-accessories__section-title {
       font-size: 0.85rem;
       font-weight: 700;
       color: var(--color-text);
       letter-spacing: 0.5px;
     }
-    .acc-section-sub {
+    .noct-accessories__section-sub {
       font-size: 0.6rem;
       color: var(--color-text-muted);
       margin-top: 0.05rem;
     }
 
-    .acc-next-wrapper {
+    .noct-accessories__next-wrapper {
       text-align: center;
       padding: 0.75rem 0 0.25rem 0;
     }
-    .acc-next-btn {
+    .noct-accessories__next-btn {
       background: linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 15%, transparent) 0%, color-mix(in srgb, var(--color-accent) 5%, transparent) 100%);
       border: 1.5px solid color-mix(in srgb, var(--color-accent) 40%, transparent);
       color: var(--color-accent);
@@ -4428,12 +4428,12 @@
       transition: all 0.25s ease;
       box-shadow: 0 3px 16px color-mix(in srgb, var(--color-accent) 10%, transparent);
     }
-    .acc-next-btn:active {
+    .noct-accessories__next-btn:active {
       transform: scale(0.97);
       background: color-mix(in srgb, var(--color-accent) 25%, transparent);
     }
 
-    .accessory-card {
+    .noct-accessories__card {
       background: linear-gradient(180deg, var(--color-surface-alt) 0%, var(--color-surface) 100%);
       border: 1.5px solid rgba(255,255,255,0.1);
       border-radius: 16px;
@@ -4444,22 +4444,22 @@
       position: relative;
       cursor: pointer;
     }
-    .accessory-card.acc-selected {
+    .noct-accessories__card.noct-accessories__card--selected {
       border-color: var(--color-accent) !important;
       box-shadow: 0 4px 0 #0a1525, 0 0 0 2px color-mix(in srgb, var(--color-accent) 30%, transparent), 0 6px 16px rgba(0,0,0,0.35);
     }
 
-    .accessory-card:hover {
+    .noct-accessories__card:hover {
       border-color: color-mix(in srgb, var(--color-match-positive) 30%, transparent);
       transform: translateY(-2px);
     }
 
-    .accessory-card.recommended {
+    .noct-accessories__card.noct-accessories__card--recommended {
       border-color: color-mix(in srgb, var(--color-match-positive) 40%, transparent);
       box-shadow: 0 0 20px color-mix(in srgb, var(--color-match-positive) 10%, transparent);
     }
 
-    .accessory-image {
+    .noct-accessories__image {
       position: relative;
       margin: -1.25rem -1.25rem 1rem -1.25rem;
       height: 140px;
@@ -4467,7 +4467,7 @@
       overflow: hidden;
     }
 
-    .accessory-image img {
+    .noct-accessories__image img {
       width: 100%;
       height: 100%;
       object-fit: contain;
@@ -4475,7 +4475,7 @@
       box-sizing: border-box;
     }
 
-    .accessory-match {
+    .noct-accessories__match-badge {
       position: absolute;
       top: 0.75rem;
       right: 0.75rem;
@@ -4489,31 +4489,31 @@
       letter-spacing: 0.5px;
     }
 
-    .accessory-category {
+    .noct-accessories__category {
       display: none;
     }
 
-    .accessory-name {
+    .noct-accessories__name {
       font-size: 1.1rem;
       font-weight: 600;
       color: var(--color-text);
       margin-bottom: 0.5rem;
     }
 
-    .accessory-description {
+    .noct-accessories__description {
       font-size: 0.85rem;
       color: var(--color-text-muted);
       line-height: 1.5;
       margin-bottom: 1rem;
     }
 
-    .accessory-price {
+    .noct-accessories__price {
       font-size: 1.25rem;
       font-weight: 700;
       color: var(--color-match-positive);
     }
 
-    .accessories-section {
+    .noct-accessories__section {
       display: block;
       margin-top: 2.5rem;
       padding-top: 2rem;
@@ -4523,7 +4523,7 @@
       margin-right: auto;
     }
 
-    .accessories-intro {
+    .noct-accessories__intro {
       text-align: center;
       margin-bottom: 1.5rem;
       padding: 1rem;
@@ -4532,22 +4532,22 @@
       border: 1px solid color-mix(in srgb, var(--color-match-positive) 15%, transparent);
     }
 
-    .accessories-intro h3 {
+    .noct-accessories__intro h3 {
       font-size: 1.2rem;
       color: var(--color-match-positive);
       margin-bottom: 0.5rem;
     }
 
-    .accessories-intro p {
+    .noct-accessories__intro p {
       font-size: 0.9rem;
       color: var(--color-text-muted);
     }
 
-    .accessory-category-section {
+    .noct-accessories__category-section {
       margin-bottom: 2rem;
     }
 
-    .accessory-category-title {
+    .noct-accessories__category-title {
       font-size: 1.1rem;
       font-weight: 600;
       color: var(--color-text);
@@ -5891,9 +5891,9 @@
     <style>
       @keyframes accSpin { to { transform: rotate(360deg); } }
       @keyframes accCardIn { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
-      .acc-card-animated { opacity:0; animation: accCardIn 0.4s ease-out forwards; }
+      .noct-accessories__card-animated { opacity:0; animation: accCardIn 0.4s ease-out forwards; }
     </style>
-    <div class="accessories-grid" id="accessoriesGrid"></div>
+    <div class="noct-accessories__grid" id="accessoriesGrid"></div>
     <div id="accCartBar" onclick="window.showSavedPicks()" ontouchend="event.preventDefault();window.showSavedPicks();" style="display:none; position:sticky; bottom:0; left:0; right:0; background:linear-gradient(135deg,#1a2744,#0d1730); border-top:2px solid var(--gold); padding:0.75rem 1.25rem; display:none; align-items:center; justify-content:space-between; z-index:50; box-shadow:0 -4px 20px rgba(0,0,0,0.4);">
       <div style="display:flex; align-items:center; gap:0.6rem;">
         <span style="font-size:1.1rem;">🛒</span>
@@ -8503,11 +8503,11 @@
         // Add section header — g.category is the English key; translate for display
         var _catDisplayNames = {'Foundations & Support': _es ? 'Bases y Soportes' : 'Foundations & Support', 'Pillows': _es ? 'Almohadas' : 'Pillows', 'Protectors': _es ? 'Protectores' : 'Protectors'};
         const headerHtml = `
-          <div class="acc-section-header acc-card-animated">
-            <span class="acc-section-icon">${categoryIcons[g.category] || '📦'}</span>
+          <div class="noct-accessories__section-header noct-accessories__card-animated">
+            <span class="noct-accessories__section-icon">${categoryIcons[g.category] || '📦'}</span>
             <div>
-              <div class="acc-section-title">${_catDisplayNames[g.category] || g.category}</div>
-              <div class="acc-section-sub">${categorySubtitles[g.category] || ''}</div>
+              <div class="noct-accessories__section-title">${_catDisplayNames[g.category] || g.category}</div>
+              <div class="noct-accessories__section-sub">${categorySubtitles[g.category] || ''}</div>
             </div>
           </div>`;
         grid.insertAdjacentHTML('beforeend', headerHtml);
@@ -8518,7 +8518,7 @@
           var protCopy = _es
             ? 'La mayoría de garantías de colchón requieren un protector. Mantiene tu colchón limpio, higiénico y puede extender su vida 3-5 años.'
             : 'Most mattress warranties require a protector. It keeps your mattress clean, hygienic, and can extend its life by 3-5 years.';
-          var protCallout = '<div class="acc-card-animated" style="grid-column:1/-1; display:flex; gap:0.75rem; align-items:flex-start; background:rgba(212,168,75,0.08); border-left:3px solid var(--gold); border-radius:6px; padding:0.75rem 1rem; margin-bottom:0.75rem;">'
+          var protCallout = '<div class="noct-accessories__card-animated" style="grid-column:1/-1; display:flex; gap:0.75rem; align-items:flex-start; background:rgba(212,168,75,0.08); border-left:3px solid var(--gold); border-radius:6px; padding:0.75rem 1rem; margin-bottom:0.75rem;">'
             + '<span style="font-size:1.1rem; flex-shrink:0;">🛡️</span>'
             + '<div>'
             +   '<div style="font-size:0.65rem; font-weight:700; color:var(--gold); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:0.2rem;">' + protEyebrow + '</div>'
@@ -8555,16 +8555,16 @@
             ? '<div style="position:absolute; top:0.5rem; left:0.5rem; background:linear-gradient(135deg,#d4a84b,#b8922f); color:#0d1730; font-size:0.58rem; font-weight:700; letter-spacing:1px; padding:0.25rem 0.5rem; border-radius:12px; text-transform:uppercase; box-shadow:0 2px 8px rgba(0,0,0,0.3); z-index:2;">' + _topMatchBadge + '</div>'
             : '';
           const cardHtml = `
-            <div class="accessory-card acc-card-animated ${isRec ? 'recommended' : ''}" id="acc-${a.id}" style="${featuredStyle}" onclick="window._toggleAcc('${a.id}','${_aNameEn.replace(/'/g,"\\'")}','${_aCatEn.replace(/'/g,"\\'")}')">
+            <div class="noct-accessories__card noct-accessories__card-animated ${isRec ? 'noct-accessories__card--recommended' : ''}" id="acc-${a.id}" style="${featuredStyle}" onclick="window._toggleAcc('${a.id}','${_aNameEn.replace(/'/g,"\\'")}','${_aCatEn.replace(/'/g,"\\'")}')">
               ${topMatchBadge}
-              <div class="accessory-image">
+              <div class="noct-accessories__image">
                 <img src="${a.image}" alt="${_aName}">
-                ${isRec ? `<span class="accessory-match">${matchPct}% ${_matchWord}</span>` : ''}
+                ${isRec ? `<span class="noct-accessories__match-badge">${matchPct}% ${_matchWord}</span>` : ''}
               </div>
               <div id="acc-check-${a.id}" style="display:none; position:absolute; top:0.5rem; right:0.5rem; background:var(--gold); border-radius:50%; width:26px; height:26px; align-items:center; justify-content:center; font-size:0.85rem; box-shadow:0 2px 8px rgba(0,0,0,0.4); animation:optBounce 0.3s ease;">✓</div>
-              <div class="accessory-category">${_aCat}</div>
-              <div class="accessory-name">${_aName}</div>
-              <div class="accessory-description">${_aDesc}</div>
+              <div class="noct-accessories__category">${_aCat}</div>
+              <div class="noct-accessories__name">${_aName}</div>
+              <div class="noct-accessories__description">${_aDesc}</div>
               ${reasonLines}
             </div>`;
           setTimeout(() => grid.insertAdjacentHTML('beforeend', cardHtml), (i + 1) * 200);
@@ -8577,8 +8577,8 @@
             const nextCat = grouped[accStep + 1].category;
             const nextIcon = categoryIcons[nextCat] || '→';
             const btnHtml = `
-              <div id="accNextBtn" class="acc-next-wrapper acc-card-animated" style="grid-column:1/-1;">
-                <button class="acc-next-btn" onclick="window._accNext()">
+              <div id="accNextBtn" class="noct-accessories__next-wrapper noct-accessories__card-animated" style="grid-column:1/-1;">
+                <button class="noct-accessories__next-btn" onclick="window._accNext()">
                   ${nextIcon} ${nextLabels[g.category] || (_es ? 'Continuar →' : 'Continue →')}
                 </button>
               </div>`;
@@ -8587,7 +8587,7 @@
             footer.style.opacity = '1'; footer.style.transform = 'translateY(0)';
           }
           // Scroll to latest section
-          const lastHeader = grid.querySelectorAll('.acc-section-header');
+          const lastHeader = grid.querySelectorAll('.noct-accessories__section-header');
           if (lastHeader.length > 0) lastHeader[lastHeader.length - 1].scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, delay);
       }
@@ -8693,7 +8693,7 @@
             + '</text>'
             + '</svg>';
           var heroContinueLabel = _es ? 'Continuar a Bases y Soportes →' : 'Continue to Foundations →';
-          var heroHtml = '<div id="adjHeroSection" class="acc-hero-section acc-card-animated" style="grid-column:1/-1;background:linear-gradient(135deg,rgba(212,168,75,0.08),rgba(212,168,75,0.03));border:1px solid rgba(212,168,75,0.25);border-radius:16px;padding:1.25rem;margin-bottom:0.75rem;">'
+          var heroHtml = '<div id="adjHeroSection" class="noct-accessories__hero-section noct-accessories__card-animated" style="grid-column:1/-1;background:linear-gradient(135deg,rgba(212,168,75,0.08),rgba(212,168,75,0.03));border:1px solid rgba(212,168,75,0.25);border-radius:16px;padding:1.25rem;margin-bottom:0.75rem;">'
             + '<div style="display:flex;gap:1.25rem;align-items:flex-start;">'
             + '<div style="flex:1;min-width:0;">'
             + '<div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--gold);font-weight:700;margin-bottom:0.75rem;">' + heroLabel + '</div>'
@@ -8701,7 +8701,7 @@
             + '<div style="font-size:0.82rem;color:var(--cream-dim);line-height:1.4;margin-bottom:1rem;">' + heroSub + '</div>'
             + '<div style="display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1rem;">' + benefitCards + '</div>'
             + '<div style="font-size:0.72rem;color:var(--cream-dim);font-style:italic;margin-bottom:1rem;">' + heroCta + '</div>'
-            + '<button id="adjHeroContinueBtn" class="acc-next-btn" onclick="window._adjHeroContinue()" ontouchend="event.preventDefault();window._adjHeroContinue();" style="touch-action:manipulation;">' + heroContinueLabel + '</button>'
+            + '<button id="adjHeroContinueBtn" class="noct-accessories__next-btn" onclick="window._adjHeroContinue()" ontouchend="event.preventDefault();window._adjHeroContinue();" style="touch-action:manipulation;">' + heroContinueLabel + '</button>'
             + '</div>'
             + '<div style="flex-shrink:0;width:180px;display:flex;align-items:center;justify-content:center;padding-top:1.5rem;">' + adjSvg + '</div>'
             + '</div>'
@@ -9428,7 +9428,7 @@
       if (window._accCart[id]) {
         delete window._accCart[id];
         const card = document.getElementById('acc-' + id);
-        if (card) card.classList.remove('acc-selected');
+        if (card) card.classList.remove('noct-accessories__card--selected');
         const check = document.getElementById('acc-check-' + id);
         if (check) check.style.display = 'none';
       } else {
@@ -9437,7 +9437,7 @@
         const imageUrl = accItem ? (accItem.image || '') : '';
         window._accCart[id] = { name, category, imageUrl };
         const card = document.getElementById('acc-' + id);
-        if (card) card.classList.add('acc-selected');
+        if (card) card.classList.add('noct-accessories__card--selected');
         const check = document.getElementById('acc-check-' + id);
         if (check) check.style.display = 'flex';
       }
