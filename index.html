@@ -5984,6 +5984,10 @@
         <div class="drawer-section-label" data-i18n="drawer.pitch_heading">Walk them through it</div>
         <div class="drawer-pitch-box" id="drawerPitch"></div>
       </div>
+      <div id="drawerBrandSection" style="display:none;">
+        <div class="drawer-section-label" data-i18n="drawer.brand_heading">About the brand</div>
+        <div class="drawer-brand-box" id="drawerBrandStory"></div>
+      </div>
       <div class="drawer-cta-row">
         <button id="drawerInterestedBtn" class="drawer-btn drawer-btn-primary" onclick="window.saveDrawerPick()" ontouchend="event.preventDefault();window.saveDrawerPick();" style="touch-action:manipulation;" data-i18n="drawer.interested">⭐ I'm Interested In This One</button>
       </div>
@@ -6453,11 +6457,28 @@
     // when currentLang === 'es' and SUBBRAND_NOTES_ES has the entry, return that;
     // otherwise fall through to SUBBRAND_NOTES (English). pitchKey is internal-only
     // (never customer-facing); subBrand is the customer-facing display string.
+    // Data invariant: every Back Supporter Hybrid mattress carries a non-empty
+    // pitchKey routing to "Back Supporter Hybrid (Phase Change)" or "(PCM Ice)".
+    // If a future entry sets pitchKey="" and subBrand="Back Supporter Hybrid",
+    // the cascade misses (no SUBBRAND_NOTES key without the parenthetical) and
+    // the renderer falls through to the dev-mode placeholder.
     function getPitchContent(pick) {
       var key = (pick && pick.pitchKey) || (pick && pick.subBrand) || null;
       if (!key) return null;
       if (currentLang === 'es' && SUBBRAND_NOTES_ES[key]) return SUBBRAND_NOTES_ES[key];
       return SUBBRAND_NOTES[key] || null;
+    }
+
+    // 5d: Brand-heritage lookup, distinct from pitch content. Returns BRAND_NOTES
+    // entry keyed by manufacturer brand, or null. Bel-O-Pedic intentionally
+    // returns null (no entry — private label, recommended-last treatment per
+    // docs/5d-content-spec.md). Renders complementary to pitch content in the
+    // drawer's brand section, not as a fallback.
+    function getBrandContent(pick) {
+      var key = pick && pick.brand;
+      if (!key) return null;
+      if (currentLang === 'es' && BRAND_NOTES_ES[key]) return BRAND_NOTES_ES[key];
+      return BRAND_NOTES[key] || null;
     }
 
     // 5d: Environment detection for empty-content placeholder behavior.
@@ -9362,6 +9383,16 @@
       return '';
     }
 
+    // 5d: Brand-heritage prose renderer for the drawer's brand section.
+    // Distinct from renderPitchHtml — heritage is complementary background,
+    // not pitch coaching. Returns empty string when no BRAND_NOTES entry
+    // exists (Bel-O-Pedic case by design).
+    function renderBrandStory(m) {
+      var content = getBrandContent(m);
+      if (!content) return '';
+      return '<div class="noct-handoff-brand-panel__story">' + renderPitchProse(content.story) + '</div>';
+    }
+
     function renderHf2Pick(m, tier) {
       var card = document.createElement('div');
       card.className = 'hf2-pick' + (tier === 'gold' ? ' hf2-pick--gold' : '');
@@ -10140,6 +10171,20 @@
       } else {
         pitchEl.innerHTML = '';
         pitchSection.style.display = 'none';
+      }
+
+      // Brand heritage (Spring Air / Restonic). Bel-O-Pedic returns empty by
+      // design — no BRAND_NOTES entry, section stays hidden. Both sections
+      // can fire independently when both have content.
+      var brandHtml = renderBrandStory(m);
+      var brandSection = document.getElementById('drawerBrandSection');
+      var brandEl = document.getElementById('drawerBrandStory');
+      if (brandHtml) {
+        brandEl.innerHTML = brandHtml;
+        brandSection.style.display = '';
+      } else {
+        brandEl.innerHTML = '';
+        brandSection.style.display = 'none';
       }
 
       document.getElementById('drawerScroll').scrollTop = 0;
