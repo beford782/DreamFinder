@@ -4489,10 +4489,6 @@
       letter-spacing: 0.5px;
     }
 
-    .noct-accessories__category {
-      display: none;
-    }
-
     .noct-accessories__name {
       font-size: 1.1rem;
       font-weight: 600;
@@ -6160,8 +6156,8 @@
     </div>
     <style>
       @keyframes accSpin { to { transform: rotate(360deg); } }
-      @keyframes accCardIn { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
-      .noct-accessories__card-animated { opacity:0; animation: accCardIn 0.4s ease-out forwards; }
+      @keyframes accAnimateIn { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+      .noct-accessories__animated-in { opacity:0; animation: accAnimateIn 0.4s ease-out forwards; }
     </style>
     <div class="noct-accessories__grid" id="accessoriesGrid"></div>
     <div class="noct-accessories__cart-bar" id="accCartBar" onclick="window.showSavedPicks()" ontouchend="event.preventDefault();window.showSavedPicks();" style="display:none;">
@@ -8773,7 +8769,7 @@
         // Add section header — g.category is the English key; translate for display
         var _catDisplayNames = {'Foundations & Support': _es ? 'Bases y Soportes' : 'Foundations & Support', 'Pillows': _es ? 'Almohadas' : 'Pillows', 'Protectors': _es ? 'Protectores' : 'Protectors'};
         const headerHtml = `
-          <div class="noct-accessories__section-header noct-accessories__card-animated">
+          <div class="noct-accessories__section-header noct-accessories__animated-in">
             <span class="noct-accessories__section-icon">${categoryIcons[g.category] || '📦'}</span>
             <div>
               <div class="noct-accessories__section-title">${_catDisplayNames[g.category] || g.category}</div>
@@ -8788,7 +8784,7 @@
           var protCopy = _es
             ? 'La mayoría de garantías de colchón requieren un protector. Mantiene tu colchón limpio, higiénico y puede extender su vida 3-5 años.'
             : 'Most mattress warranties require a protector. It keeps your mattress clean, hygienic, and can extend its life by 3-5 years.';
-          var protCallout = '<div class="noct-accessories__card-animated noct-accessories__protector-callout">'
+          var protCallout = '<div class="noct-accessories__animated-in noct-accessories__protector-callout">'
             + '<span class="noct-accessories__protector-icon">🛡️</span>'
             + '<div>'
             +   '<div class="noct-accessories__protector-eyebrow">' + protEyebrow + '</div>'
@@ -8805,7 +8801,6 @@
           const matchPct = Math.min(Math.round((a.score / maxScore) * 100), 99);
           const isRec = a.score >= 3;
           const _aName = L(a.name);
-          const _aCat = L(a.category);
           const _aDesc = L(a.description);
           // For _toggleAcc, pass English name/category for analytics
           const _aNameEn = typeof a.name === 'object' ? a.name.en : a.name;
@@ -8822,14 +8817,13 @@
             ? '<div class="noct-accessories__top-match-badge">' + _topMatchBadge + '</div>'
             : '';
           const cardHtml = `
-            <div class="noct-accessories__card noct-accessories__card-animated ${isRec ? 'noct-accessories__card--recommended' : ''}${isFeaturedPillow ? ' noct-accessories__card--featured' : ''}" id="acc-${a.id}" onclick="window._toggleAcc('${a.id}','${_aNameEn.replace(/'/g,"\\'")}','${_aCatEn.replace(/'/g,"\\'")}')">
+            <div class="noct-accessories__card noct-accessories__animated-in ${isRec ? 'noct-accessories__card--recommended' : ''}${isFeaturedPillow ? ' noct-accessories__card--featured' : ''}" id="acc-${a.id}" onclick="window._toggleAcc('${a.id}','${_aNameEn.replace(/'/g,"\\'")}','${_aCatEn.replace(/'/g,"\\'")}')">
               ${topMatchBadge}
               <div class="noct-accessories__image">
                 <img src="${a.image}" alt="${_aName}">
                 ${isRec ? `<span class="noct-accessories__match-badge">${matchPct}% ${_matchWord}</span>` : ''}
               </div>
               <div id="acc-check-${a.id}" style="display:none; position:absolute; top:0.5rem; right:0.5rem; background:var(--gold); border-radius:50%; width:26px; height:26px; align-items:center; justify-content:center; font-size:0.85rem; box-shadow:0 2px 8px rgba(0,0,0,0.4); animation:optBounce 0.3s ease;">✓</div>
-              <div class="noct-accessories__category">${_aCat}</div>
               <div class="noct-accessories__name">${_aName}</div>
               <div class="noct-accessories__description">${_aDesc}</div>
               ${reasonLines}
@@ -8844,7 +8838,7 @@
             const nextCat = grouped[accStep + 1].category;
             const nextIcon = categoryIcons[nextCat] || '→';
             const btnHtml = `
-              <div id="accNextBtn" class="noct-accessories__next-wrapper noct-accessories__card-animated" style="grid-column:1/-1;">
+              <div id="accNextBtn" class="noct-accessories__next-wrapper noct-accessories__animated-in" style="grid-column:1/-1;">
                 <button class="noct-accessories__next-btn" onclick="window._accNext()">
                   ${nextIcon} ${nextLabels[g.category] || (_es ? 'Continuar →' : 'Continue →')}
                 </button>
@@ -8960,7 +8954,7 @@
             + '</text>'
             + '</svg>';
           var heroContinueLabel = _es ? 'Continuar a Bases y Soportes →' : 'Continue to Foundations →';
-          var heroHtml = '<div id="adjHeroSection" class="noct-accessories__hero-section noct-accessories__card-animated" style="grid-column:1/-1;background:linear-gradient(135deg,rgba(212,168,75,0.08),rgba(212,168,75,0.03));border:1px solid rgba(212,168,75,0.25);border-radius:16px;padding:1.25rem;margin-bottom:0.75rem;">'
+          var heroHtml = '<div id="adjHeroSection" class="noct-accessories__hero-section noct-accessories__animated-in" style="grid-column:1/-1;background:linear-gradient(135deg,rgba(212,168,75,0.08),rgba(212,168,75,0.03));border:1px solid rgba(212,168,75,0.25);border-radius:16px;padding:1.25rem;margin-bottom:0.75rem;">'
             + '<div style="display:flex;gap:1.25rem;align-items:flex-start;">'
             + '<div style="flex:1;min-width:0;">'
             + '<div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--gold);font-weight:700;margin-bottom:0.75rem;">' + heroLabel + '</div>'
@@ -9712,6 +9706,10 @@
       const bar = document.getElementById('accCartBar');
       const countEl = document.getElementById('accCartCount');
       if (bar) {
+        // Dual-consumer visibility: style.display controls the bar's own
+        // appearance; .visible class is a state hook for the picks-pill
+        // :has() rule (see body:has(#accCartBar.visible) ... near line 2402)
+        // that lifts the pill above the bar.
         bar.style.display = count > 0 ? 'flex' : 'none';
         bar.classList.toggle('visible', count > 0);
       }
