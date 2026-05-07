@@ -4730,6 +4730,102 @@
       touch-action: manipulation;
     }
 
+    /* 5c-3 sub-prompt 3b — JS-emitted template-literal de-inlined element rules. */
+    .noct-accessories__profile-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 12%, transparent) 0%, color-mix(in srgb, var(--color-accent) 6%, transparent) 100%);
+      border: 1px solid color-mix(in srgb, var(--color-accent) 30%, transparent);
+      border-radius: 50px;
+      padding: 0.35rem 1rem;
+    }
+
+    .noct-accessories__profile-pill-icon {
+      font-size: 0.85rem;
+    }
+
+    .noct-accessories__profile-type {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--color-accent);
+    }
+
+    .noct-accessories__profile-sub {
+      font-size: 0.58rem;
+      color: var(--color-text-muted);
+      margin-left: 0.3rem;
+    }
+
+    .noct-accessories__protector-callout {
+      grid-column: 1 / -1;
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+      background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+      border-left: 3px solid var(--color-accent);
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .noct-accessories__protector-icon {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .noct-accessories__protector-eyebrow {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--color-accent);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 0.2rem;
+    }
+
+    .noct-accessories__protector-body {
+      font-size: 0.75rem;
+      color: var(--color-text);
+      line-height: 1.4;
+    }
+
+    .noct-accessories__top-match-badge {
+      position: absolute;
+      top: 0.5rem;
+      left: 0.5rem;
+      background: linear-gradient(135deg, #d4a84b, #b8922f);
+      color: #0d1730;
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      padding: 0.25rem 0.5rem;
+      border-radius: 12px;
+      text-transform: uppercase;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      z-index: 2;
+    }
+
+    .noct-accessories__reason-callout {
+      font-size: 0.7rem;
+      color: var(--color-accent);
+      margin-top: 0.5rem;
+      line-height: 1.3;
+      background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+      border-radius: 6px;
+      padding: 0.35rem 0.5rem;
+    }
+
+    .noct-accessories__reason-callout--featured {
+      line-height: 1.4;
+      background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+      padding: 0.45rem 0.6rem;
+    }
+
+    .noct-accessories__card.noct-accessories__card--featured {
+      border: 2px solid var(--color-accent);
+      box-shadow: 0 4px 20px color-mix(in srgb, var(--color-accent) 20%, transparent);
+    }
+
     /* Mattress cards - Compact carousel */
     .no-matches {
       text-align: center;
@@ -8632,11 +8728,11 @@
       
       // Profile badge content
       badge.innerHTML = `
-        <div style="display:inline-flex; align-items:center; gap:0.5rem; background:linear-gradient(135deg, rgba(212,168,75,0.12) 0%, rgba(212,168,75,0.06) 100%); border:1px solid rgba(212,168,75,0.3); border-radius:50px; padding:0.35rem 1rem;">
-          <span style="font-size:0.85rem;">${icon('moon', 18)}</span>
+        <div class="noct-accessories__profile-pill">
+          <span class="noct-accessories__profile-pill-icon">${icon('moon', 18)}</span>
           <div>
-            <span style="font-size:0.78rem; font-weight:600; color:var(--gold);">${profileType}</span>
-            <span style="font-size:0.58rem; color:var(--cream-dim); margin-left:0.3rem;">${profileSub}</span>
+            <span class="noct-accessories__profile-type">${profileType}</span>
+            <span class="noct-accessories__profile-sub">${profileSub}</span>
           </div>
         </div>
       `;
@@ -8692,11 +8788,11 @@
           var protCopy = _es
             ? 'La mayoría de garantías de colchón requieren un protector. Mantiene tu colchón limpio, higiénico y puede extender su vida 3-5 años.'
             : 'Most mattress warranties require a protector. It keeps your mattress clean, hygienic, and can extend its life by 3-5 years.';
-          var protCallout = '<div class="noct-accessories__card-animated" style="grid-column:1/-1; display:flex; gap:0.75rem; align-items:flex-start; background:rgba(212,168,75,0.08); border-left:3px solid var(--gold); border-radius:6px; padding:0.75rem 1rem; margin-bottom:0.75rem;">'
-            + '<span style="font-size:1.1rem; flex-shrink:0;">🛡️</span>'
+          var protCallout = '<div class="noct-accessories__card-animated noct-accessories__protector-callout">'
+            + '<span class="noct-accessories__protector-icon">🛡️</span>'
             + '<div>'
-            +   '<div style="font-size:0.65rem; font-weight:700; color:var(--gold); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:0.2rem;">' + protEyebrow + '</div>'
-            +   '<div style="font-size:0.75rem; color:var(--cream); line-height:1.4;">' + protCopy + '</div>'
+            +   '<div class="noct-accessories__protector-eyebrow">' + protEyebrow + '</div>'
+            +   '<div class="noct-accessories__protector-body">' + protCopy + '</div>'
             + '</div>'
             + '</div>';
           grid.insertAdjacentHTML('beforeend', protCallout);
@@ -8719,17 +8815,14 @@
           // Combine up to 2 unique reasons for the featured pillow
           const reasonLines = isFeaturedPillow
             ? (a.reasons.length >= 2
-                ? '<div style="font-size:0.7rem; color:var(--gold); margin-top:0.5rem; line-height:1.4; background:rgba(212,168,75,0.1); border-radius:6px; padding:0.45rem 0.6rem;">\ud83d\udca1 ' + a.reasons[0] + '<br>\ud83d\udca1 ' + a.reasons[1] + '</div>'
-                : '<div style="font-size:0.7rem; color:var(--gold); margin-top:0.5rem; line-height:1.4; background:rgba(212,168,75,0.1); border-radius:6px; padding:0.45rem 0.6rem;">\ud83d\udca1 ' + a.reasons[0] + '</div>')
-            : '<div style="font-size:0.7rem; color:var(--gold); margin-top:0.5rem; line-height:1.3; background:rgba(212,168,75,0.08); border-radius:6px; padding:0.35rem 0.5rem;">\ud83d\udca1 ' + a.reasons[0] + '</div>';
-          const featuredStyle = isFeaturedPillow
-            ? 'border:2px solid var(--gold); box-shadow:0 4px 20px rgba(212,168,75,0.2);'
-            : '';
+                ? '<div class="noct-accessories__reason-callout noct-accessories__reason-callout--featured">\ud83d\udca1 ' + a.reasons[0] + '<br>\ud83d\udca1 ' + a.reasons[1] + '</div>'
+                : '<div class="noct-accessories__reason-callout noct-accessories__reason-callout--featured">\ud83d\udca1 ' + a.reasons[0] + '</div>')
+            : '<div class="noct-accessories__reason-callout">\ud83d\udca1 ' + a.reasons[0] + '</div>';
           const topMatchBadge = isFeaturedPillow
-            ? '<div style="position:absolute; top:0.5rem; left:0.5rem; background:linear-gradient(135deg,#d4a84b,#b8922f); color:#0d1730; font-size:0.58rem; font-weight:700; letter-spacing:1px; padding:0.25rem 0.5rem; border-radius:12px; text-transform:uppercase; box-shadow:0 2px 8px rgba(0,0,0,0.3); z-index:2;">' + _topMatchBadge + '</div>'
+            ? '<div class="noct-accessories__top-match-badge">' + _topMatchBadge + '</div>'
             : '';
           const cardHtml = `
-            <div class="noct-accessories__card noct-accessories__card-animated ${isRec ? 'noct-accessories__card--recommended' : ''}" id="acc-${a.id}" style="${featuredStyle}" onclick="window._toggleAcc('${a.id}','${_aNameEn.replace(/'/g,"\\'")}','${_aCatEn.replace(/'/g,"\\'")}')">
+            <div class="noct-accessories__card noct-accessories__card-animated ${isRec ? 'noct-accessories__card--recommended' : ''}${isFeaturedPillow ? ' noct-accessories__card--featured' : ''}" id="acc-${a.id}" onclick="window._toggleAcc('${a.id}','${_aNameEn.replace(/'/g,"\\'")}','${_aCatEn.replace(/'/g,"\\'")}')">
               ${topMatchBadge}
               <div class="noct-accessories__image">
                 <img src="${a.image}" alt="${_aName}">
