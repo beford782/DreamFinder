@@ -44,7 +44,22 @@
       --color-text-subtle: #8A8578;
       --color-accent: #B8935D;
       --color-accent-hover: #C9A573;
+      --color-accent-shadow: #9a7a2e;        /* button-bottom-inset companion to --color-accent */
+
+      /* Gold-bright — illustrative ramp parallel to brass. NOT a substitute for --color-accent.
+         Used by themeable surfaces (tier badges, profile theme-energetic, particles).
+         Brand-identity surfaces (SVG icons, email illustrations, brand header SVG, DOMAIN LOCK)
+         keep the literal #d4a84b ramp by intent — see in-line comments at those sites. */
+      --color-gold-bright: #d4a84b;
+      --color-gold-bright-dark: #b8922f;
+      --color-gold-bright-soft: #e8c87a;
+
       --color-match-positive: #6ECF9A;  /* match / recommended fit accent */
+
+      /* Tier metaphor */
+      --tier-gold: var(--color-gold-bright);
+      --tier-silver: #c0c7ce;
+      --tier-bronze: #cd7f32;
 
       /* Typography */
       --font-serif: Georgia, 'Times New Roman', serif;
@@ -3455,13 +3470,13 @@
       cursor: pointer;
       position: relative;
       overflow: hidden;
-      box-shadow: 0 5px 0 #9a7a2e, 0 8px 24px rgba(212,168,75,0.35);
+      box-shadow: 0 5px 0 var(--color-accent-shadow), 0 8px 24px rgba(212,168,75,0.35);
       transition: all 0.15s ease;
       letter-spacing: 0.2px;
     }
     .profile-cta-btn:active {
       transform: translateY(4px);
-      box-shadow: 0 1px 0 #9a7a2e, 0 3px 10px rgba(212,168,75,0.2);
+      box-shadow: 0 1px 0 var(--color-accent-shadow), 0 3px 10px rgba(212,168,75,0.2);
     }
     .profile-cta-btn::after {
       content: '';
@@ -3570,7 +3585,7 @@
     .profile-screen.theme-warm  { --profile-accent: #e07b4a; --profile-accent-glow: rgba(224,123,74,0.18); }
     .profile-screen.theme-cool  { --profile-accent: #5aa8d6; --profile-accent-glow: rgba(90,168,214,0.18); }
     .profile-screen.theme-calm  { --profile-accent: #8fb57e; --profile-accent-glow: rgba(143,181,126,0.16); }
-    .profile-screen.theme-energetic { --profile-accent: #d4a84b; --profile-accent-glow: rgba(212,168,75,0.18); }
+    .profile-screen.theme-energetic { --profile-accent: var(--color-gold-bright); --profile-accent-glow: rgba(212,168,75,0.18); }
 
     .profile-screen[class*="theme-"] .profile-priority-icon-wrap {
       background: var(--profile-accent-glow, rgba(212,168,75,0.12));
@@ -3823,9 +3838,9 @@
       transition: all 0.25s ease;
     }
 
-    .tier-tab.active.gold { border-color: #d4a84b; background: rgba(212,168,75,0.12); color: #d4a84b; }
-    .tier-tab.active.silver { border-color: #c0c7ce; background: rgba(192,199,206,0.12); color: #c0c7ce; }
-    .tier-tab.active.bronze { border-color: #cd7f32; background: rgba(205,127,50,0.12); color: #cd7f32; }
+    .tier-tab.active.gold { border-color: var(--tier-gold); background: color-mix(in srgb, var(--tier-gold) 12%, transparent); color: var(--tier-gold); }
+    .tier-tab.active.silver { border-color: var(--tier-silver); background: color-mix(in srgb, var(--tier-silver) 12%, transparent); color: var(--tier-silver); }
+    .tier-tab.active.bronze { border-color: var(--tier-bronze); background: color-mix(in srgb, var(--tier-bronze) 12%, transparent); color: var(--tier-bronze); }
 
     /* Carousel container */
     .carousel-container {
@@ -4106,7 +4121,7 @@
     }
 
     .bottom-section .cta-btn {
-      background: linear-gradient(135deg, var(--gold) 0%, #b8922f 100%);
+      background: linear-gradient(135deg, var(--gold) 0%, var(--color-gold-bright-dark) 100%);
       color: var(--navy);
       border: none;
       padding: 0.65rem 1.4rem;
@@ -4268,11 +4283,11 @@
       opacity: 0;
       animation: profileFadeSlideUp 0.5s ease-out 0.95s forwards;
       letter-spacing: 0.02em;
-      box-shadow: 0 4px 0 #9a7a2e, 0 6px 20px rgba(212,168,75,0.25);
+      box-shadow: 0 4px 0 var(--color-accent-shadow), 0 6px 20px rgba(212,168,75,0.25);
     }
     .email-send-btn:active {
       transform: translateY(3px);
-      box-shadow: 0 1px 0 #9a7a2e, 0 2px 8px rgba(212,168,75,0.2);
+      box-shadow: 0 1px 0 var(--color-accent-shadow), 0 2px 8px rgba(212,168,75,0.2);
     }
     .email-send-btn.sending {
       opacity: 0.6;
@@ -4348,6 +4363,10 @@
     }
 
     /* In Stock Badge */
+    /* Material green 500 (#66bb6a / #81c784 / rgba(76,175,80,X)) — pending unification
+       with --color-match-positive ramp; see deferred queue. Other sites: .card-stock-icon,
+       .match-score, .match-score.high, .card-bestseller, .drawer-match-badge.
+       Migration is a visible color shift — held for its own sub-prompt. */
     .card-stock-badge {
       display: flex;
       align-items: center;
@@ -4710,7 +4729,7 @@
       font-size: 0.95rem;
       font-weight: 700;
       cursor: pointer;
-      box-shadow: 0 4px 0 #9a7a2e, 0 6px 20px color-mix(in srgb, var(--color-accent) 25%, transparent);
+      box-shadow: 0 4px 0 var(--color-accent-shadow), 0 6px 20px color-mix(in srgb, var(--color-accent) 25%, transparent);
     }
 
     .noct-accessories__start-over-btn {
@@ -4789,7 +4808,7 @@
       position: absolute;
       top: 0.5rem;
       left: 0.5rem;
-      background: linear-gradient(135deg, #d4a84b, #b8922f);
+      background: linear-gradient(135deg, var(--color-gold-bright), var(--color-gold-bright-dark));
       color: #0d1730;
       font-size: 0.58rem;
       font-weight: 700;
@@ -4997,7 +5016,7 @@
       border-radius: 10px;
       cursor: pointer;
       touch-action: manipulation;
-      box-shadow: 0 3px 0 #9a7a2e;
+      box-shadow: 0 3px 0 var(--color-accent-shadow);
     }
     .compare-tray-go:disabled {
       background: rgba(212,168,75,0.25);
@@ -5096,6 +5115,7 @@
       line-height: 1.15;
     }
 
+    /* Material green 500 — see header note above .card-stock-badge */
     .match-score {
       background: rgba(76, 175, 80, 0.2);
       color: #66bb6a;
@@ -5221,7 +5241,7 @@
 
     /* Top Pick Badge */
     .top-pick-badge {
-      background: linear-gradient(135deg, #d4a84b 0%, #b8922f 50%, #d4a84b 100%);
+      background: linear-gradient(135deg, var(--color-gold-bright) 0%, var(--color-gold-bright-dark) 50%, var(--color-gold-bright) 100%);
       border: none;
       border-radius: 10px;
       padding: 0.6rem 0.75rem;
@@ -5267,6 +5287,7 @@
     .card-reviews {
       color: var(--cream-dim);
     }
+    /* Material green 500 — see header note above .card-stock-badge */
     .card-bestseller {
       background: rgba(76,175,80,0.15);
       color: #66bb6a;
@@ -5302,7 +5323,7 @@
       margin-top: 2px;
     }
 
-    .match-score.high { background: rgba(76,175,80,0.15); color: #81c784; }
+    .match-score.high { background: rgba(76,175,80,0.15); color: #81c784; } /* Material green 500 — see header note */
     .match-score.med { background: rgba(255,183,77,0.15); color: #ffb74d; }
 
 
@@ -5331,7 +5352,7 @@
     .drawer-mattress-brand { font-size:0.55rem; text-transform:uppercase; letter-spacing:1px; color:var(--gold); font-weight:600; }
     .drawer-mattress-name { font-size:1.2rem; font-weight:800; color:var(--cream); line-height:1.1; margin:0.1rem 0 0.2rem; }
     .drawer-mattress-sub { font-size:0.58rem; color:var(--cream-dim); }
-    .drawer-match-badge { font-size:0.78rem; font-weight:800; color:#66bb6a; background:rgba(76,175,80,0.15); border:1px solid rgba(76,175,80,0.2); padding:0.25rem 0.55rem; border-radius:10px; flex-shrink:0; }
+    .drawer-match-badge { font-size:0.78rem; font-weight:800; color:#66bb6a; background:rgba(76,175,80,0.15); border:1px solid rgba(76,175,80,0.2); padding:0.25rem 0.55rem; border-radius:10px; flex-shrink:0; } /* Material green 500 — see header note */
     .drawer-section-label { font-size:0.58rem; font-weight:700; text-transform:uppercase; letter-spacing:1.2px; color:var(--gold); margin-bottom:0.45rem; opacity:0.85; }
     .drawer-feats { display:flex; flex-direction:column; gap:0.3rem; margin-bottom:0.85rem; }
     .drawer-feat-row { display:flex; align-items:flex-start; gap:0.55rem; padding:0.5rem 0.65rem; border-radius:12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); }
@@ -5358,7 +5379,7 @@
     .drawer-tag { background:rgba(212,168,75,0.1); color:var(--gold); padding:0.2rem 0.55rem; border-radius:8px; font-size:0.58rem; font-weight:500; }
     .drawer-cta-row { display:flex; gap:0.5rem; }
     .drawer-btn { flex:1; padding:0.7rem 0.5rem; border-radius:14px; border:none; font-family:inherit; font-size:0.68rem; font-weight:700; cursor:pointer; }
-    .drawer-btn-primary { background:linear-gradient(180deg,var(--gold-light),var(--gold)); color:var(--navy); box-shadow:0 3px 0 #9a7a2e; }
+    .drawer-btn-primary { background:linear-gradient(180deg,var(--gold-light),var(--gold)); color:var(--navy); box-shadow:0 3px 0 var(--color-accent-shadow); }
     .drawer-btn-secondary { background:rgba(255,255,255,0.07); border:1.5px solid rgba(255,255,255,0.12); color:var(--cream); }
     /* Results footer */
     .results-actions {
@@ -5735,6 +5756,10 @@
       <div class="brand-divider"></div>
 
       <!-- DreamFinder App Brand -->
+      <!-- Brand header SVG: literals (#f0daa8 / #d4a84b / #b8922f / #0f1f33) intentional.
+           SVG <stop> elements use stop-color attributes which don't accept var().
+           Same Path B rationale as the icon library. #0f1f33 carried as exception
+           into sub-prompt 2 (atmospheric depths). -->
       <div class="app-brand">
         <div class="app-name">
           <span class="moon-sm"><svg width="16" height="16" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="28" cy="28" r="26" fill="url(#moonGradSm)" opacity="0.9"/><path d="M38 12C33.5 16.5 31 23 31 28C31 33 33.5 39.5 38 44C34.5 46.5 30 48 26 48C14 48 4 38 4 26C4 14 14 4 26 4C30 4 34.5 5.5 38 8C37.5 9.2 37.5 10.8 38 12Z" fill="url(#shadowGradSm)" opacity="0.35"/><defs><radialGradient id="moonGradSm" cx="0.35" cy="0.35" r="0.65"><stop offset="0%" stop-color="#f0daa8"/><stop offset="60%" stop-color="#d4a84b"/><stop offset="100%" stop-color="#b8922f"/></radialGradient><radialGradient id="shadowGradSm" cx="0.7" cy="0.5" r="0.6"><stop offset="0%" stop-color="#0f1f33"/><stop offset="100%" stop-color="#0f1f33" stop-opacity="0"/></radialGradient></defs></svg></span>
@@ -6186,6 +6211,11 @@
 
   <script>
     // ===== DOMAIN LOCK =====
+    // Renders an inline-style error page if the host isn't in the allowed list.
+    // The literals #0d1730 (depth-text) and #d4a84b (gold-bright) are deliberately
+    // kept here — this code must render in degraded states where CSS custom
+    // properties may be unreliable. This is the one place those literals survive
+    // post-tokenization. Do not migrate to var().
     (function() {
       var allowed = ['beford782.github.io', 'localhost', '127.0.0.1'];
       var host = location.hostname;
@@ -6450,6 +6480,10 @@
     }
 
     // ===== SVG ICON LIBRARY =====
+    // Brand-locked illustration ramp (#d4a84b / #e8c87a) kept as literals across
+    // all retailer deployments. SVG presentation attributes (fill, stroke) don't
+    // resolve CSS var(), and these icons aren't a theming surface — see :root
+    // gold-bright comment for the canonical rationale.
     function icon(name, size) {
       size = size || 24;
       const s = {
@@ -8200,7 +8234,7 @@
 
       // Burst particles
       function fireBurst() {
-        const colors = ['#d4a84b','#e8c87a','#f0daa8','#fff','#b8922f'];
+        const colors = ['var(--color-gold-bright)','var(--color-gold-bright-soft)','#f0daa8','#fff','var(--color-gold-bright-dark)'];
         for (let i = 0; i < 40; i++) {
           const p = document.createElement('div');
           p.className = 'reveal-particle';
@@ -8946,6 +8980,9 @@
           var labels = _es
             ? ['PLANO', 'LECTURA', 'GRAVEDAD CERO', 'ANTI-RONQUIDOS']
             : ['FLAT', 'READING', 'ZERO GRAVITY', 'ANTI-SNORE'];
+          // Adjustable-base hero illustration — brand-locked, kiosk-only.
+          // SVG presentation attributes (fill, stroke) don't accept var();
+          // #d4a84b literals match the icon-library rationale.
           var adjSvg = '<svg viewBox="0 0 220 150" fill="none" style="width:100%;max-width:220px;height:auto;">'
             // Fixed bed frame (always flat, never moves)
             + '<rect x="18" y="102" width="184" height="5" rx="2" fill="#d4a84b" opacity="0.3"/>'
@@ -9065,7 +9102,7 @@
       var btn = document.getElementById('drawerInterestedBtn');
       if (btn) {
         btn.textContent = currentLang === 'es' ? '✓ ¡Guardado!' : '✓ Saved!';
-        btn.style.background = 'linear-gradient(180deg,#6ec79a,#4caf6e)';
+        btn.style.background = 'linear-gradient(180deg,var(--color-match-positive),#4caf6e)';
       }
       // Update picks badge
       window._updatePicksBadge();
@@ -9997,11 +10034,11 @@
   <div id="privacyOverlay" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.7); align-items:center; justify-content:center; padding:1.5rem;">
     <div style="background:#162b45; border:1px solid rgba(212,168,75,0.2); border-radius:16px; max-width:420px; width:100%; max-height:80vh; overflow-y:auto; padding:1.5rem; position:relative;">
       <button onclick="document.getElementById('privacyOverlay').classList.remove('visible');" style="position:absolute; top:0.75rem; right:0.75rem; background:none; border:none; color:rgba(248,246,241,0.5); font-size:1.2rem; cursor:pointer; font-family:inherit; padding:0.25rem;">&times;</button>
-      <div style="font-size:0.9rem; font-weight:700; color:#d4a84b; margin-bottom:0.75rem;">Privacy</div>
+      <div style="font-size:0.9rem; font-weight:700; color:var(--color-gold-bright); margin-bottom:0.75rem;">Privacy</div>
       <div style="font-size:0.68rem; color:rgba(248,246,241,0.7); line-height:1.65; margin-bottom:1rem;">
         DreamFinder collects your name, email, and optional phone number to deliver your mattress recommendations. Your data is only used for this purpose and is never sold or shared with third parties. <span data-store="privacy-policy-contact">To have your information removed, contact your local store.</span>
       </div>
-      <div style="font-size:0.9rem; font-weight:700; color:#d4a84b; margin-bottom:0.75rem;">Disclaimer</div>
+      <div style="font-size:0.9rem; font-weight:700; color:var(--color-gold-bright); margin-bottom:0.75rem;">Disclaimer</div>
       <div style="font-size:0.68rem; color:rgba(248,246,241,0.7); line-height:1.65;">
         DreamFinder is a product recommendation tool. Match percentages and sleep profiles are generated from your quiz answers and should be treated as guidance, not guarantees. This tool does not provide medical advice — consult a healthcare provider for medical sleep concerns. Discounts and product availability are subject to store terms.
       </div>
@@ -10032,7 +10069,7 @@
       if (intBtn) {
         var alreadySaved = window._savedPicks && window._savedPicks.some(function(p) { return p.id === mattressId; });
         intBtn.textContent = alreadySaved ? (currentLang === 'es' ? '✓ Ya Guardado' : '✓ Already Saved') : (currentLang === 'es' ? '⭐ Me Interesa Este' : '⭐ I\'m Interested In This One');
-        intBtn.style.background = alreadySaved ? 'linear-gradient(180deg,#6ec79a,#4caf6e)' : '';
+        intBtn.style.background = alreadySaved ? 'linear-gradient(180deg,var(--color-match-positive),#4caf6e)' : '';
       }
 
       // Update nav buttons
