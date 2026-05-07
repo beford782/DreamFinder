@@ -5370,6 +5370,18 @@
     .drawer-pitch-box .noct-handoff-pitch__rsa-note { margin-top: 12px; }
     .drawer-pitch-box .noct-handoff-pitch__lead:first-child,
     .drawer-pitch-box .noct-handoff-pitch__rsa-note:first-child { margin-top: 0; }
+    /* 5d-3: brand panel below pitch — recessive separator, no container chrome.
+       Pitch fires on every drawer-open; brand fires only when an RSA fields a
+       brand question. Frequency asymmetry → visual asymmetry. */
+    #drawerBrandSection {
+      margin-top: 1.25rem;
+      padding-top: 0.85rem;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .drawer-brand-box .noct-handoff-brand-panel__story {
+      font-size: 12px;
+      color: var(--color-text-muted);
+    }
     .drawer-firmness-row { display:flex; align-items:center; gap:0.6rem; margin-bottom:0.85rem; padding:0.5rem 0.65rem; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07); border-radius:12px; }
     .drawer-firm-label { font-size:0.6rem; color:var(--cream-dim); white-space:nowrap; }
     .drawer-firm-bar { flex:1; height:6px; background:rgba(255,255,255,0.1); border-radius:6px; overflow:hidden; }
@@ -9148,10 +9160,6 @@
       if (countEl) countEl.textContent = total;
     };
 
-    // 5d: PROFILE_SALES_NOTES removed in 5d-3. The per-profile cheat sheet was
-    // replaced by per-pick SUBBRAND_NOTES differentiation content rendered in
-    // showSavedPicks() (see getPitchContent helper). Spec: docs/5d-content-spec.md.
-
     // Salesperson context labels (S6)
     const TRIGGER_LABELS = {
       pain: {en: 'Back or Body Pain', es: 'Dolor de Espalda o Cuerpo'},
@@ -9214,10 +9222,6 @@
       if (qualityLbl) pills.push((_esC ? 'Duerme ' : 'Sleeps ') + qualityLbl);
       pills.push(issuesLbl);
 
-      // 5d: Cheat-sheet block removed. Per-pick SUBBRAND_NOTES differentiation
-      // (rendered in showSavedPicks via getPitchContent) replaced PROFILE_SALES_NOTES.
-      var notesHtml = '';
-
       el.innerHTML =
         '<div style="background:linear-gradient(135deg, rgba(212,168,75,0.12), rgba(212,168,75,0.04)); border:1px solid rgba(212,168,75,0.35); border-radius:14px; padding:0.85rem 1rem;">'
         + (triggerLbl ? '<div style="font-size:0.6rem; text-transform:uppercase; letter-spacing:1.8px; color:var(--gold); font-weight:700; margin-bottom:0.25rem;">' + (_esC ? 'Vino por' : 'Came in for') + '</div>'
@@ -9228,7 +9232,6 @@
             return '<span style="font-size:0.65rem; color:var(--cream); background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); padding:0.25rem 0.55rem; border-radius:999px;">' + p + '</span>';
           }).join('')
         + '</div>'
-        + notesHtml
         + '</div>';
     }
 
