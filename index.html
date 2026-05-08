@@ -4581,43 +4581,48 @@
 
     .noct-accessories__header {
       text-align: center;
-      margin-bottom: 0.75rem;
+      margin-bottom: 24px;
       opacity: 0;
       transform: translateY(10px);
       transition: all 0.5s ease-out;
     }
 
     .noct-accessories__eyebrow {
-      font-size: 0.65rem;
+      font-family: var(--font-sans);
+      font-size: 12px;
       text-transform: uppercase;
-      letter-spacing: 2px;
+      letter-spacing: 0.3em;
       color: var(--color-accent);
-      font-weight: 600;
-      margin-bottom: 0.25rem;
+      font-weight: 500;
+      margin-bottom: 10px;
     }
 
     .noct-accessories__title {
-      font-size: 1.1rem;
-      font-weight: 700;
+      font-family: var(--font-serif);
+      font-size: 26px;
+      font-weight: 400;
+      line-height: 1.15;
+      letter-spacing: -0.01em;
       color: var(--color-text);
-      margin-bottom: 0.2rem;
+      margin-bottom: 6px;
     }
 
     .noct-accessories__subtitle {
-      font-size: 0.78rem;
+      font-family: var(--font-sans);
+      font-size: 13px;
       color: var(--color-text-muted);
-      line-height: 1.3;
+      line-height: 1.5;
     }
 
     .noct-accessories__discount-banner {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      margin-top: 0.6rem;
-      background: linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 15%, transparent), color-mix(in srgb, var(--color-accent) 7%, transparent));
-      border: 1px solid color-mix(in srgb, var(--color-accent) 40%, transparent);
-      border-radius: 50px;
-      padding: 0.35rem 1rem;
+      margin-top: 12px;
+      background: transparent;
+      border: 1px solid color-mix(in srgb, var(--color-accent) 30%, transparent);
+      border-radius: var(--radius);
+      padding: 8px 14px;
     }
 
     .noct-accessories__discount-icon {
@@ -4625,8 +4630,10 @@
     }
 
     .noct-accessories__discount-text {
-      font-size: 0.75rem;
-      font-weight: 600;
+      font-family: var(--font-sans);
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      font-weight: 500;
       color: var(--color-accent);
     }
 
@@ -4708,41 +4715,55 @@
 
     .noct-accessories__footer {
       text-align: center;
-      margin-top: 1.25rem;
+      margin-top: 24px;
       padding-bottom: 1rem;
       opacity: 0;
       transform: translateY(10px);
       transition: all 0.5s ease-out;
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 10px;
       align-items: center;
     }
 
     .noct-accessories__send-btn {
-      background: linear-gradient(180deg, var(--color-accent-hover) 0%, var(--color-accent) 100%);
-      color: var(--color-bg);
-      border: 2px solid var(--color-accent-hover);
-      padding: 0.75rem 2rem;
-      border-radius: 14px;
-      font-family: inherit;
-      font-size: 0.95rem;
-      font-weight: 700;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      padding: 12px 28px;
+      border-radius: var(--radius);
       cursor: pointer;
-      box-shadow: 0 4px 0 var(--color-accent-shadow), 0 6px 20px color-mix(in srgb, var(--color-accent) 25%, transparent);
+      touch-action: manipulation;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+      background: transparent;
+      color: var(--color-text);
+      border: 1px solid var(--color-accent);
+    }
+
+    .noct-accessories__send-btn:hover {
+      background: var(--color-accent);
+      color: var(--color-bg);
     }
 
     .noct-accessories__start-over-btn {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      padding: 12px 28px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
       background: transparent;
       color: var(--color-text-muted);
-      font-size: 0.72rem;
-      padding: 0.4rem 1rem;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      font-weight: 500;
-      border-radius: 8px;
-      cursor: pointer;
-      font-family: inherit;
-      touch-action: manipulation;
+      border: 1px solid var(--color-border);
+    }
+
+    .noct-accessories__start-over-btn:hover {
+      border-color: var(--color-accent);
+      color: var(--color-text);
     }
 
     /* 5c-3 sub-prompt 3b — JS-emitted template-literal de-inlined element rules. */
@@ -6220,8 +6241,8 @@
       <div class="noct-accessories__cart-hint" data-i18n="accessories.tap_hint">Tap a card to add or remove</div>
     </div>
     <div class="noct-accessories__footer" id="accFooter">
-      <button class="cta-btn noct-accessories__send-btn" onclick="showEmailCapture()" data-i18n="accessories.send_results">Send Me My Results</button>
-      <button class="cta-btn js-start-over noct-accessories__start-over-btn" data-i18n="accessories.start_over">Start Over</button>
+      <button class="cta-btn noct-accessories__send-btn" onclick="showEmailCapture()" ontouchend="event.preventDefault();showEmailCapture();" data-i18n="accessories.send_results">Send Me My Results</button>
+      <button class="cta-btn js-start-over noct-accessories__start-over-btn" ontouchend="event.preventDefault();window.startOver();" data-i18n="accessories.start_over">Start Over</button>
     </div>
   </div>
 
