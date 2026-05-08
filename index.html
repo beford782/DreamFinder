@@ -4453,29 +4453,28 @@
     }
 
     .noct-accessories__card {
-      background: linear-gradient(180deg, var(--color-surface-alt) 0%, var(--color-surface) 100%);
-      border: 1.5px solid rgba(255,255,255,0.1);
-      border-radius: 16px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
       padding: 1.25rem;
-      transition: all 0.25s ease;
+      transition: border-color 0.15s ease;
       overflow: hidden;
-      box-shadow: 0 4px 0 #0a1525, 0 6px 16px rgba(0,0,0,0.35);
+      box-shadow: none;
       position: relative;
       cursor: pointer;
     }
     .noct-accessories__card.noct-accessories__card--selected {
       border-color: var(--color-accent) !important;
-      box-shadow: 0 4px 0 #0a1525, 0 0 0 2px color-mix(in srgb, var(--color-accent) 30%, transparent), 0 6px 16px rgba(0,0,0,0.35);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-accent) 30%, transparent);
     }
 
     .noct-accessories__card:hover {
       border-color: color-mix(in srgb, var(--color-match-positive) 30%, transparent);
-      transform: translateY(-2px);
     }
 
     .noct-accessories__card.noct-accessories__card--recommended {
       border-color: color-mix(in srgb, var(--color-match-positive) 40%, transparent);
-      box-shadow: 0 0 20px color-mix(in srgb, var(--color-match-positive) 10%, transparent);
+      box-shadow: none;
     }
 
     .noct-accessories__image {
@@ -4501,24 +4500,27 @@
       background: color-mix(in srgb, var(--color-match-positive) 90%, transparent);
       color: #0f1f33;
       font-size: 0.7rem;
-      font-weight: 600;
+      font-weight: 500;
       padding: 0.25rem 0.6rem;
-      border-radius: 20px;
+      border-radius: var(--radius);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.05em;
     }
 
     .noct-accessories__name {
-      font-size: 1.1rem;
-      font-weight: 600;
+      font-family: var(--font-serif);
+      font-size: 1.05rem;
+      font-weight: 400;
+      line-height: 1.2;
       color: var(--color-text);
       margin-bottom: 0.5rem;
     }
 
     .noct-accessories__description {
-      font-size: 0.85rem;
+      font-family: var(--font-sans);
+      font-size: 0.78rem;
       color: var(--color-text-muted);
-      line-height: 1.5;
+      line-height: 1.45;
       margin-bottom: 1rem;
     }
 
@@ -4859,7 +4861,7 @@
 
     .noct-accessories__card.noct-accessories__card--featured {
       border: 2px solid var(--color-accent);
-      box-shadow: 0 4px 20px color-mix(in srgb, var(--color-accent) 20%, transparent);
+      box-shadow: none;
     }
 
     /* Mattress cards - Compact carousel */
