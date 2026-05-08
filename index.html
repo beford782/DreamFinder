@@ -45,6 +45,7 @@
       --color-accent: #B8935D;
       --color-accent-hover: #C9A573;
       --color-accent-shadow: #9a7a2e;        /* button-bottom-inset companion to --color-accent */
+      --color-on-accent: #14171C;            /* near-black text on --color-accent (brass) bg */
 
       /* Gold-bright — illustrative ramp parallel to brass. NOT a substitute for --color-accent.
          Used by themeable surfaces (tier badges, profile theme-energetic, particles).
@@ -55,6 +56,7 @@
       --color-gold-bright-soft: #e8c87a;
 
       --color-match-positive: #6ECF9A;  /* match / recommended fit accent */
+      --color-on-positive: #14171C;          /* near-black text on --color-match-positive (green) bg */
 
       /* Tier metaphor */
       --tier-gold: var(--color-gold-bright);
@@ -4501,7 +4503,7 @@
       top: 0.75rem;
       right: 0.75rem;
       background: color-mix(in srgb, var(--color-match-positive) 90%, transparent);
-      color: #0f1f33;
+      color: var(--color-on-positive);
       font-size: 0.7rem;
       font-weight: 500;
       padding: 0.25rem 0.6rem;
@@ -4838,7 +4840,7 @@
       top: 0.5rem;
       left: 0.5rem;
       background: var(--color-accent);
-      color: var(--color-bg);
+      color: var(--color-on-accent);
       font-size: 0.58rem;
       font-weight: 500;
       letter-spacing: 0.05em;
