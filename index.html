@@ -5816,7 +5816,7 @@
       </svg>
       <span id="locationText"></span>
     </div>
-    <button id="headerStartOverBtn" class="js-start-over" style="display:none; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:var(--cream); font-family:inherit; font-size:0.75rem; font-weight:600; padding:0.4rem 0.9rem; border-radius:8px; cursor:pointer; touch-action:manipulation; letter-spacing:0.2px;" data-i18n="header.restart">↺ Restart Quiz</button>
+    <button id="headerStartOverBtn" class="js-start-over" ontouchend="event.preventDefault();window.startOver();" style="display:none; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:var(--cream); font-family:inherit; font-size:0.75rem; font-weight:600; padding:0.4rem 0.9rem; border-radius:8px; cursor:pointer; touch-action:manipulation; letter-spacing:0.2px;" data-i18n="header.restart">↺ Restart Quiz</button>
   </header>
 
   <!-- Geolocation -->
@@ -6213,7 +6213,7 @@
         <div class="noct-email-confirmation-subtitle" id="emailConfirmationSubtitle">Check your inbox for your personalized results.</div>
       </div>
 
-      <button class="noct-email-secondary js-start-over" id="emailStartOver">&#8634; Start New Customer</button>
+      <button class="noct-email-secondary js-start-over" id="emailStartOver" ontouchend="event.preventDefault();window.startOver();">&#8634; Start New Customer</button>
     </div>
   </div>
 
