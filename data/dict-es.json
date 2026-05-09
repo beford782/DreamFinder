@@ -37,12 +37,12 @@
   "drawer.prev": "← Anterior",
   "drawer.next": "Siguiente →",
 
-  "discount.title": "Tu Descuento Exclusivo",
-  "discount.calculating": "Calculando tus ahorros...",
-  "discount.code_label": "Tu Código de Descuento",
-  "discount.unlocked": "Descuento Desbloqueado",
+  "discount.title": "Tu Pase de Ahorro",
+  "discount.calculating": "Desbloqueando tu oferta privada...",
+  "discount.code_label": "Tu Pase de Ahorro",
+  "discount.unlocked": "Pase de Ahorro Desbloqueado",
   "discount.off": "% DE DESC.",
-  "discount.show_specialist": "Muestra esta pantalla a tu especialista de sueño",
+  "discount.show_specialist": "Muestra este código en tienda para reclamar tu ahorro DreamFinder",
 
   "handoff.summary_label": "Resumen para el Vendedor",
   "handoff.title": "Selecciones del Cliente",

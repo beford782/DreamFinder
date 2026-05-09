@@ -37,12 +37,12 @@
   "drawer.prev": "← Prev",
   "drawer.next": "Next →",
 
-  "discount.title": "Your Exclusive Discount",
-  "discount.calculating": "Calculating your savings...",
-  "discount.code_label": "Your Discount Code",
-  "discount.unlocked": "Discount Unlocked",
+  "discount.title": "Your Savings Pass",
+  "discount.calculating": "Unlocking your private offer...",
+  "discount.code_label": "Your Savings Pass",
+  "discount.unlocked": "Savings Pass Unlocked",
   "discount.off": "% OFF",
-  "discount.show_specialist": "Show this screen to your sleep specialist",
+  "discount.show_specialist": "Show this code in store to claim your DreamFinder savings",
 
   "handoff.summary_label": "Your Selections",
   "handoff.title": "Your <em>interested</em> picks",

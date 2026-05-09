@@ -155,15 +155,15 @@ function doPost(e) {
         ? ('Hola ' + firstName + ',\n\n'
           + 'Tu mejor opci\u00f3n: ' + topMatch + ' (' + matchPct + '% compatibilidad)\n'
           + 'Perfil de sue\u00f1o: ' + sleepProfile + '\n'
-          + 'Tu descuento: ' + discount + '% DE DESCUENTO\n'
-          + 'C\u00f3digo de descuento: ' + dreamCode + '\n\n'
+          + 'Tu pase de ahorro: ' + discount + '% DE DESCUENTO\n'
+          + 'C\u00f3digo del pase: ' + dreamCode + '\n\n'
           + 'Muestra este correo en Bel Furniture para canjearlo.\n\n'
           + safeData.allMatches.map(function(m, i) { return (i+1) + '. ' + m.name + ' - ' + m.matchPct + '% compatibilidad'; }).join('\n'))
         : ('Hi ' + firstName + ',\n\n'
           + 'Your top match: ' + topMatch + ' (' + matchPct + '% match)\n'
           + 'Sleep profile: ' + sleepProfile + '\n'
-          + 'Your discount: ' + discount + '% OFF\n'
-          + 'Discount code: ' + dreamCode + '\n\n'
+          + 'Your savings pass: ' + discount + '% OFF\n'
+          + 'Savings pass code: ' + dreamCode + '\n\n'
           + 'Show this email at Bel Furniture to redeem.\n\n'
           + safeData.allMatches.map(function(m, i) { return (i+1) + '. ' + m.name + ' - ' + m.matchPct + '% match'; }).join('\n'));
 
