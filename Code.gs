@@ -102,8 +102,8 @@ function doPost(e) {
 
     // --- Send email with fallback ---
     var subject = isEs
-      ? 'Tus Resultados de DreamFinder de Bel Furniture'
-      : 'Your DreamFinder Results from Bel Furniture';
+      ? 'Tu Pase de Ahorro DreamFinder de Bel Furniture'
+      : 'Your DreamFinder Savings Pass from Bel Furniture';
     var senderName = isEs
       ? 'Equipo de Descanso de Bel Furniture'
       : 'Bel Furniture Sleep Team';
@@ -225,7 +225,7 @@ function buildSimpleHtml(data, firstName, isEs) {
     titlePrefix: 'Tus',
     titleAccent: 'combinaciones perfectas',
     titleSuffix: 'est\u00e1n listas, ' + firstName,
-    discountLabel: 'TU C\u00d3DIGO DE DESCUENTO',
+    discountLabel: 'TU PASE DE AHORRO',
     discountHint: 'Presenta este c\u00f3digo en Bel Furniture \u00b7 ' + discount + '% DE DESCUENTO',
     profileLabel: 'TU PERFIL DE SUE\u00d1O',
     matchesLabel: 'TUS MEJORES OPCIONES',
@@ -235,13 +235,13 @@ function buildSimpleHtml(data, firstName, isEs) {
     footerLine1: 'Lleva este correo a tu tienda Bel Furniture',
     helpedBy: rsa ? 'Atendido por ' + rsa + ' en Bel Furniture' : '',
     footerLine2: 'Tu ' + discount + '% de descuento te est\u00e1 esperando',
-    footerHint: 'Sin caducidad \u00b7 Solo en tienda'
+    footerHint: 'Disponible en cualquier tienda Bel Furniture'
   } : {
     eyebrow: 'YOUR RESULTS',
     titlePrefix: 'Your',
     titleAccent: 'perfect matches',
     titleSuffix: 'are ready, ' + firstName,
-    discountLabel: 'YOUR DISCOUNT CODE',
+    discountLabel: 'YOUR SAVINGS PASS',
     discountHint: 'Show at Bel Furniture \u00b7 ' + discount + '% OFF',
     profileLabel: 'YOUR SLEEP PROFILE',
     matchesLabel: 'YOUR TOP MATCHES',
@@ -251,7 +251,7 @@ function buildSimpleHtml(data, firstName, isEs) {
     footerLine1: 'Bring this email to your Bel Furniture store',
     helpedBy: rsa ? 'Helped by ' + rsa + ' at Bel Furniture' : '',
     footerLine2: 'Your ' + discount + '% discount is waiting',
-    footerHint: 'No expiration \u00b7 In-store only'
+    footerHint: 'Show at any Bel Furniture location'
   };
 
   // Helper: mattress card with image-blocked fallback

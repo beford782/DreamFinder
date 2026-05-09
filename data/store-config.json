@@ -54,10 +54,10 @@
     "eyebrow": "Personalized mattress finder",
     "headlineMain": "Sleep Better",
     "headlineAccent": "Tonight.",
-    "subCopyBefore": "Nine questions. Three mattresses matched to how you actually sleep. And ",
-    "subCopyAccent": "a discount",
-    "subCopyAfter": " — revealed at the end.",
-    "ctaPrimary": "Find my mattress",
+    "subCopyBefore": "Nine questions. Three mattresses matched to how you actually sleep. Plus ",
+    "subCopyAccent": "a private savings pass",
+    "subCopyAfter": " — unlocked at the end.",
+    "ctaPrimary": "Find my match & unlock savings",
     "timeEstimate": "≈ 4 minutes"
   },
   "voice_es": {
@@ -65,9 +65,9 @@
     "headlineMain": "Duerme Mejor",
     "headlineAccent": "Esta Noche.",
     "subCopyBefore": "Nueve preguntas. Tres colchones elegidos según cómo duermes. Y ",
-    "subCopyAccent": "un descuento",
-    "subCopyAfter": " — revelado al final.",
-    "ctaPrimary": "Encuentra mi colchón",
+    "subCopyAccent": "un pase de ahorro privado",
+    "subCopyAfter": " — desbloqueado al final.",
+    "ctaPrimary": "Encuentra tu colchón y ahorra",
     "timeEstimate": "≈ 4 minutos"
   }
 }

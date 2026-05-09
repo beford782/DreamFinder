@@ -110,6 +110,8 @@ Most retailer-specific values live here. Open the Bel example and fill in the ne
 
 The `locationLabel` field (e.g., `"Houston, TX"`) drives the small header location pill. Set it to the retailer's primary store city/state, or leave blank to hide the pill entirely. The kiosk no longer requests browser geolocation — there's no permission prompt and no third-party reverse-geocode call.
 
+The discount is positioned as a **Savings Pass** — premium "private in-store offer" framing rather than a generic "% off" tease. The customer journey (welcome eyebrow, landing tease, results banner, reveal subtitle, email screen, result email subject + body) all reference the Savings Pass. When onboarding a new retailer, review `voice.subCopyAccent` / `voice_es.subCopyAccent` and the corresponding inline strings in `index.html` (`renderNocturnalLanding` + `renderEmailChrome`) and `Code.gs` (subject + email hero band) to confirm the language matches the retailer's tone — no expiration claim or countdown is shown by default.
+
 ### Language support (`data/store-config.json`)
 
 The template ships bilingual (English + Spanish) by default. A language toggle appears on the welcome screen and customers can flip the whole app — quiz, profile, results, drawer, accessories, email capture, email body — into Spanish.
