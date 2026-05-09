@@ -1,3 +1,11 @@
+// Central DreamFinder lead backup inbox. Every retailer deployment BCCs this
+// address by default so leads roll up centrally. During Apps Script setup,
+// review this value:
+//   - keep the default to participate in the central backup
+//   - replace with a retailer-specific backup inbox if appropriate
+//   - set to '' to disable BCC for this deployment
+var RESULT_EMAIL_BCC = 'dreamfinderleads@gmail.com';
+
 // Helper: escape five HTML metacharacters; safe for attribute values and text content.
 function _escapeHtml(s) {
   return String(s == null ? '' : s).replace(/[&<>"']/g, function(ch) {
@@ -134,11 +142,12 @@ function doPost(e) {
         ? 'Por favor visualiza este correo en un cliente de correo HTML.'
         : 'Please view in an HTML email client.';
 
-      GmailApp.sendEmail(email, subject, plainFallback, {
+      var mailOptions = {
         htmlBody: htmlBody,
-        name: senderName,
-        bcc: 'dreamfinderleads@gmail.com'
-      });
+        name: senderName
+      };
+      if (RESULT_EMAIL_BCC) mailOptions.bcc = RESULT_EMAIL_BCC;
+      GmailApp.sendEmail(email, subject, plainFallback, mailOptions);
 
     } catch (emailErr) {
       Logger.log('HTML email failed, trying plain text: ' + emailErr.toString());
@@ -158,10 +167,11 @@ function doPost(e) {
           + 'Show this email at Bel Furniture to redeem.\n\n'
           + safeData.allMatches.map(function(m, i) { return (i+1) + '. ' + m.name + ' - ' + m.matchPct + '% match'; }).join('\n'));
 
-      GmailApp.sendEmail(email, subject, plainBody, {
-        name: senderName,
-        bcc: 'dreamfinderleads@gmail.com'
-      });
+      var fallbackOptions = {
+        name: senderName
+      };
+      if (RESULT_EMAIL_BCC) fallbackOptions.bcc = RESULT_EMAIL_BCC;
+      GmailApp.sendEmail(email, subject, plainBody, fallbackOptions);
     }
 
     return ContentService
