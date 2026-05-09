@@ -221,62 +221,99 @@
       color: var(--color-text-subtle);
     }
 
+    /* Savings Pass card — certificate framing (Direction 1, Phase 1 visual only).
+       Hairline brass border + sharp corners + diagonal corner accents read as
+       a restrained members' pass rather than a coupon. No animation; no ornament. */
     .landing-discount-tease {
+      position: relative;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 14px;
-      padding: 14px 0;
-      border-top: 0.5px solid var(--color-border);
-      border-bottom: 0.5px solid var(--color-border);
-      flex-wrap: wrap;
+      gap: 12px;
+      padding: 22px 28px;
+      margin: 4px auto;
+      max-width: 388px;
+      width: 100%;
+      border: 1px solid color-mix(in srgb, var(--color-accent) 45%, var(--color-border));
+      border-radius: 0;
+      background:
+        linear-gradient(180deg, var(--gold-glow) 0%, transparent 60%),
+        var(--color-surface);
     }
 
+    /* Diagonal corner glyphs — hairline L-shapes at top-left + bottom-right.
+       Subtle certificate cue without crossing into ornamental territory. */
+    .landing-discount-tease::before,
+    .landing-discount-tease::after {
+      content: "";
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border: 0 solid var(--color-accent);
+      pointer-events: none;
+    }
+    .landing-discount-tease::before {
+      top: 6px;
+      left: 6px;
+      border-top-width: 1px;
+      border-left-width: 1px;
+    }
+    .landing-discount-tease::after {
+      bottom: 6px;
+      right: 6px;
+      border-bottom-width: 1px;
+      border-right-width: 1px;
+    }
+
+    /* Legacy price-tag SVG hidden — the certificate framing replaces it.
+       Markup preserved for reversibility. */
     .landing-tag-icon {
-      flex-shrink: 0;
-      color: var(--color-accent);
+      display: none;
     }
 
     .landing-discount-label {
       font-family: var(--font-sans);
-      font-size: 12px;
-      font-weight: 500;
-      letter-spacing: 0.3em;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.32em;
       text-transform: uppercase;
       color: var(--color-accent);
+      text-align: center;
     }
 
     .landing-code-tiles {
       display: flex;
-      gap: 5px;
+      gap: 8px;
       align-items: center;
+      justify-content: center;
     }
 
     .landing-code-tile {
-      width: 28px;
-      height: 32px;
+      width: 36px;
+      height: 42px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-family: var(--font-serif);
-      font-size: 18px;
+      font-size: 22px;
       border: 0.5px solid var(--color-accent);
       color: var(--color-accent);
       border-radius: 0;
     }
 
     .landing-code-tile.placeholder {
-      border-color: var(--color-border);
+      border-color: color-mix(in srgb, var(--color-border) 70%, transparent);
       background: var(--color-surface-alt);
       color: var(--color-text-subtle);
       font-family: var(--font-sans);
-      font-size: 16px;
+      font-size: 18px;
     }
 
     .landing-code-separator {
       color: var(--color-text-subtle);
-      font-size: 14px;
+      font-size: 16px;
       font-family: var(--font-sans);
-      margin: 0 3px;
+      margin: 0 4px;
     }
 
     .landing-discount-hint {
@@ -284,6 +321,22 @@
       font-size: 13px;
       font-style: italic;
       color: var(--color-text-muted);
+      text-align: center;
+      max-width: 32ch;
+    }
+
+    @media (max-width: 480px) {
+      .landing-discount-tease {
+        padding: 18px 20px;
+      }
+      .landing-code-tile {
+        width: 32px;
+        height: 38px;
+        font-size: 20px;
+      }
+      .landing-discount-hint {
+        font-size: 12px;
+      }
     }
 
     .landing-footer {
