@@ -1,9 +1,78 @@
+// Helper: escape five HTML metacharacters; safe for attribute values and text content.
+function _escapeHtml(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function(ch) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch];
+  });
+}
+
+// Helper: permissive email shape check; not full RFC 5322. Catches empty / missing-@ / obvious typos.
+function _isValidEmail(s) {
+  if (typeof s !== 'string') return false;
+  var t = s.trim();
+  if (t.length < 3 || t.length > 254) return false;
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(t);
+}
+
+// Helper: restrict to supported languages; default to 'en'.
+function _normalizeLang(s) {
+  return s === 'es' ? 'es' : 'en';
+}
+
+// Helper: coerce + bound length only. Does NOT strip characters (accents, apostrophes, hyphens, Spanish chars).
+function _safeText(s, max) {
+  if (s == null) return '';
+  var str = String(s);
+  if (max && str.length > max) str = str.slice(0, max);
+  return str;
+}
+
+// Helper: allow https:// URLs and repo-relative images/ paths only. Empty otherwise (existing fallback block renders).
+function _safeImageUrl(url) {
+  if (typeof url !== 'string') return '';
+  var t = url.trim();
+  if (!t) return '';
+  if (/^https:\/\//i.test(t)) return t;
+  if (/^images\//.test(t)) return t;
+  return '';
+}
+
+// Helper: coerce to array; returns [] for non-array inputs.
+function _safeArray(v) {
+  return Array.isArray(v) ? v : [];
+}
+
 function doPost(e) {
   try {
     var data = JSON.parse(e.postData.contents);
-    Logger.log('Received: ' + JSON.stringify(data));
 
-    var isEs = data.lang === 'es';
+    // Shape-only summary; full PII (email/name/phone) shouldn't persist in GAS logs.
+    Logger.log('doPost received: name_len=' + (data.name ? String(data.name).length : 0)
+      + ', email=' + (data.email ? 'set' : 'unset')
+      + ', phone=' + (data.phone ? 'set' : 'unset')
+      + ', matches=' + ((data.allMatches || []).length)
+      + ', accessories=' + ((data.accessories || []).length)
+      + ', lang=' + (data.lang || ''));
+
+    var lang = _normalizeLang(data.lang);
+    var isEs = lang === 'es';
+
+    var email = (data.email || '').toString().trim();
+    if (!_isValidEmail(email)) {
+      Logger.log('doPost rejected: invalid_email');
+      return ContentService
+        .createTextOutput(JSON.stringify({ success: false, error: 'invalid_email' }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // Bound client-controlled scalars defensively.
+    var name = _safeText(data.name, 200);
+    var phone = _safeText(data.phone, 40);
+    var dreamCode = _safeText(data.dreamCode, 40);
+    var sleepProfile = _safeText(data.sleepProfile, 500);
+    var topMatch = _safeText(data.topMatch, 200);
+    var matchPct = _safeText(data.matchPct, 10);
+    var rsa = _safeText(data.rsa, 100);
+    var discount = _safeText(data.discount || 5, 10);
 
     // --- Log to Google Sheet ---
     // rsa appended at the end (right-of-last column) per the
@@ -13,35 +82,59 @@ function doPost(e) {
     var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
     sheet.appendRow([
       new Date(),
-      data.name || '',
-      data.email || '',
-      data.phone || '',
-      data.dreamCode || '',
-      data.lang || 'en',
-      (data.allMatches || []).map(function(m) { return m.name + ' (' + m.matchPct + '%)'; }).join(', '),
-      (data.accessories || []).map(function(a) { return a.name; }).join(', '),
-      (data.rsa || '').toString()
+      name,
+      email,
+      phone,
+      dreamCode,
+      lang,
+      _safeArray(data.allMatches).slice(0, 6).map(function(m) { return _safeText(m && m.name, 200) + ' (' + _safeText(m && m.matchPct, 10) + '%)'; }).join(', '),
+      _safeArray(data.accessories).slice(0, 3).map(function(a) { return _safeText(a && a.name, 200); }).join(', '),
+      rsa
     ]);
 
     // --- Send email with fallback ---
-    var toEmail = data.email;
     var subject = isEs
       ? 'Tus Resultados de DreamFinder de Bel Furniture'
       : 'Your DreamFinder Results from Bel Furniture';
     var senderName = isEs
       ? 'Equipo de Descanso de Bel Furniture'
       : 'Bel Furniture Sleep Team';
-    var firstName = (data.name || (isEs ? 'amigo' : 'there')).split(' ')[0];
+    var firstName = (name || (isEs ? 'amigo' : 'there')).split(' ')[0];
+
+    // Pre-bound payload for buildSimpleHtml; image URLs filtered to https:// or images/ only.
+    var safeData = {
+      dreamCode: dreamCode,
+      sleepProfile: sleepProfile,
+      topMatch: topMatch,
+      matchPct: matchPct,
+      discount: discount,
+      rsa: rsa,
+      allMatches: _safeArray(data.allMatches).slice(0, 6).map(function(m) {
+        return {
+          name: _safeText(m && m.name, 200),
+          brand: _safeText(m && m.brand, 100),
+          matchPct: _safeText(m && m.matchPct, 10),
+          imageUrl: _safeImageUrl(m && m.imageUrl)
+        };
+      }),
+      accessories: _safeArray(data.accessories).slice(0, 3).map(function(a) {
+        return {
+          name: _safeText(a && a.name, 200),
+          category: _safeText(a && a.category, 100),
+          imageUrl: _safeImageUrl(a && a.imageUrl)
+        };
+      })
+    };
 
     try {
       // Always build HTML server-side. Client previously sent data.htmlBody but
       // that path was deprecated in 5e — kiosk no longer ships pre-built HTML.
-      var htmlBody = buildSimpleHtml(data, firstName, isEs);
+      var htmlBody = buildSimpleHtml(safeData, firstName, isEs);
       var plainFallback = isEs
         ? 'Por favor visualiza este correo en un cliente de correo HTML.'
         : 'Please view in an HTML email client.';
 
-      GmailApp.sendEmail(toEmail, subject, plainFallback, {
+      GmailApp.sendEmail(email, subject, plainFallback, {
         htmlBody: htmlBody,
         name: senderName,
         bcc: 'dreamfinderleads@gmail.com'
@@ -51,21 +144,21 @@ function doPost(e) {
       Logger.log('HTML email failed, trying plain text: ' + emailErr.toString());
       var plainBody = isEs
         ? ('Hola ' + firstName + ',\n\n'
-          + 'Tu mejor opci\u00f3n: ' + (data.topMatch || '') + ' (' + (data.matchPct || '') + '% compatibilidad)\n'
-          + 'Perfil de sue\u00f1o: ' + (data.sleepProfile || '') + '\n'
-          + 'Tu descuento: ' + (data.discount || 5) + '% DE DESCUENTO\n'
-          + 'C\u00f3digo de descuento: ' + (data.dreamCode || '') + '\n\n'
+          + 'Tu mejor opci\u00f3n: ' + topMatch + ' (' + matchPct + '% compatibilidad)\n'
+          + 'Perfil de sue\u00f1o: ' + sleepProfile + '\n'
+          + 'Tu descuento: ' + discount + '% DE DESCUENTO\n'
+          + 'C\u00f3digo de descuento: ' + dreamCode + '\n\n'
           + 'Muestra este correo en Bel Furniture para canjearlo.\n\n'
-          + (data.allMatches || []).map(function(m, i) { return (i+1) + '. ' + m.name + ' - ' + m.matchPct + '% compatibilidad'; }).join('\n'))
+          + safeData.allMatches.map(function(m, i) { return (i+1) + '. ' + m.name + ' - ' + m.matchPct + '% compatibilidad'; }).join('\n'))
         : ('Hi ' + firstName + ',\n\n'
-          + 'Your top match: ' + (data.topMatch || '') + ' (' + (data.matchPct || '') + '% match)\n'
-          + 'Sleep profile: ' + (data.sleepProfile || '') + '\n'
-          + 'Your discount: ' + (data.discount || 5) + '% OFF\n'
-          + 'Discount code: ' + (data.dreamCode || '') + '\n\n'
+          + 'Your top match: ' + topMatch + ' (' + matchPct + '% match)\n'
+          + 'Sleep profile: ' + sleepProfile + '\n'
+          + 'Your discount: ' + discount + '% OFF\n'
+          + 'Discount code: ' + dreamCode + '\n\n'
           + 'Show this email at Bel Furniture to redeem.\n\n'
-          + (data.allMatches || []).map(function(m, i) { return (i+1) + '. ' + m.name + ' - ' + m.matchPct + '% match'; }).join('\n'));
+          + safeData.allMatches.map(function(m, i) { return (i+1) + '. ' + m.name + ' - ' + m.matchPct + '% match'; }).join('\n'));
 
-      GmailApp.sendEmail(toEmail, subject, plainBody, {
+      GmailApp.sendEmail(email, subject, plainBody, {
         name: senderName,
         bcc: 'dreamfinderleads@gmail.com'
       });
@@ -76,31 +169,28 @@ function doPost(e) {
       .setMimeType(ContentService.MimeType.JSON);
 
   } catch (err) {
+    // Generic error to browser; full detail stays in GAS logs.
     Logger.log('doPost error: ' + err.toString());
     return ContentService
-      .createTextOutput(JSON.stringify({ success: false, error: err.toString() }))
+      .createTextOutput(JSON.stringify({ success: false, error: 'send_failed' }))
       .setMimeType(ContentService.MimeType.JSON);
   }
 }
 
 function buildSimpleHtml(data, firstName, isEs) {
-  var dreamCode = data.dreamCode || '';
+  // All user/client-controlled fields below are HTML-escaped at every
+  // interpolation site (caller has already _safeText-bounded scalars and
+  // _safeImageUrl-filtered image URLs).
+  firstName = _escapeHtml(firstName);
+  var dreamCode = _escapeHtml(data.dreamCode || '');
   // Cap at whatever kiosk sent (kiosk already pre-slices: 6 if saved, 3 if recommendations).
   // Hard ceiling of 6 as a server-side safety net.
-  var matches = (data.allMatches || []).slice(0, 6);
-  var accs = (data.accessories || []).slice(0, 3);
-  var discount = data.discount || 5;
-  var sleepProfile = data.sleepProfile || '';
+  var matches = _safeArray(data.allMatches).slice(0, 6);
+  var accs = _safeArray(data.accessories).slice(0, 3);
+  var discount = _escapeHtml(data.discount || 5);
+  var sleepProfile = _escapeHtml(data.sleepProfile || '');
 
-  // Inline HTML escape for the RSA name — it's free-text input via the device
-  // picker prompt, more exposed to injection than other interpolated fields
-  // (which come from controlled sources: validated form inputs, predefined
-  // data files). Following the existing trust-the-client convention for those
-  // fields and adding surgical defense only for rsa keeps this commit focused;
-  // a broader Code.gs escape audit is a separate concern.
-  var rsa = (data.rsa || '').toString().trim().replace(/[&<>"']/g, function(ch) {
-    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch];
-  });
+  var rsa = _escapeHtml((data.rsa || '').toString().trim());
 
   // Nocturnal palette \u2014 exact hex from index.html :root
   var c = {
@@ -156,13 +246,17 @@ function buildSimpleHtml(data, firstName, isEs) {
 
   // Helper: mattress card with image-blocked fallback
   function mattressCard(m, isTop) {
+    var name = _escapeHtml(m.name || '');
+    var brand = _escapeHtml(m.brand || '');
+    var pct = _escapeHtml(m.matchPct || '');
+    var img = _escapeHtml(m.imageUrl || '');
     var rankBlock = isTop
       ? '<div style="font-family:' + sans + ';font-size:10px;letter-spacing:2.5px;color:' + c.accent + ';text-transform:uppercase;font-weight:600;margin-bottom:6px;">' + L.topPick + '</div>'
       : '';
     // Image with bulletproof fallback \u2014 if blocked, the cell shows a surface tile with mattress name
     var imgCell = '<td width="90" valign="top" style="padding:0;background:' + c.surface + ';border-right:1px solid ' + c.border + ';">'
-      + (m.imageUrl
-          ? '<img src="' + m.imageUrl + '" width="90" height="80" alt="' + m.name + '" style="display:block;border:0;width:90px;height:80px;object-fit:cover;background:' + c.surface + ';">'
+      + (img
+          ? '<img src="' + img + '" width="90" height="80" alt="' + name + '" style="display:block;border:0;width:90px;height:80px;object-fit:cover;background:' + c.surface + ';">'
           : '<div style="width:90px;height:80px;background:' + c.surface + ';"></div>')
       + '</td>';
     return ''
@@ -171,9 +265,9 @@ function buildSimpleHtml(data, firstName, isEs) {
       + imgCell
       + '<td valign="middle" style="padding:14px 18px;">'
       + rankBlock
-      + '<div style="font-family:' + serif + ';font-size:18px;color:' + c.text + ';font-weight:normal;line-height:1.2;margin-bottom:4px;">' + m.name + '</div>'
-      + '<div style="font-family:' + sans + ';font-size:12px;color:' + c.textMuted + ';margin-bottom:6px;">' + (m.brand || '') + '</div>'
-      + '<div style="font-family:' + sans + ';font-size:11px;letter-spacing:1.5px;color:' + c.accent + ';text-transform:uppercase;font-weight:600;">' + m.matchPct + '% ' + L.matchSuffix + '</div>'
+      + '<div style="font-family:' + serif + ';font-size:18px;color:' + c.text + ';font-weight:normal;line-height:1.2;margin-bottom:4px;">' + name + '</div>'
+      + '<div style="font-family:' + sans + ';font-size:12px;color:' + c.textMuted + ';margin-bottom:6px;">' + brand + '</div>'
+      + '<div style="font-family:' + sans + ';font-size:11px;letter-spacing:1.5px;color:' + c.accent + ';text-transform:uppercase;font-weight:600;">' + pct + '% ' + L.matchSuffix + '</div>'
       + '</td>'
       + '</tr>'
       + '</table>';
@@ -183,17 +277,20 @@ function buildSimpleHtml(data, firstName, isEs) {
 
   // Accessories \u2014 single column rows, not 3-up grid (Outlook table-cell math is unreliable)
   var accRows = accs.map(function(a) {
+    var name = _escapeHtml(a.name || '');
+    var category = _escapeHtml(a.category || '');
+    var img = _escapeHtml(a.imageUrl || '');
     return ''
       + '<table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" style="background:' + c.surface + ';border:1px solid ' + c.border + ';margin-bottom:8px;border-radius:2px;">'
       + '<tr>'
       + '<td width="60" valign="middle" style="padding:0;background:' + c.surface + ';">'
-      + (a.imageUrl
-          ? '<img src="' + a.imageUrl + '" width="60" height="60" alt="' + a.name + '" style="display:block;border:0;width:60px;height:60px;object-fit:cover;">'
+      + (img
+          ? '<img src="' + img + '" width="60" height="60" alt="' + name + '" style="display:block;border:0;width:60px;height:60px;object-fit:cover;">'
           : '<div style="width:60px;height:60px;background:' + c.surface + ';"></div>')
       + '</td>'
       + '<td valign="middle" style="padding:10px 14px;">'
-      + '<div style="font-family:' + serif + ';font-size:14px;color:' + c.text + ';line-height:1.2;">' + a.name + '</div>'
-      + '<div style="font-family:' + sans + ';font-size:11px;letter-spacing:1.5px;color:' + c.textSubtle + ';text-transform:uppercase;margin-top:3px;">' + (a.category || '') + '</div>'
+      + '<div style="font-family:' + serif + ';font-size:14px;color:' + c.text + ';line-height:1.2;">' + name + '</div>'
+      + '<div style="font-family:' + sans + ';font-size:11px;letter-spacing:1.5px;color:' + c.textSubtle + ';text-transform:uppercase;margin-top:3px;">' + category + '</div>'
       + '</td>'
       + '</tr>'
       + '</table>';
