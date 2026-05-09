@@ -6020,7 +6020,7 @@
         <div class="drawer-brand-box" id="drawerBrandStory"></div>
       </div>
       <div class="drawer-cta-row">
-        <button id="drawerInterestedBtn" class="drawer-btn drawer-btn-primary" onclick="window.saveDrawerPick()" ontouchend="event.preventDefault();window.saveDrawerPick();" style="touch-action:manipulation;" data-i18n="drawer.interested">⭐ I'm Interested In This One</button>
+        <button id="drawerInterestedBtn" class="drawer-btn drawer-btn-primary" onclick="window.saveDrawerPick()" ontouchend="event.preventDefault();window.saveDrawerPick();" style="touch-action:manipulation;" data-i18n="drawer.interested">I'm Interested In This One</button>
       </div>
       <!-- Mattress navigation -->
       <div style="display:flex; align-items:center; justify-content:space-between; padding:0.75rem 1rem 0.5rem; border-top:1px solid rgba(255,255,255,0.08); margin-top:0.5rem;">
@@ -8914,7 +8914,7 @@
         }
 
         var _matchWord = _es ? 'Compatibilidad' : 'Match';
-        var _topMatchBadge = _es ? '\u2b50 La Mejor para Tu Perfil' : '\u2b50 Matched to Your Profile';
+        var _topMatchBadge = _es ? 'La Mejor para Tu Perfil' : 'Matched to Your Profile';
         // Stagger cards in
         g.items.forEach((a, i) => {
           const matchPct = Math.min(Math.round((a.score / maxScore) * 100), 99);
@@ -8929,9 +8929,9 @@
           // Combine up to 2 unique reasons for the featured pillow
           const reasonLines = isFeaturedPillow
             ? (a.reasons.length >= 2
-                ? '<div class="noct-accessories__reason-callout noct-accessories__reason-callout--featured">\ud83d\udca1 ' + a.reasons[0] + '<br>\ud83d\udca1 ' + a.reasons[1] + '</div>'
-                : '<div class="noct-accessories__reason-callout noct-accessories__reason-callout--featured">\ud83d\udca1 ' + a.reasons[0] + '</div>')
-            : '<div class="noct-accessories__reason-callout">\ud83d\udca1 ' + a.reasons[0] + '</div>';
+                ? '<div class="noct-accessories__reason-callout noct-accessories__reason-callout--featured">' + a.reasons[0] + '<br>' + a.reasons[1] + '</div>'
+                : '<div class="noct-accessories__reason-callout noct-accessories__reason-callout--featured">' + a.reasons[0] + '</div>')
+            : '<div class="noct-accessories__reason-callout">' + a.reasons[0] + '</div>';
           const topMatchBadge = isFeaturedPillow
             ? '<div class="noct-accessories__top-match-badge">' + _topMatchBadge + '</div>'
             : '';
@@ -10119,7 +10119,7 @@
       var intBtn = document.getElementById('drawerInterestedBtn');
       if (intBtn) {
         var alreadySaved = window._savedPicks && window._savedPicks.some(function(p) { return p.id === mattressId; });
-        intBtn.textContent = alreadySaved ? (currentLang === 'es' ? '✓ Ya Guardado' : '✓ Already Saved') : (currentLang === 'es' ? '⭐ Me Interesa Este' : '⭐ I\'m Interested In This One');
+        intBtn.textContent = alreadySaved ? (currentLang === 'es' ? '✓ Ya Guardado' : '✓ Already Saved') : (currentLang === 'es' ? 'Me Interesa Este' : 'I\'m Interested In This One');
         intBtn.style.background = alreadySaved ? 'linear-gradient(180deg,var(--color-match-positive),#4caf6e)' : '';
       }
 
