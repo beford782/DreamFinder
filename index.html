@@ -4417,7 +4417,6 @@
       margin-top: 0;
     }
     .noct-accessories__section-icon {
-      display: none;
       font-size: 1.3rem;
       line-height: 1;
     }
@@ -4704,11 +4703,6 @@
       gap: 0.6rem;
     }
 
-    .noct-accessories__cart-icon {
-      display: none;
-      font-size: 1.1rem;
-    }
-
     .noct-accessories__cart-count {
       font-size: 13px;
       color: var(--color-text);
@@ -4812,12 +4806,6 @@
       border-radius: var(--radius);
       padding: 0.75rem 1rem;
       margin-bottom: 0.75rem;
-    }
-
-    .noct-accessories__protector-icon {
-      display: none;
-      font-size: 1.1rem;
-      flex-shrink: 0;
     }
 
     .noct-accessories__protector-eyebrow {
@@ -6245,7 +6233,6 @@
     <div class="noct-accessories__grid" id="accessoriesGrid"></div>
     <div class="noct-accessories__cart-bar" id="accCartBar" onclick="window.showSavedPicks()" ontouchend="event.preventDefault();window.showSavedPicks();" style="display:none;">
       <div class="noct-accessories__cart-group">
-        <span class="noct-accessories__cart-icon">🛒</span>
         <span class="noct-accessories__cart-count" id="accCartCount">0 items added to your list</span>
       </div>
       <div class="noct-accessories__cart-hint" data-i18n="accessories.tap_hint">Tap a card to add or remove</div>
@@ -8918,7 +8905,6 @@
             ? 'La mayoría de garantías de colchón requieren un protector. Mantiene tu colchón limpio, higiénico y puede extender su vida 3-5 años.'
             : 'Most mattress warranties require a protector. It keeps your mattress clean, hygienic, and can extend its life by 3-5 years.';
           var protCallout = '<div class="noct-accessories__animated-in noct-accessories__protector-callout">'
-            + '<span class="noct-accessories__protector-icon">🛡️</span>'
             + '<div>'
             +   '<div class="noct-accessories__protector-eyebrow">' + protEyebrow + '</div>'
             +   '<div class="noct-accessories__protector-body">' + protCopy + '</div>'
