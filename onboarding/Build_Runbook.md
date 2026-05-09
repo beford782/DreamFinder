@@ -94,24 +94,19 @@ The app has 9–11 spots where "Bel Furniture" or related Bel-specific values ar
 
 ### `index.html`
 
-| Line (approx) | What to replace | Source |
-|---|---|---|
-| 7 | `<title>Bel Furniture × DreamFinder</title>` | Store Name |
-| 13 | Meta description (mentions "Bel Furniture") | Store Name |
-| 14 | Open Graph title | Store Name |
-| 3468 | `Recommended by your Bel Furniture sleep team` | Store Name |
-| 3477 | Footer copyright text | Footer Text |
-| 3781 | Email opt-in privacy line | Store Name |
-| 3837 | Domain lock `allowed = ['beford782.github.io', ...]` | New GitHub Pages domain |
-| 5065 | `In Stock at Bel Furniture` (default fallback) | Store Name |
-| 5342 | `GOOGLE_SCRIPT_URL` constant | New GAS deployment URL (Phase 5) |
-| 5415 | `Bel Furniture × DreamFinder` (email header default) | Store Name |
-| 5463 | `Bring this email to your Bel Furniture store` (email footer default) | Store Name |
-| 6254 | Privacy policy text | Store Name |
+The HTML template is now fully white-label — retailer-specific text and branding live in `data/store-config.json`, not the HTML itself. The only direct edit needed in `index.html`:
 
-Several of these have `STORE_CONFIG.text.{inStockText, emailHeader, emailSubtext}` overrides — populate the JSON instead of editing the fallbacks if you want to keep the template generic. Currently `data/store-config.json` only has a few fields; expand as needed.
+- **Domain lock** — search for `'beford782.github.io'` and add the retailer's GitHub Pages domain to the `allowed` array (currently around line 6254; always search rather than relying on the line number, since it shifts on every release):
 
-CSS theme color is set near the top of `<style>` (`--store-primary` etc.). Change to the retailer's primary brand color.
+  ```js
+  var allowed = ['acmemattress.github.io', 'localhost', '127.0.0.1'];
+  ```
+
+CSS theme color is driven from `colors.storePrimary` / `colors.accent` in `data/store-config.json` — no hardcoded color edits in `index.html`.
+
+### `data/store-config.json` (primary white-label target)
+
+Most retailer-specific values live here. Open the Bel example and fill in the new retailer's values for: `storeName`, `storeKey`, `logo.{main, sub}`, `colors.{storePrimary, storePrimaryLight, storePrimaryGlow, accent}`, `gasUrl` (leave blank until Phase 5), `publicAssetRoot` (retailer's GitHub Pages URL with trailing slash), `brands[]`, `text.*` (English UI copy: `pageTitle`, `metaDescription`, `ogTitle`, `trustSignal`, `heritage`, `emailPrivacy`, `privacyPolicyContact`, `inStockText`, `emailHeader`, `emailSubtext`), `voice.*` (welcome-screen copy), `discount.codePrefix`. Spanish equivalents (`text_es`, `voice_es`) and the `languages` array are covered in **Language support** below.
 
 ### Language support (`data/store-config.json`)
 
@@ -176,7 +171,7 @@ Open in any text editor and replace:
 
 ## Phase 4 — Generate / drop in icons + update favicon
 
-The app's favicon is an inline SVG (line ~10 of `index.html`). It uses the gold moon — leave it as-is unless the retailer wants their own.
+The app's favicon is an inline SVG near the top of `index.html` (search for `<link rel="icon"`). It uses the gold moon — leave it as-is unless the retailer wants their own.
 
 PWA icons (`icon-192.png` and `icon-512.png`) are referenced in `manifest.json` but live at the repo root. Drop the retailer's submitted icons there.
 
@@ -202,9 +197,9 @@ ls icon-192.png icon-512.png
    - Who has access: **Anyone**
 7. Click **Deploy**. Authorize when prompted.
 8. **Copy the Web app URL** that ends in `/exec`.
-9. Paste it into `index.html` line 5342 (`GOOGLE_SCRIPT_URL`). Save.
+9. Paste it into `data/store-config.json` as the `gasUrl` value. Save.
 
-**Note:** in the future when Code.gs is edited, you must do **Deploy → Manage deployments → pencil → Version: New version → Deploy** to actually promote changes. Just saving the editor isn't enough.
+**Note:** when `Code.gs` is edited later (security patches, copy changes, etc.), the live web app does NOT auto-update. See **Phase 9** below for the redeploy + test-send checklist.
 
 ---
 
@@ -279,6 +274,34 @@ Open the Pages URL on a desktop browser AND on an iPad. Run the full flow:
 
 ---
 
+## Phase 9 — Updating Apps Script after `Code.gs` changes
+
+`Code.gs` does not auto-deploy. After repo edits (security hardening, sender-name changes, etc.), promote manually.
+
+### Redeploy checklist
+
+1. Open the bound Apps Script editor (Sheet → Extensions → Apps Script).
+2. Select `Code.gs` in the file panel; delete its existing contents.
+3. Paste the updated `Code.gs` from this repo (`cat Code.gs | clip` from the repo root, then Ctrl+V in the editor).
+4. **Save** (Ctrl+S). No syntax errors should appear.
+5. **Deploy → Manage deployments**. Click the **pencil icon** next to the existing web-app deployment.
+6. Version dropdown → **New version**. Add a short description of what changed. Click **Deploy**.
+7. Verify the resulting **Web app URL matches** `gasUrl` in `data/store-config.json`. If it differs, you accidentally created a *new* deployment instead of a new version — revert and retry.
+
+### Post-deploy test send
+
+Run from the live kiosk (or a desktop browser at the Pages URL). Cover at least:
+
+- [ ] **Normal flow** — typical name + email, EN. Email arrives; Sheet row appended in the locked column order (`timestamp, name, email, phone, dreamCode, lang, matches, accessories, rsa`).
+- [ ] **Invalid email** — submit empty or malformed (e.g., `abc`, whitespace, missing `@`). GAS returns `{success:false, error:"invalid_email"}`. Sheet row NOT appended. No email sent.
+- [ ] **Punctuation / accented name** — `O'Connor`, `Bel-O-Pedic`, `Ñoño`. Apostrophes / hyphens / accents preserved verbatim in email body and Sheet row.
+- [ ] **Injection-looking name** — submit something like `O'Connor Ñoño <script>alert(1)</script>`. Email body shows the literal text including angle brackets; no script execution. Validates HTML escape coverage.
+- [ ] **Spanish flow** (if `languages` includes `"es"`) — switch to ES on the welcome screen, complete in Spanish, submit. Subject + body in Spanish. Sheet `lang` column reads `es`.
+
+If any check fails, revert via **Manage Deployments → pencil → Version → [previous] → Deploy**.
+
+---
+
 ## Per-retailer files to keep as artifacts
 
 After delivering, archive a copy of:
@@ -294,6 +317,6 @@ This makes future changes (engine version bumps, scoring tweaks) a re-run rather
 
 - **GAS Web app URL changed silently after a redeploy.** If you create a *new* deployment instead of updating the existing one, the URL changes. Always use **Deploy → Manage deployments → pencil → New version**.
 - **Mattress images broken in the customer email.** The client converts relative URLs to absolute using `PUBLIC_ASSET_ROOT` — make sure that constant points at the new retailer's Pages URL.
-- **"Unauthorized domain" splash on first load.** Domain lock at index.html line ~3837 doesn't include the new retailer's Pages domain. Add it and push.
-- **DEBUG rows reappear in the lead Sheet.** That's an old GAS deployment still serving traffic. Confirm `GOOGLE_SCRIPT_URL` matches the live deployment URL exactly.
+- **"Unauthorized domain" splash on first load.** Domain lock in `index.html` doesn't include the new retailer's Pages domain. Search for `'beford782.github.io'`, add the new domain to the `allowed` array, push.
+- **DEBUG rows reappear in the lead Sheet.** That's an old GAS deployment still serving traffic. Confirm `data/store-config.json` `gasUrl` matches the live Apps Script deployment URL exactly.
 - **Outlook desktop on Windows shows broken mattress images in email.** Outlook desktop doesn't render WebP. If a retailer's customer base skews Outlook-desktop, swap the email-only image references to JPG.
