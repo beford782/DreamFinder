@@ -158,12 +158,23 @@ Open in any text editor and replace:
 
 ### `manifest.json`
 
+PWA manifest is per-deployment. Update each field for the new retailer:
+
+- [ ] `name` — `"DreamFinder — <Retailer>"` (shown when the kiosk is installed as an app)
+- [ ] `description` — `"Personalized sleep consultation for <Retailer>"`
+- [ ] `start_url` — confirm it matches the hosted GitHub Pages path. Default is `"/DreamFinder/"` (matches a repo named `DreamFinder`). If the retailer's repo is named differently (e.g., `acme-dreamfinder`), set `"/<repo-name>/"` instead, or the kiosk will 404 on launch.
+- [ ] `theme_color` and `background_color` — confirm these match the retailer's active theme. The Bel template ships `#0f1f33` (a pre-Nocturnal navy); align with the current `--color-bg` if the retailer adopts the Nocturnal palette, or set to the retailer's brand background.
+
 ```json
 {
   "name": "DreamFinder — Acme Mattress",
   "short_name": "DreamFinder",
   "description": "Personalized sleep consultation for Acme Mattress",
-  ...
+  "start_url": "/DreamFinder/",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#0f1f33",
+  "theme_color": "#0f1f33"
 }
 ```
 
@@ -316,7 +327,7 @@ This makes future changes (engine version bumps, scoring tweaks) a re-run rather
 ## Common gotchas
 
 - **GAS Web app URL changed silently after a redeploy.** If you create a *new* deployment instead of updating the existing one, the URL changes. Always use **Deploy → Manage deployments → pencil → New version**.
-- **Mattress images broken in the customer email.** The client converts relative URLs to absolute using `PUBLIC_ASSET_ROOT` — make sure that constant points at the new retailer's Pages URL.
+- **Mattress images broken in the customer email.** The client converts relative URLs to absolute using the `publicAssetRoot` field in `data/store-config.json` — make sure that field points at the new retailer's Pages URL with a trailing slash (e.g., `https://acmemattress.github.io/DreamFinder/`). Operators edit the JSON, not a constant in the code.
 - **"Unauthorized domain" splash on first load.** Domain lock in `index.html` doesn't include the new retailer's Pages domain. Search for `'beford782.github.io'`, add the new domain to the `allowed` array, push.
 - **DEBUG rows reappear in the lead Sheet.** That's an old GAS deployment still serving traffic. Confirm `data/store-config.json` `gasUrl` matches the live Apps Script deployment URL exactly.
 - **Outlook desktop on Windows shows broken mattress images in email.** Outlook desktop doesn't render WebP. If a retailer's customer base skews Outlook-desktop, swap the email-only image references to JPG.
