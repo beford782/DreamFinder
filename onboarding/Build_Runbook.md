@@ -106,7 +106,9 @@ CSS theme color is driven from `colors.storePrimary` / `colors.accent` in `data/
 
 ### `data/store-config.json` (primary white-label target)
 
-Most retailer-specific values live here. Open the Bel example and fill in the new retailer's values for: `storeName`, `storeKey`, `logo.{main, sub}`, `colors.{storePrimary, storePrimaryLight, storePrimaryGlow, accent}`, `gasUrl` (leave blank until Phase 5), `publicAssetRoot` (retailer's GitHub Pages URL with trailing slash), `brands[]`, `text.*` (English UI copy: `pageTitle`, `metaDescription`, `ogTitle`, `trustSignal`, `heritage`, `emailPrivacy`, `privacyPolicyContact`, `inStockText`, `emailHeader`, `emailSubtext`), `voice.*` (welcome-screen copy), `discount.codePrefix`. Spanish equivalents (`text_es`, `voice_es`) and the `languages` array are covered in **Language support** below.
+Most retailer-specific values live here. Open the Bel example and fill in the new retailer's values for: `storeName`, `storeKey`, `logo.{main, sub}`, `colors.{storePrimary, storePrimaryLight, storePrimaryGlow, accent}`, `gasUrl` (leave blank until Phase 5), `publicAssetRoot` (retailer's GitHub Pages URL with trailing slash), `brands[]`, `text.*` (English UI copy: `pageTitle`, `metaDescription`, `ogTitle`, `trustSignal`, `heritage`, `emailPrivacy`, `privacyPolicyContact`, `inStockText`, `emailHeader`, `emailSubtext`, `locationLabel`), `voice.*` (welcome-screen copy), `discount.codePrefix`. Spanish equivalents (`text_es`, `voice_es`) and the `languages` array are covered in **Language support** below.
+
+The `locationLabel` field (e.g., `"Houston, TX"`) drives the small header location pill. Set it to the retailer's primary store city/state, or leave blank to hide the pill entirely. The kiosk no longer requests browser geolocation — there's no permission prompt and no third-party reverse-geocode call.
 
 ### Language support (`data/store-config.json`)
 

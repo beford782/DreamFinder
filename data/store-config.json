@@ -30,7 +30,8 @@
     "privacyPolicyContact": "To have your information removed, contact your local Bel Furniture store.",
     "inStockText": "In Stock at Bel Furniture",
     "emailHeader": "Bel Furniture × DreamFinder",
-    "emailSubtext": "Bring this email to your Bel Furniture store"
+    "emailSubtext": "Bring this email to your Bel Furniture store",
+    "locationLabel": "Texas"
   },
   "text_es": {
     "pageTitle": "DreamFinder — Prueba de Sueño de Bel Furniture",
@@ -42,7 +43,8 @@
     "privacyPolicyContact": "Para eliminar tu información, comunícate con tu tienda local de Bel Furniture.",
     "inStockText": "Disponible en Bel Furniture",
     "emailHeader": "Bel Furniture × DreamFinder",
-    "emailSubtext": "Lleva este correo a tu tienda Bel Furniture"
+    "emailSubtext": "Lleva este correo a tu tienda Bel Furniture",
+    "locationLabel": "Texas"
   },
   "discount": {
     "codePrefix": "DREAM",

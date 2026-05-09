@@ -5809,25 +5809,6 @@
     <button id="headerStartOverBtn" class="js-start-over" ontouchend="event.preventDefault();window.startOver();" style="display:none; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:var(--cream); font-family:inherit; font-size:0.75rem; font-weight:600; padding:0.4rem 0.9rem; border-radius:8px; cursor:pointer; touch-action:manipulation; letter-spacing:0.2px;" data-i18n="header.restart">↺ Restart Quiz</button>
   </header>
 
-  <!-- Geolocation -->
-  <script>
-    (function() {
-      if (!navigator.geolocation) return;
-      navigator.geolocation.getCurrentPosition(function(pos) {
-        fetch('https://nominatim.openstreetmap.org/reverse?lat=' + pos.coords.latitude + '&lon=' + pos.coords.longitude + '&format=json')
-          .then(r => r.json())
-          .then(data => {
-            const city = data.address.city || data.address.town || data.address.village || '';
-            const state = data.address.state || '';
-            const abbr = { 'Texas': 'TX', 'California': 'CA', 'Florida': 'FL', 'New York': 'NY', 'Arizona': 'AZ', 'Nevada': 'NV', 'Louisiana': 'LA', 'Oklahoma': 'OK', 'New Mexico': 'NM', 'Arkansas': 'AR', 'Georgia': 'GA', 'Colorado': 'CO', 'Virginia': 'VA', 'North Carolina': 'NC', 'South Carolina': 'SC', 'Tennessee': 'TN', 'Alabama': 'AL', 'Mississippi': 'MS', 'Missouri': 'MO', 'Illinois': 'IL', 'Ohio': 'OH', 'Michigan': 'MI', 'Indiana': 'IN', 'Pennsylvania': 'PA', 'New Jersey': 'NJ', 'Maryland': 'MD', 'Massachusetts': 'MA', 'Connecticut': 'CT', 'Oregon': 'OR', 'Washington': 'WA', 'Minnesota': 'MN', 'Wisconsin': 'WI', 'Iowa': 'IA', 'Kansas': 'KS', 'Nebraska': 'NE', 'Utah': 'UT', 'Idaho': 'ID', 'Montana': 'MT', 'Wyoming': 'WY', 'Kentucky': 'KY', 'West Virginia': 'WV', 'Maine': 'ME', 'New Hampshire': 'NH', 'Vermont': 'VT', 'Rhode Island': 'RI', 'Delaware': 'DE', 'Hawaii': 'HI', 'Alaska': 'AK', 'North Dakota': 'ND', 'South Dakota': 'SD' };
-            if (city && state) {
-              document.getElementById('locationText').textContent = city + ', ' + (abbr[state] || state);
-            }
-          }).catch(function() {});
-      }, function() {}, { timeout: 5000 });
-    })();
-  </script>
-
   <!-- Progress Bar -->
   <div class="progress-bar-container" id="progressBar">
     <div class="progress-fill" id="progressFill" style="width: 0%"></div>
@@ -6807,6 +6788,18 @@
         document.querySelectorAll('[data-store="privacy-policy-contact"]').forEach(function(el) {
           el.textContent = textBlock.privacyPolicyContact || el.textContent;
         });
+        // Header location pill — populated from store-config text.locationLabel.
+        // Replaces the previous browser-geolocation + Nominatim reverse-geocode
+        // path; kiosk runs from a fixed showroom, so the city is known up-front.
+        // Hide the pill (icon + text) when the field is missing or blank to avoid
+        // an orphan map-pin icon.
+        var locationEl = document.getElementById('locationText');
+        if (locationEl) {
+          var locationLabel = textBlock.locationLabel || '';
+          locationEl.textContent = locationLabel;
+          var locationParent = locationEl.closest('.header-location') || locationEl.parentElement;
+          if (locationParent) locationParent.style.display = locationLabel ? '' : 'none';
+        }
       }
 
       renderStoreBrands();
