@@ -6229,24 +6229,31 @@
       </div>
     </div>
 
-    <!-- DISCOUNT REVEAL OVERLAY — preserved verbatim from original markup -->
-    <div class="discount-reveal-overlay" id="discountRevealOverlay">
-      <div class="discount-reveal" id="discountReveal">
+  </div>
 
-        <!-- Savings Pass certificate. Inner contents activated by
-             playSavingsPassReveal() when the RSA taps the HF2 reveal
-             button. Outer #discountRevealOverlay infrastructure
-             preserved unchanged. -->
-        <div class="reveal-cert" id="revealCert">
-          <div class="reveal-cert__eyebrow" data-i18n="discount.title">Your Savings Pass</div>
-          <div class="reveal-cert__tiles" id="revealCertTiles" aria-hidden="true"></div>
-          <span class="reveal-cert__code-sr" id="revealCertCodeSr"></span>
-          <div class="reveal-cert__pct">
-            <span class="reveal-cert__pct-num" id="revealCertPctNum">5</span>
-            <span class="reveal-cert__pct-suffix" data-i18n="discount.off">% OFF</span>
-          </div>
-          <div class="reveal-cert__subtitle" data-i18n="discount.show_specialist">Yours to use in store today.</div>
+  <!-- DISCOUNT REVEAL OVERLAY — top-level under <body> so the
+       position:fixed/inset:0 infrastructure resolves against the
+       viewport. Previously nested inside #resultsScreen, which made the
+       overlay a 0×0 box whenever any other screen was active (because
+       inactive screens are display:none, and position:fixed descendants
+       of a display:none ancestor are not laid out). Same IDs, same
+       inner markup, same JS hooks (playSavingsPassReveal). -->
+  <div class="discount-reveal-overlay" id="discountRevealOverlay">
+    <div class="discount-reveal" id="discountReveal">
+
+      <!-- Savings Pass certificate. Inner contents activated by
+           playSavingsPassReveal() when the RSA taps the HF2 reveal
+           button. Outer #discountRevealOverlay infrastructure
+           preserved unchanged. -->
+      <div class="reveal-cert" id="revealCert">
+        <div class="reveal-cert__eyebrow" data-i18n="discount.title">Your Savings Pass</div>
+        <div class="reveal-cert__tiles" id="revealCertTiles" aria-hidden="true"></div>
+        <span class="reveal-cert__code-sr" id="revealCertCodeSr"></span>
+        <div class="reveal-cert__pct">
+          <span class="reveal-cert__pct-num" id="revealCertPctNum">5</span>
+          <span class="reveal-cert__pct-suffix" data-i18n="discount.off">% OFF</span>
         </div>
+        <div class="reveal-cert__subtitle" data-i18n="discount.show_specialist">Yours to use in store today.</div>
       </div>
     </div>
   </div>
