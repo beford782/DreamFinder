@@ -8537,11 +8537,23 @@
 
       // Auto-dismiss: hold ~1.1s after subtitle, then fade out 550ms.
       // Total reveal duration ≈ 4.25s.
+      //
+      // After the overlay hides, also remove .is-visible from the cert so
+      // the descendants return to their opacity:0 baseline. With
+      // animation-fill-mode:forwards, the keyframes lock each descendant
+      // at its final visible state — leaving .is-visible attached after
+      // dismiss means the next reveal starts at opacity:1 already, and
+      // the function-start classList.remove + double rAF + classList.add
+      // round-trip can be optimized into a no-op by the browser, so the
+      // re-add never re-fires the animations. Resetting here guarantees
+      // the next reveal begins from baseline and the .is-visible attach
+      // is an unambiguous animation-name change from none → revealCertIn.
       setTimeout(function() {
         overlay.classList.add('fade-out');
         setTimeout(function() {
           overlay.style.display = 'none';
           overlay.classList.add('hidden');
+          cert.classList.remove('is-visible');
         }, 550);
       }, 3700);
     }
