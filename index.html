@@ -4050,7 +4050,17 @@
        border, sharp corners, gold-glow surface, diagonal corner glyphs.
        Activated by playSavingsPassReveal() on the RSA's HF2 reveal tap.
        Outer #discountRevealOverlay infrastructure (position:fixed, z-index,
-       display:none default, fade-out class) is preserved unchanged. */
+       display:none default, fade-out class) is preserved unchanged.
+
+       Activation is driven by CSS @keyframes animations, not transitions.
+       The transition-based version had its first-paint suppressed in
+       Chromium when the cert appeared from a display:none ancestor —
+       transitions don't run on the very first style change of an element
+       entering the rendering tree. @keyframes fire on animation-name
+       changing from none to a defined value, regardless of display state.
+       Baselines stay opacity:0 so elements remain hidden until .is-visible
+       attaches the animation, and animation-fill-mode:forwards locks the
+       final state during the hold. */
     .reveal-cert {
       position: relative;
       display: flex;
@@ -4065,14 +4075,15 @@
       border: 1px solid color-mix(in srgb, var(--color-accent) 45%, var(--color-border));
       border-radius: 0;
 
-      /* Card settle baseline */
+      /* Baseline: hidden until .is-visible attaches revealCertIn. */
       opacity: 0;
-      transform: translateY(20px) scale(0.92);
-      transition: opacity 550ms ease-out, transform 550ms ease-out;
     }
     .reveal-cert.is-visible {
-      opacity: 1;
-      transform: translateY(0) scale(1);
+      animation: revealCertIn 550ms ease-out forwards;
+    }
+    @keyframes revealCertIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.92); }
+      to   { opacity: 1; transform: none; }
     }
 
     /* Diagonal hairline L-glyphs at top-left + bottom-right.
@@ -4107,14 +4118,17 @@
       text-transform: uppercase;
       color: var(--color-accent);
       opacity: 0;
-      transition: opacity 400ms ease-out 100ms;
     }
     .reveal-cert.is-visible .reveal-cert__eyebrow {
-      opacity: 1;
+      animation: revealCertFadeIn 400ms ease-out 100ms forwards;
+    }
+    @keyframes revealCertFadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
     }
 
     /* Tile row — DREAM-XXX as per-character bordered tiles. Each tile
-       carries an inline --i index that drives its transition-delay so
+       carries an inline --i index that drives its animation-delay so
        activation cascades left-to-right. */
     .reveal-cert__tiles {
       display: flex;
@@ -4137,16 +4151,17 @@
       font-size: clamp(1rem, 2.4vw, 1.7rem);
       color: var(--color-accent);
       background: var(--color-surface);
-
       opacity: 0;
-      transform: translateY(-10px);
-      transition: opacity 320ms ease-out, transform 320ms ease-out;
-      transition-delay: calc(500ms + (var(--i, 0) * 110ms));
     }
     .reveal-cert.is-visible .reveal-cert__tile {
-      opacity: 1;
-      transform: translateY(0);
+      animation: revealCertTileIn 320ms ease-out forwards;
+      animation-delay: calc(500ms + (var(--i, 0) * 110ms));
     }
+    @keyframes revealCertTileIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to   { opacity: 1; transform: none; }
+    }
+
     .reveal-cert__sep {
       display: inline-flex;
       align-items: center;
@@ -4156,11 +4171,10 @@
       font-size: 1rem;
       padding: 0 0.15rem;
       opacity: 0;
-      transition: opacity 320ms ease-out;
-      transition-delay: calc(500ms + (var(--i, 0) * 110ms));
     }
     .reveal-cert.is-visible .reveal-cert__sep {
-      opacity: 1;
+      animation: revealCertFadeIn 320ms ease-out forwards;
+      animation-delay: calc(500ms + (var(--i, 0) * 110ms));
     }
 
     /* Screen-reader-only full code (tiles are aria-hidden). */
@@ -4184,13 +4198,15 @@
       justify-content: center;
       gap: 0.25rem;
       opacity: 0;
-      transform: scale(0.85);
-      transition: opacity 450ms ease-out 1700ms, transform 450ms ease-out 1700ms;
     }
     .reveal-cert.is-visible .reveal-cert__pct {
-      opacity: 1;
-      transform: scale(1);
+      animation: revealCertPctIn 450ms ease-out 1700ms forwards;
     }
+    @keyframes revealCertPctIn {
+      from { opacity: 0; transform: scale(0.85); }
+      to   { opacity: 1; transform: none; }
+    }
+
     .reveal-cert__pct-num {
       font-family: var(--font-serif);
       font-style: italic;
@@ -4214,25 +4230,24 @@
       font-style: italic;
       max-width: 28ch;
       opacity: 0;
-      transition: opacity 400ms ease-out 2200ms;
     }
     .reveal-cert.is-visible .reveal-cert__subtitle {
-      opacity: 1;
+      animation: revealCertFadeIn 400ms ease-out 2200ms forwards;
     }
 
-    /* Reduced motion: suppress transform-based motion (translate / scale)
-       but keep a brief opacity fade so the activation reads as an arrival
-       rather than a hard snap. All elements fade in simultaneously; the
-       staggered transition-delays are flattened to 0 by the shorthand. */
+    /* Reduced motion: suppress all transform-based motion and stagger.
+       Each element fades in simultaneously over 200ms via the opacity-only
+       keyframe — keeps the activation perceptible as an arrival without
+       motion that could cause discomfort. The animation shorthand also
+       resets animation-delay to 0s, so the cascade flattens. */
     @media (prefers-reduced-motion: reduce) {
-      .reveal-cert,
-      .reveal-cert__eyebrow,
-      .reveal-cert__tile,
-      .reveal-cert__sep,
-      .reveal-cert__pct,
-      .reveal-cert__subtitle {
-        transform: none !important;
-        transition: opacity 200ms ease-out !important;
+      .reveal-cert.is-visible,
+      .reveal-cert.is-visible .reveal-cert__eyebrow,
+      .reveal-cert.is-visible .reveal-cert__tile,
+      .reveal-cert.is-visible .reveal-cert__sep,
+      .reveal-cert.is-visible .reveal-cert__pct,
+      .reveal-cert.is-visible .reveal-cert__subtitle {
+        animation: revealCertFadeIn 200ms ease-out forwards !important;
       }
     }
 
