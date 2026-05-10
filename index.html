@@ -4011,7 +4011,11 @@
     .discount-reveal-overlay {
       position: fixed;
       inset: 0;
-      background: var(--navy);
+      /* Backdrop tint — darker than the body (#14171C) and with stronger
+         alpha so the overlay clearly reads as a backdrop, not a same-color
+         no-op. Lets a hint of the HF2 chrome stay faintly visible behind,
+         signaling the reveal is a focused moment rather than a screen swap. */
+      background: rgba(5, 7, 10, 0.82);
       /* Above cart bar (50), rsa-panel (50), picks pill (100) — overlay must
          paint over all hf2Screen UI chrome (and savedPicksScreen during the
          parallel-shipping window). Bumped from 50 in step 5 — pre-existing
@@ -4068,6 +4072,9 @@
       align-items: center;
       gap: clamp(0.875rem, 2vw, 1.25rem);
       width: min(560px, calc(100vw - 1.5rem));
+      /* Center horizontally inside the full-width .discount-reveal parent.
+         Mirrors the landing-discount-tease centering pattern. */
+      margin: 0 auto;
       padding: clamp(1.25rem, 3vw, 2rem) clamp(0.875rem, 2vw, 1.5rem);
       background:
         linear-gradient(180deg, var(--gold-glow) 0%, transparent 60%),
@@ -8488,7 +8495,7 @@
       cert.classList.remove('is-visible');
 
       // Build tile row from current DREAM code (e.g., "DREAM472"). Each
-      // tile carries inline --i for its CSS transition-delay so activation
+      // tile carries inline --i for its CSS animation-delay so activation
       // cascades left-to-right. Separator gets the next index, keeping a
       // single monotonic stagger across letters → separator → digits.
       const dream = generateDreamCode(analytics.sessionId);
@@ -8518,13 +8525,13 @@
       pctNum.textContent = String(dream.percentage);
 
       // Activate after two animation frames so the browser paints the
-      // baseline (hidden) state after display:flex before the transition
-      // trigger lands. A single offsetWidth reflow is not always sufficient
-      // for elements that just transitioned out of display:none —
-      // Chrome/Safari may batch and skip the transition.
+      // baseline (hidden) state after display:flex before .is-visible
+      // attaches the keyframes. Defensive against the documented Chromium
+      // quirk where elements just transitioning out of display:none can
+      // skip property animation triggers.
       //
-      // CSS transitions + transition-delays on .reveal-cert descendants
-      // run the sequence:
+      // CSS @keyframes + animation-delays on .reveal-cert descendants run
+      // the sequence:
       //   0→550ms     card settle (eyebrow at 100→500ms)
       //   500→1700ms  tile cascade (9 elements × 110ms stagger, 320ms each)
       //   1700→2150ms percentage stamp
