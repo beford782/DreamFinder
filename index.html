@@ -5725,6 +5725,47 @@
     .drawer-pitch-box .noct-handoff-pitch__rsa-note { margin-top: 12px; }
     .drawer-pitch-box .noct-handoff-pitch__lead:first-child,
     .drawer-pitch-box .noct-handoff-pitch__rsa-note:first-child { margin-top: 0; }
+    /* Pitch section is collapsed by default — heading + summary + toggle visible,
+       prose box hidden. Toggling .is-expanded on #drawerPitchSection reveals the
+       prose. Default-collapsed is enforced via the id+class combination so the
+       existing .drawer-pitch-box rule (background / border / radius / padding /
+       margin) still applies when expanded. */
+    .drawer-pitch-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+    .drawer-pitch-header__meta {
+      flex: 1;
+      min-width: 0;
+    }
+    .drawer-pitch-summary {
+      font-size: 0.58rem;
+      color: var(--cream-dim);
+      margin-top: 0.15rem;
+      letter-spacing: 0.04em;
+      line-height: 1.4;
+    }
+    .drawer-pitch-toggle {
+      background: transparent;
+      border: 1px solid rgba(212,168,75,0.35);
+      color: var(--gold);
+      font-family: inherit;
+      font-size: 0.55rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.4rem 0.7rem;
+      border-radius: 8px;
+      cursor: pointer;
+      touch-action: manipulation;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .drawer-pitch-toggle:hover { background: rgba(212,168,75,0.08); }
+    #drawerPitchSection .drawer-pitch-box { display: none; }
+    #drawerPitchSection.is-expanded .drawer-pitch-box { display: block; }
     /* 5d-3: brand panel below pitch — recessive separator, no container chrome.
        Pitch fires on every drawer-open; brand fires only when an RSA fields a
        brand question. Frequency asymmetry → visual asymmetry. */
@@ -6319,7 +6360,15 @@
       </div>
       <div class="drawer-tags-row" id="drawerTags"></div>
       <div id="drawerPitchSection" style="display:none;">
-        <div class="drawer-section-label" data-i18n="drawer.pitch_heading">Walk them through it</div>
+        <div class="drawer-pitch-header">
+          <div class="drawer-pitch-header__meta">
+            <div class="drawer-section-label" data-i18n="drawer.pitch_heading">Walk them through it</div>
+            <div class="drawer-pitch-summary" id="drawerPitchSummary"></div>
+          </div>
+          <button class="drawer-pitch-toggle" id="drawerPitchToggle" type="button"
+                  onclick="window.toggleDrawerPitch()"
+                  ontouchend="event.preventDefault();window.toggleDrawerPitch();">Show script</button>
+        </div>
         <div class="drawer-pitch-box" id="drawerPitch"></div>
       </div>
       <div id="drawerBrandSection" style="display:none;">
@@ -10416,12 +10465,31 @@
 
       // Pitch content (lead/demo/close for full-pitch, rsaNote for coaching).
       // Section hides when no content is resolved so the heading doesn't orphan.
+      // When content resolves, the prose body is collapsed by default — RSA taps
+      // "Show script" to expand. Each drawer open resets to collapsed so prior
+      // expand state doesn't bleed across mattresses.
       var pitchHtml = renderPitchHtml(m);
       var pitchSection = document.getElementById('drawerPitchSection');
       var pitchEl = document.getElementById('drawerPitch');
       if (pitchHtml) {
         pitchEl.innerHTML = pitchHtml;
         pitchSection.style.display = '';
+        pitchSection.classList.remove('is-expanded');
+
+        // Summary line reflects pitch format. Spanish strings inline since the
+        // text is dynamic per-pitch-type and toggle label flips on expand.
+        var _pitchContent = getPitchContent(m);
+        var _esPitch = currentLang === 'es';
+        var _pitchSummary = '';
+        if (_pitchContent && _pitchContent.format === 'full') {
+          _pitchSummary = _esPitch ? 'Lleva con · Demo · Cierre' : 'Lead with · Demo hook · Close angle';
+        } else if (_pitchContent && _pitchContent.format === 'coaching') {
+          _pitchSummary = _esPitch ? 'Nota para el vendedor' : 'RSA coaching note';
+        }
+        var _summaryEl = document.getElementById('drawerPitchSummary');
+        if (_summaryEl) _summaryEl.textContent = _pitchSummary;
+        var _toggleEl = document.getElementById('drawerPitchToggle');
+        if (_toggleEl) _toggleEl.textContent = _esPitch ? 'Mostrar guion' : 'Show script';
       } else {
         pitchEl.innerHTML = '';
         pitchSection.style.display = 'none';
@@ -10449,6 +10517,21 @@
     window.closeMattressDrawer = function() {
       document.getElementById('drawerBackdrop').classList.remove('open');
       document.getElementById('mattressDrawer').classList.remove('drawer-open');
+    };
+
+    // Toggle pitch script visibility inside the drawer. Default-collapsed
+    // (set on each drawer open) so the section reads as a compact header
+    // until the RSA opts in. CSS rule on #drawerPitchSection.is-expanded
+    // controls the prose body's display.
+    window.toggleDrawerPitch = function() {
+      var section = document.getElementById('drawerPitchSection');
+      var btn = document.getElementById('drawerPitchToggle');
+      if (!section || !btn) return;
+      var es = currentLang === 'es';
+      var expanded = section.classList.toggle('is-expanded');
+      btn.textContent = expanded
+        ? (es ? 'Ocultar guion' : 'Hide script')
+        : (es ? 'Mostrar guion' : 'Show script');
     };
 
     window.drawerNav = function(direction) {
