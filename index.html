@@ -6288,8 +6288,7 @@
       <h3 class="noct-accessories__title" data-i18n="accessories.title">Your Complete Sleep System</h3>
       <p class="noct-accessories__subtitle" id="accessoriesSubhead" data-i18n="accessories.subtitle">Your mattress is one piece of the puzzle. The right foundation, pillow, and protector complete the system.</p>
       <div class="noct-accessories__discount-banner" id="accDiscountBanner">
-        <span class="noct-accessories__discount-icon">🏷️</span>
-        <span class="noct-accessories__discount-text" id="accDiscountText">Your 5% discount applies to everything on this page</span>
+        <span class="noct-accessories__discount-text" id="accDiscountText">Your Savings Pass applies to everything on this page</span>
       </div>
     </div>
     <div class="noct-accessories__profile-badge" id="accessoryProfileBadge"></div>
@@ -9072,7 +9071,7 @@
       
       // SEQUENCE: Staggered reveal
       const discountEl = document.getElementById('accDiscountText');
-      if (discountEl) discountEl.textContent = _es ? `Tu ${STORE_DISCOUNT}% de descuento aplica a todo en esta página` : `Your ${STORE_DISCOUNT}% discount applies to everything on this page`;
+      if (discountEl) discountEl.textContent = _es ? 'Tu Pase de Ahorro aplica a todo en esta página' : 'Your Savings Pass applies to everything on this page';
       setTimeout(() => { header.style.opacity = '1'; header.style.transform = 'translateY(0)'; }, 100);
       setTimeout(() => { badge.style.opacity = '1'; badge.style.transform = 'scale(1)'; }, 300);
       setTimeout(() => { analyzing.style.opacity = '1'; }, 500);
