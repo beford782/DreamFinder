@@ -4220,7 +4220,10 @@
       opacity: 1;
     }
 
-    /* Reduced motion: snap to final state, no transitions. */
+    /* Reduced motion: suppress transform-based motion (translate / scale)
+       but keep a brief opacity fade so the activation reads as an arrival
+       rather than a hard snap. All elements fade in simultaneously; the
+       staggered transition-delays are flattened to 0 by the shorthand. */
     @media (prefers-reduced-motion: reduce) {
       .reveal-cert,
       .reveal-cert__eyebrow,
@@ -4228,9 +4231,8 @@
       .reveal-cert__sep,
       .reveal-cert__pct,
       .reveal-cert__subtitle {
-        opacity: 1 !important;
         transform: none !important;
-        transition: none !important;
+        transition: opacity 200ms ease-out !important;
       }
     }
 
@@ -8500,18 +8502,23 @@
       // data-i18n="discount.off" on the sibling span and stays untouched.
       pctNum.textContent = String(dream.percentage);
 
-      // Force layout commit so the baseline (hidden) state paints before
-      // the .is-visible class flips descendant target opacity. Without this
-      // the browser may batch and skip transitions.
-      void cert.offsetWidth;
-
-      // Activate. CSS transitions + transition-delays on .reveal-cert
-      // descendants run the sequence:
+      // Activate after two animation frames so the browser paints the
+      // baseline (hidden) state after display:flex before the transition
+      // trigger lands. A single offsetWidth reflow is not always sufficient
+      // for elements that just transitioned out of display:none —
+      // Chrome/Safari may batch and skip the transition.
+      //
+      // CSS transitions + transition-delays on .reveal-cert descendants
+      // run the sequence:
       //   100→500ms   card settle + eyebrow
       //   500→1300ms  tile cascade (~9 elements × 80ms stagger)
       //   1400→1700ms percentage stamp
       //   1750→2050ms subtitle settle
-      cert.classList.add('is-visible');
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          cert.classList.add('is-visible');
+        });
+      });
 
       // Auto-dismiss: hold ~1.25s after subtitle, then fade out 550ms.
       setTimeout(function() {
