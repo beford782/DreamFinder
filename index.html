@@ -6306,12 +6306,12 @@
       </div>
       <div class="drawer-section-label" data-i18n="drawer.why_matches">Why it matches you</div>
       <div class="drawer-feats" id="drawerFeats"></div>
-      <div class="drawer-section-label" data-i18n="drawer.about">About this mattress</div>
-      <div class="drawer-reason-box" id="drawerReason"></div>
       <div id="drawerFeatureBulletsSection" style="display:none;">
         <div class="drawer-section-label" data-i18n="drawer.whats_in_it">What's in it</div>
         <ul class="drawer-feature-bullets" id="drawerFeatureBullets"></ul>
       </div>
+      <div class="drawer-section-label" data-i18n="drawer.about">About this mattress</div>
+      <div class="drawer-reason-box" id="drawerReason"></div>
       <div class="drawer-firmness-row">
         <span class="drawer-firm-label" id="drawerFirmLabel">Firmness</span>
         <div class="drawer-firm-bar"><div class="drawer-firm-fill" id="drawerFirmFill" style="width:0%"></div></div>
@@ -10371,7 +10371,7 @@
       document.getElementById('drawerMatch').textContent = d.pct + '% ' + (currentLang === 'es' ? 'Compatibilidad' : 'Match');
 
       var _drawerNeedBadge = currentLang === 'es' ? 'TU NECESIDAD' : 'YOUR NEED';
-      document.getElementById('drawerFeats').innerHTML = d.feats.slice(0,5).map(function(f){
+      document.getElementById('drawerFeats').innerHTML = d.feats.slice(0,3).map(function(f){
         return '<div class="drawer-feat-row'+(f.matched?' drawer-matched':'')+'">'+
           '<span class="drawer-feat-icon">'+f.emoji+'</span>'+
           '<div class="drawer-feat-body">'+
@@ -10385,13 +10385,14 @@
       var r = currentLang === 'es' && m.reasons_es ? m.reasons_es : (m.reasons || {});
       document.getElementById('drawerReason').textContent = r['default'] || r.cooling || r.pressureRelief || r.support || (currentLang === 'es' ? 'Una gran opción para tu perfil de sueño.' : 'A great match for your sleep profile.');
 
-      // "What's in it" bullets — surface up to 4 per-feature reasons in the
-      // priority order below. Excludes 'default' since #drawerReason above
-      // already shows it. Section hides when no bullets resolve so the
-      // heading doesn't orphan.
+      // "What's in it" bullets — surface up to 3 per-feature reasons in the
+      // priority order below, rendered between #drawerFeats and #drawerReason
+      // so RSA selling cues land above the customer-friendly summary.
+      // Excludes 'default' since #drawerReason already shows that. Section
+      // hides when no bullets resolve so the heading doesn't orphan.
       var BULLET_ORDER = ['cooling', 'pressureRelief', 'support', 'motionIsolation', 'plush', 'medium', 'firm', 'durability'];
       var bullets = [];
-      for (var bi = 0; bi < BULLET_ORDER.length && bullets.length < 4; bi++) {
+      for (var bi = 0; bi < BULLET_ORDER.length && bullets.length < 3; bi++) {
         var bv = r[BULLET_ORDER[bi]];
         if (bv && typeof bv === 'string' && bv.trim()) bullets.push(bv.trim());
       }
