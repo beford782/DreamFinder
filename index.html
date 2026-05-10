@@ -8230,10 +8230,12 @@
       if (m.features.some(function(f){return f.includes('cooling')||f.includes('copper');})) {
         var isCN = (tmp === 'hot' || iss.includes('hot'));
         feats.push({
-          title: es ? 'Tecnología de Enfriamiento' : 'Cooling Technology',
+          title: isCN
+            ? (es ? 'Ayuda a dormir más fresco' : 'Helps you sleep cooler')
+            : (es ? 'Sensación más fresca' : 'Cooler sleep feel'),
           desc: isCN
-            ? (es ? 'Duermes caliente — te mantiene fresco toda la noche' : 'You sleep hot — keeps you cool all night')
-            : (es ? 'Regula la temperatura para un sueño más profundo' : 'Regulates temperature for deeper sleep'),
+            ? (es ? 'Como el calor fue una preocupación, estas capas ayudan a alejarlo.' : 'Because heat was a concern, these layers help move warmth away.')
+            : (es ? 'Materiales frescos ayudan a reducir el calor en la superficie.' : 'Cooling materials help reduce heat buildup at the surface.'),
           tag: tagFor(isCN),
           matched: isCN
         });
@@ -8241,12 +8243,14 @@
       if (m.features.some(function(f){return f.includes('pressure')||f.includes('plush');})) {
         var isPN = (pos === 'side' || iss.includes('hip_pain') || iss.includes('stiff'));
         feats.push({
-          title: es ? 'Alivio de Presión' : 'Pressure Relief',
+          title: isPN
+            ? (es ? 'Suave donde lo necesitas' : 'Soft where you need it')
+            : (es ? 'Se adapta a tu cuerpo' : 'Contours to your body'),
           desc: isPN
             ? (pos === 'side'
-                ? (es ? 'Los que duermen de lado necesitan amortiguación en caderas y hombros' : 'Side sleepers need cushioning at hips and shoulders')
-                : (es ? 'Alivia tus puntos de dolor' : 'Eases your sore spots'))
-            : (es ? 'Se adapta a tu cuerpo' : 'Contours to your body'),
+                ? (es ? 'Quienes duermen de lado necesitan apoyo suave en hombros y caderas.' : 'Side sleepers need cushion around shoulders and hips.')
+                : (es ? 'La amortiguación ayuda con los puntos sensibles que marcaste.' : 'Cushioning helps ease the sore spots you flagged.'))
+            : (es ? 'Las capas de confort se adaptan a tu forma sin sentirse planas.' : 'Comfort layers adapt to your shape instead of feeling flat.'),
           tag: tagFor(isPN),
           matched: isPN
         });
@@ -8254,10 +8258,12 @@
       if (m.features.some(function(f){return f.includes('motion')||f.includes('hybrid');})) {
         var isMN = (answers.partner_disturbance === 'yes_often' || answers.partner_disturbance === 'sometimes' || prtnr === 'partner' || prtnr === 'family');
         feats.push({
-          title: es ? 'Aislamiento de Movimiento' : 'Motion Isolation',
+          title: isMN
+            ? (es ? 'Descanso compartido más tranquilo' : 'Calmer shared sleep')
+            : (es ? 'El movimiento se queda' : 'Motion stays put'),
           desc: isMN
-            ? (es ? 'No molestará a tu pareja' : "Won't disturb your partner")
-            : (es ? 'Los resortes encapsulados absorben el movimiento' : 'Pocketed coils absorb movement'),
+            ? (es ? 'Resortes independientes ayudan a que el movimiento no cruce la cama.' : 'Independent coils help keep movement from traveling across the bed.')
+            : (es ? 'Resortes encapsulados ayudan a absorber el movimiento en vez de extenderlo.' : 'Pocketed coils help absorb movement instead of spreading it.'),
           tag: tagFor(isMN),
           matched: isMN
         });
@@ -8265,35 +8271,37 @@
       if (m.features.some(function(f){return f.includes('support')||f.includes('back-supporter');})) {
         var isSN = (iss.includes('back_pain') || hlt.includes('extra_support') || pos === 'stomach');
         feats.push({
-          title: es ? 'Soporte Espinal' : 'Spinal Support',
+          title: isSN
+            ? (es ? 'Apoya tu espalda baja' : 'Supports your lower back')
+            : (es ? 'Ayuda a alinear el cuerpo' : 'Keeps you aligned'),
           desc: isSN
             ? (iss.includes('back_pain')
-                ? (es ? 'Zona central reforzada para dolor de espalda' : 'Reinforced center zone for back pain')
-                : (es ? 'Soporte extra donde lo necesitas' : 'Extra support where needed'))
-            : (es ? 'La zona lumbar mantiene tu columna alineada' : 'Lumbar zone keeps spine aligned'),
+                ? (es ? 'Un centro más firme apoya la zona de espalda baja que marcaste.' : 'A firmer center targets the lower back area you flagged.')
+                : (es ? 'El soporte central reforzado ayuda a mantener el cuerpo alineado.' : 'Reinforced center support helps keep your body aligned.'))
+            : (es ? 'Un centro más firme ayuda a reducir el hundimiento durante la noche.' : 'A firmer center helps reduce sagging through the night.'),
           tag: tagFor(isSN),
           matched: isSN
         });
       }
       if (m.firmness <= 3 && firm <= 3) {
         feats.push({
-          title: es ? 'Sensación Suave' : 'Plush Feel',
-          desc: es ? 'Coincide con tu preferencia suave' : 'Matches your soft preference',
+          title: es ? 'Sensación suave que elegiste' : 'Soft feel you chose',
+          desc: es ? 'Una superficie suave cede más bajo el peso del cuerpo.' : 'A plush surface gives more under your body weight.',
           tag: tagFor(true),
           matched: true
         });
       } else if (m.firmness >= 7 && firm >= 7) {
         feats.push({
-          title: es ? 'Sensación Firme' : 'Firm Feel',
-          desc: es ? 'Coincide con tu preferencia firme' : 'Matches your firm preference',
+          title: es ? 'Sensación firme que elegiste' : 'Firm feel you chose',
+          desc: es ? 'Una superficie más estable empuja en vez de dejarte hundir.' : 'A steadier surface pushes back instead of letting you sink in.',
           tag: tagFor(true),
           matched: true
         });
       }
       if (m.features.some(function(f){return f.includes('hand-tufting');})) {
         feats.push({
-          title: es ? 'Garantía de por Vida' : 'Lifetime Warranty',
-          desc: es ? 'Acolchado a mano, hecho para durar' : 'Hand-tufted, built to last',
+          title: es ? 'Hecho para durar' : 'Built for the long haul',
+          desc: es ? 'El acolchado a mano ayuda a mantener las capas en su lugar.' : 'Hand-tufting helps hold the layers in place over time.',
           tag: tagFor(false),
           matched: false
         });
@@ -8301,10 +8309,12 @@
       if (m.features.some(function(f){return f.includes('copper')||f.includes('anti-viral');})) {
         var isAN = hlt.includes('allergies');
         feats.push({
-          title: es ? 'Antimicrobiano' : 'Antimicrobial',
+          title: isAN
+            ? (es ? 'Superficie más limpia' : 'Cleaner sleep surface')
+            : (es ? 'Se mantiene más limpia' : 'Stays fresher'),
           desc: isAN
-            ? (es ? 'Resiste los ácaros del polvo' : 'Resists dust mites')
-            : (es ? 'Superficie de sueño fresca' : 'Fresh sleep surface'),
+            ? (es ? 'Diseñada para ayudar a que la superficie se mantenga más limpia.' : 'Designed to help the surface stay fresher between cleanings.')
+            : (es ? 'El tratamiento ayuda a que la superficie se sienta más limpia.' : 'Treatment helps the sleep surface feel cleaner over time.'),
           tag: tagFor(isAN),
           matched: isAN
         });
