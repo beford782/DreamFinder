@@ -1552,31 +1552,66 @@
       border-bottom: 0.5px solid var(--color-accent);
     }
 
-    /* DREAM code box */
+    /* DREAM code box — Savings Pass certificate frame.
+       CSS-only mirror of .landing-discount-tease (line 227) so the email
+       capture pass reads as fulfilment of the landing tease. Markup and JS
+       injection points (#dreamCodeBox / #dreamCodeValue / etc.) unchanged;
+       only declarations on the existing classes are updated. */
     .noct-dream-code {
-      border: 0.5px solid var(--color-accent);
-      padding: 24px 20px;
-      margin-bottom: 36px;
+      position: relative;
+      max-width: 388px;
+      width: 100%;
+      margin: 0 auto 36px;
+      padding: 22px 28px;
+      border: 1px solid color-mix(in srgb, var(--color-accent) 45%, var(--color-border));
+      border-radius: 0;
+      background:
+        linear-gradient(180deg, var(--gold-glow) 0%, transparent 60%),
+        var(--color-surface);
       text-align: center;
+    }
+
+    /* Diagonal corner glyphs — hairline L-shapes mirroring the landing pass. */
+    .noct-dream-code::before,
+    .noct-dream-code::after {
+      content: "";
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border: 0 solid var(--color-accent);
+      pointer-events: none;
+    }
+    .noct-dream-code::before {
+      top: 6px;
+      left: 6px;
+      border-top-width: 1px;
+      border-left-width: 1px;
+    }
+    .noct-dream-code::after {
+      bottom: 6px;
+      right: 6px;
+      border-bottom-width: 1px;
+      border-right-width: 1px;
     }
 
     .noct-dream-code-label {
       font-family: var(--font-sans);
       font-size: 11px;
-      letter-spacing: 0.3em;
+      font-weight: 600;
+      letter-spacing: 0.32em;
       text-transform: uppercase;
-      color: var(--color-text-muted);
+      color: var(--color-accent);
       margin-bottom: 12px;
     }
 
     .noct-dream-code-value {
       font-family: var(--font-serif);
       font-style: italic;
-      font-size: 36px;
+      font-size: 32px;
       color: var(--color-accent);
       line-height: 1.1;
       margin-bottom: 12px;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.08em;
     }
 
     .noct-dream-code-hint {
@@ -1651,6 +1686,11 @@
       .noct-email { padding: 32px 24px 28px; }
       .noct-email-headline { font-size: 32px; }
       .noct-dream-code-value { font-size: 30px; }
+    }
+
+    @media (max-width: 480px) {
+      .noct-dream-code { padding: 18px 20px; }
+      .noct-dream-code-value { font-size: 28px; }
     }
 
     /* === 5c-2a Handoff screen — class definitions === */
