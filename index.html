@@ -10483,37 +10483,18 @@
       setTimeout(function(){document.getElementById('drawerFirmFill').style.width=(m.firmness*10)+'%';},100);
       document.getElementById('drawerTags').innerHTML = (mField(m, 'tags')||[]).map(function(t){return '<span class="drawer-tag">'+t+'</span>';}).join('');
 
-      // Pitch content (lead/demo/close for full-pitch, rsaNote for coaching).
-      // Section hides when no content is resolved so the heading doesn't orphan.
-      // When content resolves, the prose body is collapsed by default — RSA taps
-      // "Show script" to expand. Each drawer open resets to collapsed so prior
-      // expand state doesn't bleed across mattresses.
-      var pitchHtml = renderPitchHtml(m);
+      // Pitch section is hidden in the drawer pending purpose-written short
+      // talking points. The existing SUBBRAND_NOTES prose is too long to
+      // present cleanly in the drawer even when clamped — clamping cut
+      // sentences mid-thought, which read as unpolished. renderPitchHtml,
+      // SUBBRAND_NOTES, the toggle UI, and the prose-clamp CSS are all
+      // preserved for that future work; only the drawer rendering is
+      // suppressed here. The existing "Why it matches you" and "What's in
+      // it" sections above already carry the RSA selling cues for now.
       var pitchSection = document.getElementById('drawerPitchSection');
-      var pitchEl = document.getElementById('drawerPitch');
-      if (pitchHtml) {
-        pitchEl.innerHTML = pitchHtml;
-        pitchSection.style.display = '';
-        pitchSection.classList.remove('is-expanded');
-
-        // Summary line reflects pitch format using customer-safe labels.
-        // Spanish strings inline since the text is dynamic per-pitch-type
-        // and the toggle label flips on expand.
-        var _pitchContent = getPitchContent(m);
-        var _esPitch = currentLang === 'es';
-        var _pitchSummary = '';
-        if (_pitchContent && _pitchContent.format === 'full') {
-          _pitchSummary = _esPitch ? 'Por qué encaja · Prueba esto · Punto clave' : 'Fit story · Try this · Key takeaway';
-        } else if (_pitchContent && _pitchContent.format === 'coaching') {
-          _pitchSummary = _esPitch ? 'Nota útil' : 'Helpful note';
-        }
-        var _summaryEl = document.getElementById('drawerPitchSummary');
-        if (_summaryEl) _summaryEl.textContent = _pitchSummary;
-        var _toggleEl = document.getElementById('drawerPitchToggle');
-        if (_toggleEl) _toggleEl.textContent = _esPitch ? 'Ver consejos' : 'Show tips';
-      } else {
-        pitchEl.innerHTML = '';
+      if (pitchSection) {
         pitchSection.style.display = 'none';
+        pitchSection.classList.remove('is-expanded');
       }
 
       // Brand heritage (Spring Air / Restonic). Bel-O-Pedic returns empty by
