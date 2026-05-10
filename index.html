@@ -4045,6 +4045,195 @@
       padding: 2rem 1.5rem;
     }
 
+    /* === Savings Pass certificate reveal ===
+       Reuses the landing/email pass card vocabulary: 1px brass color-mix
+       border, sharp corners, gold-glow surface, diagonal corner glyphs.
+       Activated by playSavingsPassReveal() on the RSA's HF2 reveal tap.
+       Outer #discountRevealOverlay infrastructure (position:fixed, z-index,
+       display:none default, fade-out class) is preserved unchanged. */
+    .reveal-cert {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: clamp(0.875rem, 2vw, 1.25rem);
+      width: min(560px, calc(100vw - 1.5rem));
+      padding: clamp(1.25rem, 3vw, 2rem) clamp(0.875rem, 2vw, 1.5rem);
+      background:
+        linear-gradient(180deg, var(--gold-glow) 0%, transparent 60%),
+        var(--color-surface);
+      border: 1px solid color-mix(in srgb, var(--color-accent) 45%, var(--color-border));
+      border-radius: 0;
+
+      /* Card settle baseline */
+      opacity: 0;
+      transform: translateY(8px) scale(0.97);
+      transition: opacity 400ms ease-out, transform 400ms ease-out;
+    }
+    .reveal-cert.is-visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    /* Diagonal hairline L-glyphs at top-left + bottom-right.
+       Mirrors .landing-discount-tease and .noct-dream-code framing. */
+    .reveal-cert::before,
+    .reveal-cert::after {
+      content: "";
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border: 0 solid var(--color-accent);
+      pointer-events: none;
+    }
+    .reveal-cert::before {
+      top: 8px;
+      left: 8px;
+      border-top-width: 1px;
+      border-left-width: 1px;
+    }
+    .reveal-cert::after {
+      bottom: 8px;
+      right: 8px;
+      border-bottom-width: 1px;
+      border-right-width: 1px;
+    }
+
+    .reveal-cert__eyebrow {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      opacity: 0;
+      transition: opacity 400ms ease-out 100ms;
+    }
+    .reveal-cert.is-visible .reveal-cert__eyebrow {
+      opacity: 1;
+    }
+
+    /* Tile row — DREAM-XXX as per-character bordered tiles. Each tile
+       carries an inline --i index that drives its transition-delay so
+       activation cascades left-to-right. */
+    .reveal-cert__tiles {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      flex-wrap: nowrap;
+    }
+    .reveal-cert__tile {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      width: clamp(28px, 6.5vw, 52px);
+      height: clamp(36px, 8vw, 64px);
+      border: 1px solid var(--color-accent);
+      border-radius: 0;
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: clamp(1rem, 2.4vw, 1.7rem);
+      color: var(--color-accent);
+      background: var(--color-surface);
+
+      opacity: 0;
+      transform: translateY(-3px);
+      transition: opacity 220ms ease-out, transform 220ms ease-out;
+      transition-delay: calc(500ms + (var(--i, 0) * 80ms));
+    }
+    .reveal-cert.is-visible .reveal-cert__tile {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-cert__sep {
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+      font-family: var(--font-sans);
+      color: color-mix(in srgb, var(--color-accent) 70%, transparent);
+      font-size: 1rem;
+      padding: 0 0.15rem;
+      opacity: 0;
+      transition: opacity 220ms ease-out;
+      transition-delay: calc(500ms + (var(--i, 0) * 80ms));
+    }
+    .reveal-cert.is-visible .reveal-cert__sep {
+      opacity: 1;
+    }
+
+    /* Screen-reader-only full code (tiles are aria-hidden). */
+    .reveal-cert__code-sr {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* Percentage strip — clearly secondary to tiles. Stamps in after
+       the tile cascade lands. */
+    .reveal-cert__pct {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 0.25rem;
+      opacity: 0;
+      transform: scale(0.92);
+      transition: opacity 300ms ease-out 1400ms, transform 300ms ease-out 1400ms;
+    }
+    .reveal-cert.is-visible .reveal-cert__pct {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .reveal-cert__pct-num {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: clamp(2rem, 5vw, 3rem);
+      color: var(--color-accent);
+      line-height: 1;
+    }
+    .reveal-cert__pct-suffix {
+      font-family: var(--font-sans);
+      font-size: clamp(0.95rem, 2vw, 1.25rem);
+      letter-spacing: 0.1em;
+      color: var(--color-text);
+      font-weight: 500;
+    }
+
+    .reveal-cert__subtitle {
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+      text-align: center;
+      font-style: italic;
+      max-width: 28ch;
+      opacity: 0;
+      transition: opacity 300ms ease-out 1750ms;
+    }
+    .reveal-cert.is-visible .reveal-cert__subtitle {
+      opacity: 1;
+    }
+
+    /* Reduced motion: snap to final state, no transitions. */
+    @media (prefers-reduced-motion: reduce) {
+      .reveal-cert,
+      .reveal-cert__eyebrow,
+      .reveal-cert__tile,
+      .reveal-cert__sep,
+      .reveal-cert__pct,
+      .reveal-cert__subtitle {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+      }
+    }
+
     /* Slot letter tiles (D R E A M) */
     .slot-letter {
       width: 38px; height: 48px;
@@ -6020,41 +6209,20 @@
     <div class="discount-reveal-overlay" id="discountRevealOverlay">
       <div class="discount-reveal" id="discountReveal">
 
-        <!-- Phase 1: intro label -->
-        <div id="revealIntro" style="opacity:0; text-align:center;">
-          <div style="font-size:0.65rem; text-transform:uppercase; letter-spacing:3px; color:var(--gold); font-weight:600; margin-bottom:0.6rem;" data-i18n="discount.title">Your Savings Pass</div>
-          <div style="font-size:1rem; color:var(--cream-dim); font-weight:400;" data-i18n="discount.calculating">Unlocking your private offer...</div>
-        </div>
-
-        <!-- Phase 2: DREAM code slot machine -->
-        <div id="revealSlotWrap" style="display:none; text-align:center;">
-          <div style="font-size:0.55rem; text-transform:uppercase; letter-spacing:3px; color:var(--gold); font-weight:600; margin-bottom:1rem;" data-i18n="discount.code_label">Your Savings Pass</div>
-          <div id="revealSlotRow" style="display:flex; align-items:center; justify-content:center; gap:6px; margin-bottom:1.5rem;">
-            <!-- D R E A M letters -->
-            <div class="slot-letter" id="sl0">D</div>
-            <div class="slot-letter" id="sl1">R</div>
-            <div class="slot-letter" id="sl2">E</div>
-            <div class="slot-letter" id="sl3">A</div>
-            <div class="slot-letter" id="sl4">M</div>
-            <div class="slot-sep">—</div>
-            <!-- 3 digit reels -->
-            <div class="slot-reel-wrap"><div class="slot-reel" id="reel0"></div></div>
-            <div class="slot-reel-wrap"><div class="slot-reel" id="reel1"></div></div>
-            <div class="slot-reel-wrap"><div class="slot-reel" id="reel2"></div></div>
+        <!-- Savings Pass certificate. Inner contents activated by
+             playSavingsPassReveal() when the RSA taps the HF2 reveal
+             button. Outer #discountRevealOverlay infrastructure
+             preserved unchanged. -->
+        <div class="reveal-cert" id="revealCert">
+          <div class="reveal-cert__eyebrow" data-i18n="discount.title">Your Savings Pass</div>
+          <div class="reveal-cert__tiles" id="revealCertTiles" aria-hidden="true"></div>
+          <span class="reveal-cert__code-sr" id="revealCertCodeSr"></span>
+          <div class="reveal-cert__pct">
+            <span class="reveal-cert__pct-num" id="revealCertPctNum">5</span>
+            <span class="reveal-cert__pct-suffix" data-i18n="discount.off">% OFF</span>
           </div>
-          <!-- Percentage counter -->
-          <div id="revealPctWrap" style="opacity:0; transition:opacity 0.4s ease;">
-            <div style="font-size:0.55rem; text-transform:uppercase; letter-spacing:3px; color:var(--gold); font-weight:600; margin-bottom:0.5rem;" data-i18n="discount.unlocked">Savings Pass Unlocked</div>
-            <div style="display:flex; align-items:baseline; justify-content:center; gap:4px;">
-              <span id="revealCounter" style="font-size:5rem; font-weight:900; color:var(--gold); line-height:1; text-shadow:0 0 40px rgba(212,168,75,0.6);">0</span>
-              <span style="font-size:2.5rem; font-weight:800; color:var(--cream); line-height:1;" data-i18n="discount.off">% OFF</span>
-            </div>
-            <div id="revealSubtitle" style="font-size:0.85rem; color:var(--cream-dim); margin-top:0.6rem; opacity:0; transition:opacity 0.4s ease;" data-i18n="discount.show_specialist">Yours to use in store today.</div>
-          </div>
+          <div class="reveal-cert__subtitle" data-i18n="discount.show_specialist">Yours to use in store today.</div>
         </div>
-
-        <div class="reveal-ring" id="revealRing"></div>
-        <div id="revealParticleHost" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;"></div>
       </div>
     </div>
   </div>
@@ -6203,7 +6371,7 @@
         <div class="hf2-timeline-step__body">
           <!-- Pre-reveal copy intentionally omits the percentage per decision H.
                renderHf2DiscountButton wires the click handler; on tap, fires
-               playSlotMachineReveal() and transitions the button to the
+               playSavingsPassReveal() and transitions the button to the
                --revealed state showing dreamCode + percentage. -->
           <button class="hf2-discount-btn" id="hf2DiscountBtn" type="button">
             <span>Savings Pass</span>
@@ -8280,205 +8448,79 @@
       if (analytics) analytics.log('save_pick_toggle', { mattressId: mattressId, tier: foundTier, saved: willBeSaved });
     };
 
-    // Slot-machine discount reveal animation. Extracted from inline showResults
-    // in step 5 so the hf2Screen "Reveal for customer →" tap target can fire it.
-    // Originally auto-fired on quiz completion; now RSA-tap-triggered on the
-    // handoff screen. Visual behavior preserved byte-for-byte from the original
-    // implementation — reads dreamCode + percentage from generateDreamCode(
-    // analytics.sessionId) and the count-up target from STORE_DISCOUNT.
-    function playSlotMachineReveal() {
+    // Savings Pass certificate reveal animation. Replaces the earlier
+    // slot-machine reveal. RSA-tap-triggered on the handoff screen via the
+    // hf2Screen "Reveal for customer →" button (see renderHf2DiscountButton).
+    // Visual: fade-and-stamp certificate activation — no particles, no ring,
+    // no spinning reels, no count-up. Reads dreamCode and percentage from
+    // generateDreamCode(analytics.sessionId).
+    function playSavingsPassReveal() {
       const overlay = document.getElementById('discountRevealOverlay');
-      const ring    = document.getElementById('revealRing');
-      const intro   = document.getElementById('revealIntro');
-      const slotWrap = document.getElementById('revealSlotWrap');
-      const pctWrap  = document.getElementById('revealPctWrap');
-      const counter  = document.getElementById('revealCounter');
-      const subtitle = document.getElementById('revealSubtitle');
-      const particleHost = document.getElementById('revealParticleHost');
+      const cert    = document.getElementById('revealCert');
+      const tilesEl = document.getElementById('revealCertTiles');
+      const codeSr  = document.getElementById('revealCertCodeSr');
+      const pctNum  = document.getElementById('revealCertPctNum');
+      if (!overlay || !cert || !tilesEl || !pctNum) return;
 
-      // Reset
+      // Reset overlay + cert to baseline state. pointerEvents reset clears
+      // any inline override so the CSS-default (none) takes effect — overlay
+      // never blocks taps, matching the prior reveal's behavior.
       overlay.classList.remove('fade-out', 'hidden');
       overlay.style.display = 'flex';
       overlay.style.pointerEvents = '';
-      ring.classList.remove('pulse');
-      intro.style.opacity = '0';
-      slotWrap.style.display = 'none';
-      pctWrap.style.opacity = '0';
-      subtitle.style.opacity = '0';
-      counter.textContent = '0';
-      particleHost.innerHTML = '';
-      [0,1,2,3,4].forEach(i => {
-        const el = document.getElementById('sl' + i);
-        if (el) { el.classList.remove('locked'); }
-      });
-      const sep = document.querySelector('.slot-sep');
-      if (sep) sep.classList.remove('locked');
+      cert.classList.remove('is-visible');
 
-      // Get dream code digits
-      const dreamCode = generateDreamCode(analytics.sessionId).code; // e.g. "DREAM472"
-      const d0 = dreamCode[5], d1 = dreamCode[6], d2 = dreamCode[7];
+      // Build tile row from current DREAM code (e.g., "DREAM472"). Each
+      // tile carries inline --i for its CSS transition-delay so activation
+      // cascades left-to-right. Separator gets the next index, keeping a
+      // single monotonic stagger across letters → separator → digits.
+      const dream = generateDreamCode(analytics.sessionId);
+      const code = dream.code;
+      const prefix = code.slice(0, 5);
+      const suffix = code.slice(5);
 
-      // Build reels (each reel = 20 random digits + the real digit at bottom)
-      function buildReel(reelEl, finalDigit) {
-        reelEl.innerHTML = '';
-        const count = 20;
-        for (let i = 0; i < count; i++) {
-          const div = document.createElement('div');
-          div.className = 'reel-digit';
-          div.textContent = Math.floor(Math.random() * 10);
-          reelEl.appendChild(div);
-        }
-        const last = document.createElement('div');
-        last.className = 'reel-digit';
-        last.textContent = finalDigit;
-        reelEl.appendChild(last);
-        // Start at top
-        reelEl.style.transform = 'translateY(0)';
-        return count; // number of rows before final
+      let html = '';
+      let i = 0;
+      for (let p = 0; p < prefix.length; p++) {
+        html += '<span class="reveal-cert__tile" style="--i:' + i + ';">' + prefix.charAt(p) + '</span>';
+        i++;
       }
-
-      const r0 = document.getElementById('reel0');
-      const r1 = document.getElementById('reel1');
-      const r2 = document.getElementById('reel2');
-      const rows0 = buildReel(r0, d0);
-      const rows1 = buildReel(r1, d1);
-      const rows2 = buildReel(r2, d2);
-
-      // Spin a reel — uses rAF so motion is smooth on iPad Safari and
-      // doesn't hitch if a frame is dropped. Duration is in ms.
-      function spinReel(reelEl, wrapEl, rows, onDone) {
-        const rowH = 56;
-        const targetY = -(rows * rowH);
-        const duration = 1100; // ms — longer, less whip-crack
-        const start = performance.now();
-        function frame(now) {
-          const elapsed = now - start;
-          const t = Math.min(elapsed / duration, 1);
-          // Ease out cubic: fast start, slow end
-          const eased = 1 - Math.pow(1 - t, 3);
-          reelEl.style.transform = 'translateY(' + (targetY * eased) + 'px)';
-          if (t < 1) {
-            requestAnimationFrame(frame);
-          } else {
-            reelEl.style.transform = 'translateY(' + targetY + 'px)';
-            wrapEl.classList.add('locked');
-            if (onDone) onDone();
-          }
-        }
-        requestAnimationFrame(frame);
+      html += '<span class="reveal-cert__sep" style="--i:' + i + ';">—</span>';
+      i++;
+      for (let s = 0; s < suffix.length; s++) {
+        html += '<span class="reveal-cert__tile" style="--i:' + i + ';">' + suffix.charAt(s) + '</span>';
+        i++;
       }
+      tilesEl.innerHTML = html;
 
-      // Burst particles
-      function fireBurst() {
-        const colors = ['var(--color-gold-bright)','var(--color-gold-bright-soft)','#f0daa8','#fff','var(--color-gold-bright-dark)'];
-        for (let i = 0; i < 40; i++) {
-          const p = document.createElement('div');
-          p.className = 'reveal-particle';
-          p.style.cssText = `background:${colors[i%colors.length]};left:50%;top:50%;`;
-          const angle = (Math.PI * 2 * i) / 40;
-          const dist = 100 + Math.random() * 220;
-          p.style.setProperty('--tx', Math.cos(angle) * dist + 'px');
-          p.style.setProperty('--ty', Math.sin(angle) * dist + 'px');
-          const sz = (4 + Math.random() * 7) + 'px';
-          p.style.width = sz; p.style.height = sz;
-          particleHost.appendChild(p);
-          setTimeout(() => p.classList.add('burst'), 30 + Math.random() * 100);
-        }
-      }
+      // Screen-reader-only full code (tiles are aria-hidden).
+      if (codeSr) codeSr.textContent = code;
 
-      // Count up percentage — rAF for smooth counting
-      function countUp(target, duration, onDone) {
-        const start = performance.now();
-        function frame(now) {
-          const elapsed = now - start;
-          const t = Math.min(elapsed / duration, 1);
-          const eased = 1 - Math.pow(1 - t, 2); // ease out quad
-          counter.textContent = Math.round(eased * target);
-          if (t < 1) {
-            requestAnimationFrame(frame);
-          } else {
-            counter.textContent = target;
-            if (onDone) onDone();
-          }
-        }
-        requestAnimationFrame(frame);
-      }
+      // Percentage value — suffix ("% OFF" / "% DESC.") is dict-driven via
+      // data-i18n="discount.off" on the sibling span and stays untouched.
+      pctNum.textContent = String(dream.percentage);
 
-      // ---- SEQUENCE ----
+      // Force layout commit so the baseline (hidden) state paints before
+      // the .is-visible class flips descendant target opacity. Without this
+      // the browser may batch and skip transitions.
+      void cert.offsetWidth;
 
-      // Phase 1: Fade in intro label (0 → 0.8s)
-      setTimeout(() => { intro.style.transition = 'opacity 0.5s ease'; intro.style.opacity = '1'; }, 100);
+      // Activate. CSS transitions + transition-delays on .reveal-cert
+      // descendants run the sequence:
+      //   100→500ms   card settle + eyebrow
+      //   500→1300ms  tile cascade (~9 elements × 80ms stagger)
+      //   1400→1700ms percentage stamp
+      //   1750→2050ms subtitle settle
+      cert.classList.add('is-visible');
 
-      // Phase 2: Show slot machine (0.9s)
-      setTimeout(() => {
-        intro.style.opacity = '0';
-        setTimeout(() => {
-          slotWrap.style.display = 'block';
-          slotWrap.style.opacity = '0';
-          slotWrap.style.transition = 'opacity 0.4s ease';
-          setTimeout(() => { slotWrap.style.opacity = '1'; }, 50);
-
-          // Drop DREAM letters in one by one
-          const letters = ['sl0','sl1','sl2','sl3','sl4'];
-          letters.forEach((id, i) => {
-            setTimeout(() => {
-              const el = document.getElementById(id);
-              if (el) el.classList.add('locked');
-            }, i * 120);
-          });
-
-          // Show separator after letters
-          setTimeout(() => {
-            if (sep) sep.classList.add('locked');
-          }, letters.length * 120 + 80);
-
-          // Spin reels sequentially after letters finish
-          const reelStart = letters.length * 120 + 300;
-          const w0 = document.querySelector('#reel0').parentElement;
-          const w1 = document.querySelector('#reel1').parentElement;
-          const w2 = document.querySelector('#reel2').parentElement;
-
-          setTimeout(() => {
-            spinReel(r0, w0, rows0, () => {
-              setTimeout(() => {
-                spinReel(r1, w1, rows1, () => {
-                  setTimeout(() => {
-                    spinReel(r2, w2, rows2, () => {
-
-                      // All digits locked — fire ring + burst
-                      ring.classList.add('pulse');
-                      fireBurst();
-
-                      // Fade in pct counter
-                      setTimeout(() => {
-                        pctWrap.style.opacity = '1';
-                        countUp(STORE_DISCOUNT, 1200, () => {
-                          // Show subtitle
-                          setTimeout(() => {
-                            subtitle.style.opacity = '1';
-                            // Hold the final state so the customer reads the
-                            // discount, THEN fade out. (Previously this was a
-                            // fixed 9s timer that could race the animation.)
-                            setTimeout(() => {
-                              overlay.classList.add('fade-out');
-                              setTimeout(() => {
-                                overlay.style.display = 'none';
-                                overlay.classList.add('hidden');
-                              }, 700);
-                            }, 2600);
-                          }, 200);
-                        });
-                      }, 300);
-
-                    });
-                  }, 250); // gap between reel 2 and 3
-                });
-              }, 350); // gap between reel 1 and 2
-            });
-          }, reelStart);
-
-        }, 300);
-      }, 900);
+      // Auto-dismiss: hold ~1.25s after subtitle, then fade out 550ms.
+      setTimeout(function() {
+        overlay.classList.add('fade-out');
+        setTimeout(function() {
+          overlay.style.display = 'none';
+          overlay.classList.add('hidden');
+        }, 550);
+      }, 3300);
     }
 
     window.showResults = function() {
@@ -8531,9 +8573,9 @@
       _renderResults();
       showScreen('resultsScreen');
 
-      // Discount reveal animation no longer auto-fires here — moved to
-      // RSA-tap-triggered playSlotMachineReveal() called from the hf2Screen
-      // discount button (see renderHf2DiscountButton). The discount stays
+      // Reveal animation no longer auto-fires here — moved to
+      // RSA-tap-triggered playSavingsPassReveal() called from the hf2Screen
+      // reveal button (see renderHf2DiscountButton). The Savings Pass stays
       // unrevealed until the RSA chooses to reveal it during the close.
 
       // Log full analytics summary
@@ -9676,11 +9718,12 @@
     }
 
     // ---- Action buttons ------------------------------------------------------
-    // Discount button: pre-reveal state shows "DREAM discount / Reveal for
-    // customer →". Tap fires the slot-machine animation and transitions the
-    // button to the --revealed state showing the code + percentage. Idempotent
-    // across screen revisits within a session — startOver() clears the
-    // --revealed class so a fresh quiz session re-renders the pre-reveal state.
+    // Reveal button: pre-reveal state shows "Savings Pass / Reveal for
+    // customer →". Tap fires the savings pass certificate reveal and
+    // transitions the button to the --revealed state showing the code +
+    // percentage. Idempotent across screen revisits within a session —
+    // startOver() clears the --revealed class so a fresh quiz session
+    // re-renders the pre-reveal state.
     function renderHf2DiscountButton() {
       var btn = document.getElementById('hf2DiscountBtn');
       if (!btn) return;
@@ -9702,7 +9745,7 @@
         var dreamCode = generateDreamCode(analytics.sessionId);
         if (leftSpan)  leftSpan.textContent  = dreamCode.code;
         if (rightSpan) rightSpan.textContent = dreamCode.percentage + (es ? '% de descuento' : '% off');
-        playSlotMachineReveal();
+        playSavingsPassReveal();
       };
     }
 
