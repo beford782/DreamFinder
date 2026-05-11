@@ -4268,6 +4268,93 @@
       .noct-accessories__animated-in {
         opacity: 1 !important;
       }
+      .results-reveal-overlay,
+      .results-reveal-overlay .results-reveal {
+        transition: none !important;
+      }
+      .results-reveal-overlay .results-reveal__dots span {
+        animation: none !important;
+        opacity: 0.7 !important;
+        transform: none !important;
+      }
+    }
+
+    /* === Results transition overlay ===
+       Customer-only profile→results perceptual transition. Top-level
+       overlay under <body> so position:fixed/inset:0 resolves against
+       the viewport (same reasoning as #discountRevealOverlay). Shown
+       by startResultsReveal() on the profile CTA tap and hidden ~950ms
+       later before window.showResults() runs unchanged. Independent of
+       #discountRevealOverlay and playSavingsPassReveal. */
+    .results-reveal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(5, 7, 10, 0.82);
+      opacity: 0;
+      transition: opacity 240ms ease-out;
+      pointer-events: none;
+    }
+    .results-reveal-overlay.is-visible {
+      display: flex;
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .results-reveal {
+      text-align: center;
+      max-width: 22rem;
+      padding: 2.25rem 2rem;
+      border: 1px solid color-mix(in srgb, var(--color-accent) 38%, transparent);
+      border-radius: 14px;
+      background: linear-gradient(180deg, rgba(20,23,28,0.94), rgba(8,11,16,0.94));
+      box-shadow: 0 18px 60px rgba(0,0,0,0.5);
+      transform: translateY(8px);
+      opacity: 0;
+      transition: transform 320ms cubic-bezier(0.2,0.7,0.2,1), opacity 320ms ease-out;
+    }
+    .results-reveal-overlay.is-visible .results-reveal {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    .results-reveal__dots {
+      display: inline-flex;
+      gap: 0.5rem;
+      margin-bottom: 1.1rem;
+    }
+    .results-reveal__dots span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--color-accent);
+      opacity: 0.35;
+      /* One-shot light-up-and-stay; per-dot animation-delay sequences the
+         sweep across the overlay hold. Baseline opacity stays 0.35 until
+         the per-dot delay elapses. animation-fill-mode:forwards locks each
+         dot in its lit state for the rest of the overlay's lifetime. */
+      animation: resultsRevealDot 520ms cubic-bezier(0.2, 0.7, 0.2, 1) 0.4s forwards;
+    }
+    .results-reveal__dots span:nth-child(2) { animation-delay: 1.2s; }
+    .results-reveal__dots span:nth-child(3) { animation-delay: 2s; }
+    @keyframes resultsRevealDot {
+      0%   { opacity: 0.35; transform: translateY(0); }
+      60%  { opacity: 1;    transform: translateY(-3px); }
+      100% { opacity: 0.85; transform: translateY(-2px); }
+    }
+    .results-reveal__title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.4rem;
+      color: #fff;
+      letter-spacing: 0.01em;
+      margin-bottom: 0.5rem;
+      line-height: 1.25;
+    }
+    .results-reveal__subtitle {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.72);
+      line-height: 1.45;
     }
 
     /* Slot letter tiles (D R E A M) */
@@ -6299,7 +6386,7 @@
       <div class="noct-profile-meta-strip" id="profileMetaStrip"></div>
       <div class="noct-profile-priorities-heading" id="profilePrioritiesHeading">Your top priorities</div>
       <div class="noct-profile-priorities" id="profilePriorities"></div>
-      <button class="noct-profile-cta" id="profileCta" onclick="showResults()" ontouchend="event.preventDefault();showResults();"></button>
+      <button class="noct-profile-cta" id="profileCta" onclick="window.startResultsReveal()" ontouchend="event.preventDefault();window.startResultsReveal();"></button>
       <button class="noct-profile-secondary" id="profileSecondary" onclick="event.preventDefault();window.showScreen('reviewScreen');window.renderReview();" ontouchend="event.preventDefault();window.showScreen('reviewScreen');window.renderReview();"></button>
     </div>
   </div>
@@ -6349,6 +6436,23 @@
         </div>
         <div class="reveal-cert__subtitle" data-i18n="discount.show_specialist">Yours to use in store today.</div>
       </div>
+    </div>
+  </div>
+
+  <!-- RESULTS TRANSITION OVERLAY — customer-only profile→results
+       perceptual transition. Top-level under <body> for the same
+       position:fixed/inset:0 reasoning that motivated the
+       #discountRevealOverlay relocation. Shown by startResultsReveal()
+       on the profile CTA tap, hidden ~950ms later, then
+       window.showResults() runs unchanged. Does not touch
+       #discountRevealOverlay or playSavingsPassReveal. -->
+  <div class="results-reveal-overlay" id="resultsRevealOverlay" role="status" aria-live="polite" aria-busy="true" aria-hidden="true">
+    <div class="results-reveal" id="resultsReveal">
+      <div class="results-reveal__dots" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </div>
+      <div class="results-reveal__title" id="resultsRevealTitle"></div>
+      <div class="results-reveal__subtitle" id="resultsRevealSubtitle"></div>
     </div>
   </div>
 
@@ -8687,6 +8791,50 @@
         }, 550);
       }, 3700);
     }
+
+    // Customer-only profile→results perceptual transition. Wrapper is the
+    // only thing #profileCta calls; window.showResults() below is untouched
+    // and remains the canonical entry point for results rendering. Guard
+    // prevents iPad onclick+ontouchend dual-fire and any re-tap during the
+    // hold; flag clears in the timeout so startOver leaves no stale state.
+    // If overlay nodes are missing, fall straight through to showResults() —
+    // the transition is perceptual polish, never gating.
+    window.startResultsReveal = function() {
+      if (window._resultsRevealInFlight) return;
+      var overlay = document.getElementById('resultsRevealOverlay');
+      var titleEl = document.getElementById('resultsRevealTitle');
+      var subEl   = document.getElementById('resultsRevealSubtitle');
+      if (!overlay || !titleEl || !subEl) { window.showResults(); return; }
+      window._resultsRevealInFlight = true;
+      var es = currentLang === 'es';
+      titleEl.textContent = es ? 'Preparando tus mejores opciones' : 'Building your mattress matches';
+      subEl.textContent   = es ? 'Priorizando comodidad, soporte y tu forma de dormir.' : 'Prioritizing comfort, support, and sleep style.';
+      overlay.style.display = 'flex';
+      overlay.setAttribute('aria-hidden', 'false');
+      // Double rAF so the browser paints the baseline (display:flex with
+      // opacity:0 and card translateY:8px) before .is-visible attaches —
+      // mirrors the playSavingsPassReveal sequencing pattern so the
+      // transition kicks rather than snapping on first paint.
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          overlay.classList.add('is-visible');
+        });
+      });
+      setTimeout(function() {
+        overlay.classList.remove('is-visible');
+        overlay.style.display = 'none';
+        overlay.setAttribute('aria-hidden', 'true');
+        window._resultsRevealInFlight = false;
+        // Bail if the customer navigated off the profile screen during the
+        // hold (idle timeout reset, secondary tap to review, etc.). Showing
+        // results from a non-profile origin would jump out of whatever screen
+        // they're now on.
+        var profileScreen = document.getElementById('profileScreen');
+        if (profileScreen && profileScreen.classList.contains('active')) {
+          window.showResults();
+        }
+      }, 2750);
+    };
 
     window.showResults = function() {
       document.getElementById('progressFill').style.width = '100%';
