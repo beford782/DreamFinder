@@ -8228,16 +8228,15 @@
       }
 
       // ----- CTA + SECONDARY ACTION -----
-      // Brief "scoring mattresses…" hold on the CTA so the reveal feels earned.
+      // The 2.75s startResultsReveal() overlay covers the perceptual reveal
+      // moment, so the CTA renders with its actionable label immediately —
+      // the earlier 1800ms "Scoring…" pre-tap hold was redundant with the
+      // post-tap overlay's "Building your mattress matches" framing.
       var secondaryBtn = document.getElementById('profileSecondary');
       if (secondaryBtn) secondaryBtn.textContent = es ? '← Editar mis respuestas' : '← Edit my answers';
       var ctaBtn = document.getElementById('profileCta');
       if (ctaBtn) {
-        var finalLabel = es ? 'Muéstrame Mis 3 Mejores Opciones →' : 'Show Me My Top 3 Picks →';
-        ctaBtn.textContent = es ? 'Evaluando colchones según tu perfil…' : 'Scoring mattresses against your profile…';
-        setTimeout(function() {
-          ctaBtn.textContent = finalLabel;
-        }, 1800);
+        ctaBtn.textContent = es ? 'Muéstrame Mis 3 Mejores Opciones →' : 'Show Me My Top 3 Picks →';
       }
 
       showScreen('profileScreen');
@@ -8811,6 +8810,7 @@
       subEl.textContent   = es ? 'Priorizando comodidad, soporte y tu forma de dormir.' : 'Prioritizing comfort, support, and sleep style.';
       overlay.style.display = 'flex';
       overlay.setAttribute('aria-hidden', 'false');
+      overlay.setAttribute('aria-busy', 'true');
       // Double rAF so the browser paints the baseline (display:flex with
       // opacity:0 and card translateY:8px) before .is-visible attaches —
       // mirrors the playSavingsPassReveal sequencing pattern so the
@@ -8824,6 +8824,7 @@
         overlay.classList.remove('is-visible');
         overlay.style.display = 'none';
         overlay.setAttribute('aria-hidden', 'true');
+        overlay.setAttribute('aria-busy', 'false');
         window._resultsRevealInFlight = false;
         // Bail if the customer navigated off the profile screen during the
         // hold (idle timeout reset, secondary tap to review, etc.). Showing
