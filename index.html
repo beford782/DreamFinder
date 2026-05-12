@@ -1312,10 +1312,7 @@
       border-color: var(--color-accent);
     }
 
-    /* Result cards are the tap surface for the drawer. Cursor and a quiet
-       border-color hover hint at the affordance without making the cards feel
-       like sales chrome. The actual click is routed by the delegated handler
-       at the bottom of the page script; cards stay plain div elements. */
+    /* Cards are the tap surface; click is routed by the delegated handler at end of script. */
     .noct-toppick,
     .noct-support-card {
       cursor: pointer;
@@ -1331,18 +1328,14 @@
       transform: scale(0.998);
     }
 
-    /* Sub-cluster wrapping "View details" + "Save" so save stays right-aligned
-       with details immediately to its left, while the stock label remains in
-       its original left position via the parent's space-between. */
     .noct-card-action-cluster {
       display: flex;
       align-items: center;
+      flex-wrap: wrap;
+      justify-content: flex-end;
       gap: 10px;
     }
 
-    /* Secondary tap affordance — quieter than .noct-save-btn so save remains
-       the primary action. No inline handler; clicks bubble to the delegated
-       card-tap path which opens the mattress drawer. */
     .noct-card-details {
       background: transparent;
       color: var(--color-text-subtle);
@@ -10549,6 +10542,22 @@
       modal.classList.remove('visible');
     };
 
+    // Build the prev/next order list from result-card siblings only, then open
+    // the drawer. Narrower than a bare [data-tier][data-id] sweep so unrelated
+    // elements that happen to grow those attrs can't sneak into the ordering.
+    function openResultCardDrawer(card) {
+      if (!card) return;
+      var id = card.getAttribute('data-id');
+      var tier = card.getAttribute('data-tier');
+      var orderIds = Array.from(
+        document.querySelectorAll(
+          '.noct-toppick[data-tier="' + tier + '"][data-id], ' +
+          '.noct-support-card[data-tier="' + tier + '"][data-id]'
+        )
+      ).map(function(c) { return c.getAttribute('data-id'); });
+      window.openMattressDrawer(id, orderIds);
+    }
+
     // ===== Unified delegated tap handlers =====
     // `touch-action: manipulation` is set on all tappable elements, so iOS
     // fires `click` within ~50ms of touchend. One listener handles everything.
@@ -10572,15 +10581,19 @@
       var soBtn = e.target.closest('.js-start-over');
       if (soBtn) { e.preventDefault(); window.startOver(); return; }
 
+      // Explicit details button — opens the drawer via the same helper as a card tap.
+      var detailsBtn = e.target.closest('.noct-card-details');
+      if (detailsBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        openResultCardDrawer(detailsBtn.closest('.noct-toppick, .noct-support-card'));
+        return;
+      }
+
       // Mattress result cards → open drawer
       var card = e.target.closest('.noct-toppick, .noct-support-card');
       if (card) {
-        var id = card.getAttribute('data-id');
-        var tier = card.getAttribute('data-tier');
-        var orderIds = Array.from(
-          document.querySelectorAll('[data-tier="' + tier + '"][data-id]')
-        ).map(function(c) { return c.getAttribute('data-id'); });
-        window.openMattressDrawer(id, orderIds);
+        openResultCardDrawer(card);
         return;
       }
     });
