@@ -4337,7 +4337,7 @@
        Customer-only profile→results perceptual transition. Top-level
        overlay under <body> so position:fixed/inset:0 resolves against
        the viewport (same reasoning as #discountRevealOverlay). Shown
-       by startResultsReveal() on the profile CTA tap and hidden ~950ms
+       by startResultsReveal() on the profile CTA tap and hidden ~2.75s
        later before window.showResults() runs unchanged. Independent of
        #discountRevealOverlay and playSavingsPassReveal. */
     .results-reveal-overlay {
@@ -6497,7 +6497,7 @@
        perceptual transition. Top-level under <body> for the same
        position:fixed/inset:0 reasoning that motivated the
        #discountRevealOverlay relocation. Shown by startResultsReveal()
-       on the profile CTA tap, hidden ~950ms later, then
+       on the profile CTA tap, hidden ~2.75s later, then
        window.showResults() runs unchanged. Does not touch
        #discountRevealOverlay or playSavingsPassReveal. -->
   <div class="results-reveal-overlay" id="resultsRevealOverlay" role="status" aria-live="polite" aria-busy="true" aria-hidden="true">
