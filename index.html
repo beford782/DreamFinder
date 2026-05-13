@@ -10319,6 +10319,7 @@
       if (panel.contains(event.target)) return;
       if (strip && strip.contains(event.target)) return;
       window.toggleHf2RsaPanel('close');
+      event.stopImmediatePropagation();
     });
 
     window._removePick = function(id) {
