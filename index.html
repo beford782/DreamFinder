@@ -8309,6 +8309,7 @@
       tierViews: { gold: 0, silver: 0, bronze: 0 },
       cardExpands: {},
       accessoriesViewed: false,
+      selectedAccessories: [],
       topPick: null,
       events: [],
       log: function(event, data) {
@@ -9160,7 +9161,10 @@
             matchPct: m.matchPct,
             imageUrl: toAbsoluteImageUrl(m.imageUrl)
           }));
-      const accList = (analytics.recommendedAccessories || []).map(a => Object.assign({}, a, {
+      const _selectedAcc = analytics.selectedAccessories || [];
+      const _recommendedAcc = analytics.recommendedAccessories || [];
+      const _accSource = _selectedAcc.length ? _selectedAcc : _recommendedAcc;
+      const accList = _accSource.map(a => Object.assign({}, a, {
         imageUrl: toAbsoluteImageUrl(a.imageUrl)
       }));
 
@@ -10364,7 +10368,7 @@
         ? count + (count === 1 ? ' artículo agregado a tu lista' : ' artículos agregados a tu lista')
         : count + (count === 1 ? ' item added to your list' : ' items added to your list');
       if (typeof analytics !== 'undefined') {
-        analytics.recommendedAccessories = Object.entries(window._accCart).map(([k,v]) => ({ name: v.name, category: v.category, imageUrl: v.imageUrl || '' }));
+        analytics.selectedAccessories = Object.entries(window._accCart).map(([k,v]) => ({ name: v.name, category: v.category, imageUrl: v.imageUrl || '' }));
         window._updatePicksBadge && window._updatePicksBadge();
       }
     };
@@ -10408,6 +10412,7 @@
       analytics.topPick = null;
       analytics.allMatches = [];
       analytics.recommendedAccessories = [];
+      analytics.selectedAccessories = [];
       analytics.profileName = null;
       analytics.profileSubtitle = null;
       document.getElementById('profileScreen').classList.remove('animate');
