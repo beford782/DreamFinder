@@ -7909,8 +7909,8 @@
         const firmScore = Math.max(0, 50 - diff * 10);
         scores[m.id] += firmScore;
         if (diff >= 4) scores[m.id] -= 20;
-        if (diff <= 1) matchReasons[m.id].push(`Matches your firmness preference (${firmnessVal}/10)`);
-        else if (diff <= 2) matchReasons[m.id].push(`Close to your preferred firmness`);
+        if (diff <= 1) matchReasons[m.id].push(currentLang === 'es' ? `Coincide con tu preferencia de firmeza (${firmnessVal}/10)` : `Matches your firmness preference (${firmnessVal}/10)`);
+        else if (diff <= 2) matchReasons[m.id].push(currentLang === 'es' ? `Cerca de tu firmeza preferida` : `Close to your preferred firmness`);
       });
 
       // 2. Feature scoring from all other answers
@@ -9287,6 +9287,7 @@
       const position = answers.sleep_position || '';
       const temp = answers.temperature || '';
       const issues = answers.sleep_issues || [];
+      const health = answers.health_conditions || [];
       const budget = answers.budget || '';
       const _es = currentLang === 'es';
       const reasonMap = {
@@ -9308,7 +9309,7 @@
         if (temp === 'hot' && a.matchScores.cooling) { score += a.matchScores.cooling; reasons.push(reasonMap.cooling); }
         if (temp === 'hot' && a.matchScores.hot) { score += a.matchScores.hot; if (!reasons.includes(reasonMap.cooling)) reasons.push(reasonMap.hot); }
         if (issues.includes('back_pain') && a.matchScores.back_pain) { score += a.matchScores.back_pain; reasons.push(reasonMap.back_pain); }
-        if (issues.includes('partner') && a.matchScores.snoring) { score += a.matchScores.snoring; reasons.push(reasonMap.snoring); }
+        if (health.includes('snoring') && a.matchScores.snoring) { score += a.matchScores.snoring; reasons.push(reasonMap.snoring); }
         if (budget === 'premium' && a.matchScores.premium) { score += a.matchScores.premium; reasons.push(reasonMap.premium); }
         if (reasons.length === 0) reasons.push(reasonMap.default);
         return { ...a, score, reasons };
