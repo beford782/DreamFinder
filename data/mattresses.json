@@ -565,7 +565,7 @@
                        "firmnessLabel":  "Plush",
                        "locallyMade":  true,
                        "features":  [
-                                        "medium",
+                                        "plush",
                                         "cooling",
                                         "sereneFoam",
                                         "gelMemoryFoam",
@@ -685,7 +685,7 @@
                        "firmnessLabel":  "Firm",
                        "locallyMade":  true,
                        "features":  [
-                                        "medium",
+                                        "firm",
                                         "cooling",
                                         "sereneFoam",
                                         "gelMemoryFoam",
