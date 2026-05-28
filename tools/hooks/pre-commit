@@ -1,0 +1,54 @@
+#!/bin/sh
+# DreamFinder — pre-commit guard: keep data/mattresses.json in sync with the CSV.
+#
+# CLAUDE.md rule: "Never commit CSV changes without also committing the
+# regenerated JSON." When data/mattresses.csv or data/mattresses-es.csv is
+# staged, this re-runs build-data.ps1 and refuses the commit if the staged
+# mattresses.json doesn't match a fresh build.
+#
+# Escape hatch (rare — e.g. committing a deliberately partial CSV mid-edit):
+#   GIT_SKIP_CSV_BUILD=1 git commit ...
+
+set -u
+
+# Only act when a mattress source CSV is part of this commit.
+if ! git diff --cached --name-only | grep -qE '^data/mattresses(-es)?\.csv$'; then
+    exit 0
+fi
+
+if [ "${GIT_SKIP_CSV_BUILD:-0}" = "1" ]; then
+    echo "[pre-commit] GIT_SKIP_CSV_BUILD=1 — skipping CSV/JSON sync check." >&2
+    exit 0
+fi
+
+# Locate a PowerShell to run the build.
+if command -v pwsh >/dev/null 2>&1; then PS=pwsh
+elif command -v powershell >/dev/null 2>&1; then PS=powershell
+else
+    echo "[pre-commit] REFUSED: no pwsh/powershell found to run build-data.ps1." >&2
+    echo "             Skip with GIT_SKIP_CSV_BUILD=1 if intentional." >&2
+    exit 1
+fi
+
+# Regenerate data/mattresses.json from the CSV.
+if ! "$PS" -NoProfile -ExecutionPolicy Bypass -File ./build-data.ps1 >/dev/null; then
+    echo "[pre-commit] REFUSED: build-data.ps1 failed — CSV may be malformed." >&2
+    exit 1
+fi
+
+# Fresh JSON now in the working tree. If it differs from what's staged, the
+# commit carries a stale (or unstaged) mattresses.json.
+if ! git diff --quiet -- data/mattresses.json; then
+    echo "" >&2
+    echo "[pre-commit] REFUSED: data/mattresses.json is out of sync with the CSV." >&2
+    echo "" >&2
+    echo "  build-data.ps1 just regenerated it for you. Stage it and re-commit:" >&2
+    echo "" >&2
+    echo "    git add data/mattresses.json" >&2
+    echo "" >&2
+    echo "  To bypass (rare), commit with GIT_SKIP_CSV_BUILD=1." >&2
+    echo "" >&2
+    exit 1
+fi
+
+exit 0
