@@ -4337,7 +4337,7 @@
        Customer-only profile→results perceptual transition. Top-level
        overlay under <body> so position:fixed/inset:0 resolves against
        the viewport (same reasoning as #discountRevealOverlay). Shown
-       by startResultsReveal() on the profile CTA tap and hidden ~2.75s
+       by startResultsReveal() on the profile CTA tap and hidden ~1.2s
        later before window.showResults() runs unchanged. Independent of
        #discountRevealOverlay and playSavingsPassReveal. */
     .results-reveal-overlay {
@@ -4388,10 +4388,10 @@
          sweep across the overlay hold. Baseline opacity stays 0.35 until
          the per-dot delay elapses. animation-fill-mode:forwards locks each
          dot in its lit state for the rest of the overlay's lifetime. */
-      animation: resultsRevealDot 520ms cubic-bezier(0.2, 0.7, 0.2, 1) 0.4s forwards;
+      animation: resultsRevealDot 520ms cubic-bezier(0.2, 0.7, 0.2, 1) 0.14s forwards;
     }
-    .results-reveal__dots span:nth-child(2) { animation-delay: 1.2s; }
-    .results-reveal__dots span:nth-child(3) { animation-delay: 2s; }
+    .results-reveal__dots span:nth-child(2) { animation-delay: 0.42s; }
+    .results-reveal__dots span:nth-child(3) { animation-delay: 0.68s; }
     @keyframes resultsRevealDot {
       0%   { opacity: 0.35; transform: translateY(0); }
       60%  { opacity: 1;    transform: translateY(-3px); }
@@ -6499,7 +6499,7 @@
        perceptual transition. Top-level under <body> for the same
        position:fixed/inset:0 reasoning that motivated the
        #discountRevealOverlay relocation. Shown by startResultsReveal()
-       on the profile CTA tap, hidden ~2.75s later, then
+       on the profile CTA tap, hidden ~1.2s later, then
        window.showResults() runs unchanged. Does not touch
        #discountRevealOverlay or playSavingsPassReveal. -->
   <div class="results-reveal-overlay" id="resultsRevealOverlay" role="status" aria-live="polite" aria-busy="true" aria-hidden="true">
@@ -8284,7 +8284,7 @@
       }
 
       // ----- CTA + SECONDARY ACTION -----
-      // The 2.75s startResultsReveal() overlay covers the perceptual reveal
+      // The ~1.2s startResultsReveal() overlay covers the perceptual reveal
       // moment, so the CTA renders with its actionable label immediately —
       // the earlier 1800ms "Scoring…" pre-tap hold was redundant with the
       // post-tap overlay's "Building your mattress matches" framing.
@@ -8910,7 +8910,7 @@
         if (profileScreen && profileScreen.classList.contains('active')) {
           window.showResults();
         }
-      }, 2750);
+      }, 1200);
     };
 
     window.showResults = function() {
