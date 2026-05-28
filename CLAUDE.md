@@ -133,6 +133,21 @@ If `data\mattresses-es.csv` exists, merges Spanish translations as `tags_es`,
 Always run this before committing if the CSV was changed.
 Never commit CSV changes without also committing the regenerated JSON.
 
+### Git hooks (one-time activation per clone)
+This repo ships hooks in `tools/hooks/`, activated via `core.hooksPath`.
+Git does **not** auto-enable hooks from a clone for security reasons, so on a
+**fresh clone (new machine, or a new retailer repo forked from this one)** run
+once:
+```
+git config core.hooksPath tools/hooks
+```
+Without this, the hook files exist but never fire. Current hooks:
+- `pre-push` — refuses any non-fast-forward push to `main` (stale-local-main guard).
+- `pre-commit` — when a mattress CSV is staged, re-runs `build-data.ps1` and
+  refuses the commit if `data/mattresses.json` is out of sync. Enforces the
+  "never commit CSV without regenerated JSON" rule above. Escape hatch:
+  `GIT_SKIP_CSV_BUILD=1 git commit ...`. Requires `pwsh` or `powershell` on PATH.
+
 ---
 
 ## Bilingual / i18n Architecture — Critical Rules
