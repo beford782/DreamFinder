@@ -7173,6 +7173,30 @@
     // ----- MATTRESS DATA & STORE CONFIG (loaded from external JSON) -----
     let MATTRESSES = { gold: [], silver: [], bronze: [] };
     let STORE_CONFIG = {};
+    // Set true when the core data/config fetch fails hard (bad HTTP or unparseable
+    // JSON). startQuiz reads this to fail fast instead of retrying forever.
+    let _dataLoadFailed = false;
+
+    // Kiosk staff-notify error surface. Inline bilingual copy (NOT dict keys) —
+    // the dictionary fetch can fail too, so the error must not depend on it.
+    // If the overlay markup hasn't been parsed yet (a fetch failing extremely
+    // early), defer once until DOMContentLoaded.
+    function showDataError() {
+      _dataLoadFailed = true;
+      var overlay = document.getElementById('dataErrorOverlay');
+      if (!overlay) {
+        document.addEventListener('DOMContentLoaded', showDataError, { once: true });
+        return;
+      }
+      var textEl = document.getElementById('dataErrorText');
+      if (textEl) {
+        textEl.textContent = currentLang === 'es'
+          ? 'Tenemos problemas para cargar. Por favor avise a un miembro del equipo.'
+          : "We're having trouble loading. Please notify a team member.";
+      }
+      overlay.setAttribute('aria-hidden', 'false');
+      overlay.classList.add('visible');
+    }
 
     (async function loadAppData() {
       try {
@@ -7180,6 +7204,8 @@
           fetch('./data/mattresses.json'),
           fetch('./data/store-config.json')
         ]);
+        if (!mattressRes.ok) throw new Error('mattresses.json HTTP ' + mattressRes.status);
+        if (!storeRes.ok) throw new Error('store-config.json HTTP ' + storeRes.status);
         MATTRESSES = await mattressRes.json();
         STORE_CONFIG = await storeRes.json();
         // White-label: sales-floor pitch/brand prose lives in store-config
@@ -7193,6 +7219,7 @@
         BRAND_NOTES_ES    = (STORE_CONFIG.salesNotes_es && STORE_CONFIG.salesNotes_es.brands) || {};
       } catch (e) {
         console.error('Failed to load app data:', e);
+        showDataError();
       }
       await loadDictionary(currentLang);
       applyStoreConfig();
@@ -7451,15 +7478,28 @@
     }
 
     // ----- START QUIZ -----
+    // Bounded retry: data normally loads before the customer taps start, but on a
+    // slow network the fetch may still be in flight. Retry up to 25× at 400ms
+    // (~10s) then surface the staff-notify error instead of looping forever.
+    var _startQuizAttempts = 0;
     window.startQuiz = function() {
       console.log('startQuiz called');
+      // Hard failure already detected during load — don't bother retrying.
+      if (_dataLoadFailed) { showDataError(); return; }
       // Guard: ensure mattress data finished loading before the quiz begins.
       // On slow networks the fetch in loadAppData() may not have resolved.
       if (!MATTRESSES || !MATTRESSES.gold || MATTRESSES.gold.length === 0) {
-        console.warn('[DreamFinder] Mattress data not loaded yet — retrying in 400ms');
+        _startQuizAttempts++;
+        if (_startQuizAttempts > 25) {
+          console.error('[DreamFinder] Mattress data never loaded after 25 attempts — showing error');
+          showDataError();
+          return;
+        }
+        console.warn('[DreamFinder] Mattress data not loaded yet — retrying in 400ms (attempt ' + _startQuizAttempts + '/25)');
         setTimeout(window.startQuiz, 400);
         return;
       }
+      _startQuizAttempts = 0;
       currentQuestion = 0;
       answers = {};
       editingFromReview = false;
@@ -10549,6 +10589,19 @@
   <style>
     #privacyOverlay { display:none !important; }
     #privacyOverlay.visible { display:flex !important; }
+  </style>
+
+  <!-- Data-load error overlay (kiosk staff-notify). Shown by showDataError() when
+       core data/config fails to load or after startQuiz exhausts its retry cap.
+       Inline bilingual copy is injected by showDataError() (no dict dependency). -->
+  <div id="dataErrorOverlay" role="status" aria-live="polite" aria-hidden="true" style="display:none; position:fixed; inset:0; z-index:10000; background:rgba(0,0,0,0.85); align-items:center; justify-content:center; padding:1.5rem;">
+    <div style="background:#162b45; border:1px solid rgba(212,168,75,0.2); border-radius:16px; max-width:420px; width:100%; padding:2rem 1.75rem; text-align:center;">
+      <div id="dataErrorText" style="font-size:0.95rem; font-weight:600; color:var(--color-gold-bright); line-height:1.6;"></div>
+    </div>
+  </div>
+  <style>
+    #dataErrorOverlay { display:none !important; }
+    #dataErrorOverlay.visible { display:flex !important; }
   </style>
 
   <script>
