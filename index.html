@@ -3957,32 +3957,6 @@
       color: var(--cream);
     }
 
-    /* Tier tabs */
-    .tier-tabs {
-      display: flex;
-      justify-content: center;
-      gap: 0.4rem;
-      margin-bottom: 0.5rem;
-      padding: 0 1rem;
-    }
-
-    .tier-tab {
-      padding: 0.4rem 1rem;
-      border-radius: 50px;
-      border: 1.5px solid rgba(255,255,255,0.1);
-      background: none;
-      color: var(--cream-dim);
-      font-family: inherit;
-      font-size: 0.72rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.25s ease;
-    }
-
-    .tier-tab.active.gold { border-color: var(--tier-gold); background: color-mix(in srgb, var(--tier-gold) 12%, transparent); color: var(--tier-gold); }
-    .tier-tab.active.silver { border-color: var(--tier-silver); background: color-mix(in srgb, var(--tier-silver) 12%, transparent); color: var(--tier-silver); }
-    .tier-tab.active.bronze { border-color: var(--tier-bronze); background: color-mix(in srgb, var(--tier-bronze) 12%, transparent); color: var(--tier-bronze); }
-
     /* Carousel container */
     .carousel-container {
       flex: 1;
@@ -3993,9 +3967,6 @@
     }
 
     /* Mattress cards - Horizontal swipe */
-    .tier-content { display: none; }
-    .tier-content.active { display: flex; }
-
     .mattress-cards {
       flex: 1;
       display: flex;
@@ -4010,28 +3981,6 @@
 
     .mattress-cards::-webkit-scrollbar {
       display: none;
-    }
-
-    /* Pagination dots */
-    .card-dots {
-      display: flex;
-      justify-content: center;
-      gap: 0.4rem;
-      padding: 0.35rem 0;
-    }
-
-    .card-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.2);
-      transition: all 0.2s ease;
-    }
-
-    .card-dot.active {
-      background: var(--gold);
-      width: 18px;
-      border-radius: 3px;
     }
 
     /* Bottom section */
@@ -6168,11 +6117,6 @@
         padding: 1rem 2rem;
       }
       
-      .tier-tab {
-        min-height: 48px;
-        padding: 0.875rem 1.5rem;
-      }
-      
       /* Larger slider thumb for touch */
       .firmness-slider::-webkit-slider-thumb {
         width: 32px;
@@ -6185,7 +6129,7 @@
       }
       
       /* Prevent text selection on tap */
-      .option-card, .cta-btn, .nav-btn, .tier-tab {
+      .option-card, .cta-btn, .nav-btn {
         -webkit-user-select: none;
         user-select: none;
         -webkit-tap-highlight-color: transparent;
@@ -6201,7 +6145,7 @@
     }
 
     /* ===== SMOOTH SCROLLING ===== */
-    .results-container, .tier-content, .mattress-cards {
+    .results-container, .mattress-cards {
       -webkit-overflow-scrolling: touch;
       scroll-behavior: smooth;
     }
