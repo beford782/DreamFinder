@@ -7221,6 +7221,21 @@
         console.error('Failed to load app data:', e);
         showDataError();
       }
+      // Accessories load independently and NON-fatally: a failure here must not
+      // block the quiz/results flow or trip the core dataErrorOverlay. The
+      // accessory render paths already tolerate an empty list, so we degrade to
+      // [] and carry on. Kept out of the Promise.all above so its failure can't
+      // reject the critical mattress/store-config load.
+      try {
+        const accRes = await fetch('./data/accessories.json');
+        if (!accRes.ok) throw new Error('accessories.json HTTP ' + accRes.status);
+        const accData = await accRes.json();
+        if (!Array.isArray(accData)) throw new Error('accessories.json is not an array');
+        ACCESSORIES = accData;
+      } catch (e) {
+        console.warn('[DreamFinder] Could not load accessories — continuing with empty list:', e);
+        ACCESSORIES = [];
+      }
       await loadDictionary(currentLang);
       applyStoreConfig();
       applyLanguageConfig();
@@ -7392,58 +7407,7 @@
     // Fallback: if an image fails to load, it shows a styled placeholder with the product name.
     const ACC_IMAGE_PATH = 'images/accessories/';
 
-    const ACCESSORIES = [
-      // Bases & Foundations (shown first)
-      { id: 'base-bt3000', name: {en: 'BT3000 Power Base', es: 'Base Eléctrica BT3000'}, category: {en: 'Foundations & Support', es: 'Bases y Soportes'}, price: 899,
-        image: 'images/accessories/base-bt3000.jpg',
-        description: {en: 'Head & foot adjustment, wireless remote, USB ports, massage, under-bed LED lighting — 850lb capacity', es: 'Ajuste de cabeza y pies, control inalámbrico, puertos USB, masaje, luces LED — capacidad de 850 lbs'},
-        subType: 'adjustable',
-        matchTags: ['snoring', 'back_pain'], matchScores: { back_pain: 4, snoring: 4, premium: 3 } },
-
-      { id: 'base-foundation', name: {en: 'Regular Foundation', es: 'Base Estándar'}, category: {en: 'Foundations & Support', es: 'Bases y Soportes'}, price: 111,
-        image: 'images/accessories/base-foundation.jpg',
-        description: {en: 'Standard-height foundation — sturdy platform support that replaces a traditional box spring', es: 'Base de altura estándar — soporte de plataforma resistente que reemplaza un box spring tradicional'},
-        subType: 'foundation',
-        matchTags: ['all'], matchScores: { default: 2 } },
-      { id: 'base-lowprofile', name: {en: 'Low Profile Foundation', es: 'Base de Perfil Bajo'}, category: {en: 'Foundations & Support', es: 'Bases y Soportes'}, price: 142,
-        image: 'images/accessories/base-lowprofile.jpg',
-        description: {en: 'Reduced height foundation — ideal for taller mattresses or platform-style bed frames', es: 'Base de altura reducida — ideal para colchones altos o marcos de cama estilo plataforma'},
-        subType: 'low_profile',
-        matchTags: ['all'], matchScores: { default: 2 } },
-      { id: 'base-bunkie', name: {en: 'Bunkie Board', es: 'Tabla Bunkie'}, category: {en: 'Foundations & Support', es: 'Bases y Soportes'}, price: 76,
-        image: 'images/accessories/base-bunkie.jpg',
-        description: {en: 'Ultra-slim 2" support board — distributes weight evenly, perfect for platform beds & bunk beds', es: 'Tabla de soporte ultra delgada de 2" — distribuye el peso uniformemente, perfecta para camas de plataforma y literas'},
-        subType: 'bunkie',
-        matchTags: ['all'], matchScores: { default: 1 } },
-
-      // Pillows (shown second)
-      { id: 'pillow-activedry', name: {en: 'Active Dry Pillow', es: 'Almohada Active Dry'}, category: {en: 'Pillows', es: 'Almohadas'}, price: 120,
-        image: 'images/accessories/pillow-activedry.jpg',
-        description: {en: 'Moisture-wicking memory foam blend with knife-edge multi-level support — all sleep positions', es: 'Tela que absorbe la humedad con espuma de memoria transpirable — mantiene la cabeza y el cuello frescos y secos'},
-        matchTags: ['cooling', 'all_positions'], matchScores: { default: 2, cooling: 2, hot: 2, position_side: 1, position_back: 2, position_stomach: 1 } },
-      { id: 'pillow-activecool', name: {en: 'Active Cool Pillow', es: 'Almohada Active Cool'}, category: {en: 'Pillows', es: 'Almohadas'}, price: 160,
-        image: 'images/accessories/pillow-activecool.jpg',
-        description: {en: 'Advanced active cooling fabric with premium memory foam clusters — conforms to head, neck & shoulders', es: 'Gel de enfriamiento con ventilación — disipa el calor activamente para un sueño fresco toda la noche'},
-        matchTags: ['hot_sleeper', 'cooling'], matchScores: { cooling: 4, hot: 4, position_side: 2, position_back: 2 } },
-      { id: 'pillow-copper-regular', name: {en: 'Copper Ice Pillow', es: 'Almohada Copper Ice'}, category: {en: 'Pillows', es: 'Almohadas'}, price: 0,
-        image: 'images/accessories/copper-ice-regular.jpg',
-        description: {en: 'Copper-infused pillow with cooling technology for natural temperature regulation and pressure relief', es: 'Almohada infundida con cobre y tecnología de enfriamiento para regulación natural de temperatura y alivio de presión'},
-        matchTags: ['cooling', 'hot_sleeper', 'allergies', 'all_positions'], matchScores: { cooling: 3, hot: 3, position_side: 2, position_back: 2, position_stomach: 2, allergies: 2, default: 10 } },
-      { id: 'pillow-copper-surround', name: {en: 'Copper Ice Surround Pillow', es: 'Almohada Copper Ice Surround'}, category: {en: 'Pillows', es: 'Almohadas'}, price: 0,
-        image: 'images/accessories/copper-ice-surround.jpg',
-        description: {en: 'Contoured copper-infused pillow designed to cradle the head and neck for restorative, aligned sleep', es: 'Almohada contorneada infundida con cobre diseñada para acunar la cabeza y el cuello para un sueño alineado y reparador'},
-        matchTags: ['cooling', 'back_pain', 'allergies'], matchScores: { cooling: 3, hot: 3, position_side: 3, position_back: 2, position_stomach: 1, back_pain: 3, allergies: 2, default: 9 } },
-
-      // Mattress Protectors (shown last)
-      { id: 'protector-activedry', name: {en: 'Active Dry Protector', es: 'Protector Active Dry'}, category: {en: 'Protectors', es: 'Protectores'}, price: 100,
-        image: 'images/accessories/protector-activedry.jpg',
-        description: {en: 'Waterproof & breathable — wicks moisture so you stay cool and dry, extends mattress life', es: 'Barrera impermeable con tela transpirable — protege contra derrames y alérgenos sin retener calor'},
-        matchTags: ['all'], matchScores: { default: 3, cooling: 1 } },
-      { id: 'protector-activecool', name: {en: 'Active Cool Protector', es: 'Protector Active Cool'}, category: {en: 'Protectors', es: 'Protectores'}, price: 200,
-        image: 'images/accessories/protector-activecool.jpg',
-        description: {en: 'Advanced cooling + waterproof protection — hypoallergenic, helps you stay in deeper sleep stages longer', es: 'Capa impermeable con enfriamiento — combina protección del colchón con regulación de temperatura'},
-        matchTags: ['hot_sleeper', 'cooling'], matchScores: { cooling: 4, hot: 4, default: 2 } },
-    ];
+    let ACCESSORIES = []; // hydrated from data/accessories.json in loadAppData (white-label: product data is not hardcoded here)
 
     // ----- APP STATE -----
     let currentQuestion = 0;
