@@ -10414,7 +10414,6 @@
       if (!m1 || !m2) return;
 
       // Note which side wins on each stat for subtle highlighting
-      var firmWinner = null; // we'll decide visually via pct instead
       var pctWinner = m1.pct > m2.pct ? 0 : m2.pct > m1.pct ? 1 : null;
 
       function colHtml(data, i) {
