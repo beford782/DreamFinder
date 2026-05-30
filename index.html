@@ -375,9 +375,7 @@
     body:has(#emailScreen.active) .accent-bar,
     body:has(#emailScreen.active) .header,
     body:has(#accessoriesScreen.active) .accent-bar,
-    body:has(#accessoriesScreen.active) .header,
-    body:has(#savedPicksScreen.active) .accent-bar,
-    body:has(#savedPicksScreen.active) .header {
+    body:has(#accessoriesScreen.active) .header {
       display: none;
     }
 
@@ -389,8 +387,7 @@
     body:has(#profileScreen.active) #profileScreen,
     body:has(#resultsScreen.active) #resultsScreen,
     body:has(#emailScreen.active) #emailScreen,
-    body:has(#accessoriesScreen.active) #accessoriesScreen,
-    body:has(#savedPicksScreen.active) #savedPicksScreen {
+    body:has(#accessoriesScreen.active) #accessoriesScreen {
       min-height: 100vh;
       min-height: 100dvh;
     }
@@ -2543,12 +2540,7 @@
       letter-spacing: 0;
     }
 
-    /* Hide pill on the handoff screen itself — you're already viewing your selections.
-       Both screen IDs gated during the parallel-shipping window: savedPicksScreen
-       (legacy markup, still in DOM but unreachable through normal flow post step 4)
-       and hf2Screen (the redesign target). When the legacy markup gets cleaned up
-       post step 5, the savedPicksScreen selector becomes a harmless no-op. */
-    body:has(#savedPicksScreen.active) .noct-picks-pill,
+    /* Hide pill on the handoff screen itself — you're already viewing your selections. */
     body:has(#hf2Screen.active) .noct-picks-pill {
       display: none !important;
     }
@@ -4012,8 +4004,7 @@
          signaling the reveal is a focused moment rather than a screen swap. */
       background: rgba(5, 7, 10, 0.82);
       /* Above cart bar (50), rsa-panel (50), picks pill (100) — overlay must
-         paint over all hf2Screen UI chrome (and savedPicksScreen during the
-         parallel-shipping window). Bumped from 50 in step 5 — pre-existing
+         paint over all hf2Screen UI chrome. Bumped from 50 in step 5 — pre-existing
          latent ordering issue with sibling fixed/sticky elements at z-index 50. */
       z-index: 200;
       /* Hidden by default. Overlay is only made visible by playSlotMachineReveal()
@@ -6454,43 +6445,7 @@
   </div>
 
   <!-- SCREEN: Saved Picks (Salesperson View) -->
-  <div class="screen noct-handoff" id="savedPicksScreen">
-
-    <header class="noct-handoff__intro">
-      <p class="noct-handoff__eyebrow" data-i18n="handoff.summary_label">Your Selections</p>
-      <h2 class="noct-handoff__title" data-i18n="handoff.title" data-i18n-html="true">Your <em>interested</em> picks</h2>
-      <p class="noct-handoff__subtitle" data-i18n="handoff.subtitle">Mattresses you marked as interested.</p>
-    </header>
-
-    <!-- DREAM CODE HERO -->
-    <section class="noct-handoff-hero" id="handoffHero">
-      <p class="noct-handoff-hero__label" data-i18n="handoff.code_label">Customer's Discount Code</p>
-      <p class="noct-handoff-hero__code" id="handoffDreamCode">DREAM&mdash;&mdash;&mdash;</p>
-      <p class="noct-handoff-hero__hint" data-i18n="handoff.code_hint">Apply at checkout for the customer</p>
-    </section>
-
-    <!-- Customer context &mdash; populated by renderCustomerContextCard() -->
-    <div id="customerContextCard"></div>
-
-    <!-- Saved picks &mdash; populated by showSavedPicks() with .noct-handoff-pick markup -->
-    <div class="noct-handoff-picks" id="savedPicksList"></div>
-
-    <div class="noct-handoff-actions">
-      <button
-        class="noct-handoff-btn noct-handoff-btn--ghost"
-        onclick="showScreen('resultsScreen')"
-        ontouchend="event.preventDefault();showScreen('resultsScreen');"
-        data-i18n="handoff.back_to_results">&larr; Back to Results</button>
-      <button
-        class="noct-handoff-btn noct-handoff-btn--primary"
-        onclick="showEmailCapture()"
-        ontouchend="event.preventDefault();showEmailCapture();"
-        data-i18n="handoff.send_results">Send Results to Customer &rarr;</button>
-    </div>
-
-  </div>
-
-  <!-- SCREEN: Handoff v2 (redesign) — parallel to savedPicksScreen, swapped in step 4. -->
+  <!-- SCREEN: Handoff v2 (the live RSA handoff screen). -->
   <!-- No .active class so it's invisible by default. Preview via showScreen('hf2Screen'). -->
   <div class="screen" id="hf2Screen">
 
@@ -9502,62 +9457,10 @@
       twin: 'Twin', twin_xl: 'Twin XL', full: 'Full', queen: 'Queen', king: 'King', cal_king: 'Cal King'
     };
 
-    function renderCustomerContextCard() {
-      var el = document.getElementById('customerContextCard');
-      if (!el) return;
-      var _esC = currentLang === 'es';
-      var profile = analytics.profileName ? (analytics.profileName + ' · ' + (analytics.profileSubtitle || '')) : '';
-      var triggerLbl = TRIGGER_LABELS[answers.trigger] ? L(TRIGGER_LABELS[answers.trigger]) : '';
-      var qualityLbl = QUALITY_LABELS[answers.sleep_quality] ? L(QUALITY_LABELS[answers.sleep_quality]) : '';
-      var ageLbl = AGE_LABELS[answers.current_mattress_age] ? L(AGE_LABELS[answers.current_mattress_age]) : '';
-      var sizeLbl = SIZE_LABELS_SHORT[answers.mattress_size] || '';
-      var firmness = answers.firmness || 5;
-      var firmLbl = _esC
-        ? (firmness <= 3 ? 'Suave' : firmness >= 7 ? 'Firme' : 'Medio')
-        : (firmness <= 3 ? 'Plush' : firmness >= 7 ? 'Firm' : 'Medium');
-      var tempLbl = _esC
-        ? (answers.temperature === 'hot' ? 'Caliente' : answers.temperature === 'cold' ? 'Frío' :
-           answers.temperature === 'opposite' ? 'Mixto' : 'Cómodo')
-        : (answers.temperature === 'hot' ? 'Hot' : answers.temperature === 'cold' ? 'Cold' :
-           answers.temperature === 'opposite' ? 'Mixed' : 'Comfortable');
-      var partnerLbl = _esC
-        ? (answers.partner_sleep === 'partner' ? 'Cama compartida' :
-           answers.partner_sleep === 'family' ? 'Cama familiar' : 'Solo')
-        : (answers.partner_sleep === 'partner' ? 'Shared bed' :
-           answers.partner_sleep === 'family' ? 'Family bed' : 'Solo');
-      var issues = (answers.sleep_issues || []).filter(function(x){ return x !== 'none'; });
-      var issuesLbl = _esC
-        ? (issues.length ? issues.length + ' problema' + (issues.length>1?'s':'') : 'Sin problemas')
-        : (issues.length ? issues.length + ' issue' + (issues.length>1?'s':'') : 'No issues');
-
-      var pills = [];
-      if (sizeLbl) pills.push(sizeLbl);
-      pills.push(firmLbl + (_esC ? '' : ' feel'));
-      if ((_esC ? 'Cómodo' : 'Comfortable') !== tempLbl) pills.push(tempLbl + (_esC ? '' : ' sleeper'));
-      pills.push(partnerLbl);
-      if (ageLbl) pills.push((_esC ? 'Colchón ' : 'Mattress ') + ageLbl);
-      if (qualityLbl) pills.push((_esC ? 'Duerme ' : 'Sleeps ') + qualityLbl);
-      pills.push(issuesLbl);
-
-      el.innerHTML =
-        '<div style="background:linear-gradient(135deg, rgba(212,168,75,0.12), rgba(212,168,75,0.04)); border:1px solid rgba(212,168,75,0.35); border-radius:14px; padding:0.85rem 1rem;">'
-        + (triggerLbl ? '<div style="font-size:0.6rem; text-transform:uppercase; letter-spacing:1.8px; color:var(--gold); font-weight:700; margin-bottom:0.25rem;">' + (_esC ? 'Vino por' : 'Came in for') + '</div>'
-            + '<div style="font-size:1.05rem; font-weight:700; color:var(--cream); margin-bottom:0.55rem;">' + triggerLbl + '</div>' : '')
-        + (profile ? '<div style="font-size:0.7rem; color:var(--cream-dim); margin-bottom:0.5rem;">' + (_esC ? 'Perfil' : 'Profile') + ': <span style="color:var(--gold); font-weight:600;">' + profile + '</span></div>' : '')
-        + '<div style="display:flex; flex-wrap:wrap; gap:0.35rem;">'
-        + pills.map(function(p) {
-            return '<span style="font-size:0.65rem; color:var(--cream); background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); padding:0.25rem 0.55rem; border-radius:999px;">' + p + '</span>';
-          }).join('')
-        + '</div>'
-        + '</div>';
-    }
-
     // === Handoff v2 renderer (step 4) ============================================
     // showSavedPicks is the routing chokepoint — every entry point (header pill,
     // accCartBar, picks badge, internal calls) goes through it. Replacing the body
-    // re-targets all of them to hf2Screen without per-call-site updates. The old
-    // savedPicksScreen markup stays in DOM (per spec) but becomes unreachable
-    // through normal flow; a future commit can clean it up.
+    // re-targets all of them to hf2Screen without per-call-site updates.
     window.showSavedPicks = function() {
       renderHf2();
       showScreen('hf2Screen');
@@ -10604,7 +10507,7 @@
     };
   </script>
 
-  <!-- Floating selections pill — gateway to savedPicksScreen, visible across all post-welcome screens -->
+  <!-- Floating selections pill — gateway to the handoff screen (hf2Screen via showSavedPicks), visible across all post-welcome screens -->
   <button class="noct-picks-pill"
           id="savedPicksBtn"
           onclick="window.showSavedPicks()"
