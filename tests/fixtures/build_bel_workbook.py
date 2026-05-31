@@ -42,13 +42,14 @@ import tempfile
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-# Make `from tests.fixtures import workbook_schema` resolve regardless of cwd by
-# putting the repo root (this file's grandparent's parent) on sys.path first.
+# The shared workbook schema lives under tools/ (a tooling module, not a test
+# fixture). Put the repo root on sys.path so `from tools import workbook_schema`
+# resolves regardless of cwd. (tests depending on tools is the correct direction.)
 REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from tests.fixtures import workbook_schema as schema  # noqa: E402
+from tools import workbook_schema as schema  # noqa: E402
 
 import openpyxl  # noqa: E402
 
@@ -82,37 +83,20 @@ def nested_get(obj: Any, dotted: str) -> Any:
 
 # ── Per-tab value resolvers (schema column key -> source value) ───────────────
 
-# Store Info friendly (non-dotted) keys -> their dotted path inside store-config.
-_STORE_INFO_PATHS = {
-    "storeName": "storeName",
-    "storeKey": "storeKey",
-    "logoMain": "logo.main",
-    "logoSub": "logo.sub",
-    "colorPrimary": "colors.storePrimary",
-    "colorPrimaryLight": "colors.storePrimaryLight",
-    "colorPrimaryGlow": "colors.storePrimaryGlow",
-    "colorAccent": "colors.accent",
-    "gasUrl": "gasUrl",
-    "publicAssetRoot": "publicAssetRoot",
-    "discountCodePrefix": "discount.codePrefix",
-    "discountCodeDigits": "discount.codeDigits",
-}
 # List-valued config fields rendered as a single comma-separated cell.
 _STORE_INFO_LISTS = {"languages", "allowedHosts"}
 
 
 def store_info_value(key: str, config: dict, manifest: dict) -> Any:
-    """Resolve one Store Info column. Manifest keys read manifest.json; text.*/
-    voice.* (and _es) read store-config via dotted path; friendly keys use the
-    map above; list fields are joined."""
+    """Resolve one Store Info column. Every Store Info schema key is now the
+    column's output path: `manifest.*` keys read manifest.json; list fields
+    (languages/allowedHosts) are joined; everything else is a dotted path read
+    straight from store-config."""
     if key.startswith("manifest."):
         return manifest.get(key[len("manifest."):])
     if key in _STORE_INFO_LISTS:
-        vals = config.get(key) or []
+        vals = nested_get(config, key) or []
         return ", ".join(str(v) for v in vals)
-    if key in _STORE_INFO_PATHS:
-        return nested_get(config, _STORE_INFO_PATHS[key])
-    # text.*, text_es.*, voice.*, voice_es.* — dotted into store-config.
     return nested_get(config, key)
 
 

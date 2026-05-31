@@ -95,14 +95,14 @@ STORE_INFO = Tab(
             note="-> storeKey; slug-safe, unique per retailer (localStorage namespace)"),
         col("Languages", "languages", required=True,
             note="comma-sep subset of {en,es} -> languages[]"),
-        col("Logo Line 1", "logoMain", note="-> logo.main"),
-        col("Logo Line 2", "logoSub", note="-> logo.sub"),
+        col("Logo Line 1", "logo.main", note="-> logo.main"),
+        col("Logo Line 2", "logo.sub", note="-> logo.sub"),
 
         # Colors
-        col("Primary Color (hex)", "colorPrimary", required=True, note="-> colors.storePrimary"),
-        col("Primary Color Light (hex)", "colorPrimaryLight", note="-> colors.storePrimaryLight"),
-        col("Primary Color Glow (rgba)", "colorPrimaryGlow", note="-> colors.storePrimaryGlow"),
-        col("Accent Color (hex)", "colorAccent", note="-> colors.accent"),
+        col("Primary Color (hex)", "colors.storePrimary", required=True, note="-> colors.storePrimary"),
+        col("Primary Color Light (hex)", "colors.storePrimaryLight", note="-> colors.storePrimaryLight"),
+        col("Primary Color Glow (rgba)", "colors.storePrimaryGlow", note="-> colors.storePrimaryGlow"),
+        col("Accent Color (hex)", "colors.accent", note="-> colors.accent"),
 
         # Backend / hosting
         col("GAS URL", "gasUrl", note="-> gasUrl; left blank until GAS deploy (manual, §6)"),
@@ -112,8 +112,8 @@ STORE_INFO = Tab(
             note="comma-sep -> store-config.allowedHosts -> generated data/allowed-hosts.js (M1)"),
 
         # Discount / Savings Pass
-        col("Discount Code Prefix", "discountCodePrefix", note="-> discount.codePrefix (default DREAM)"),
-        col("Discount Code Digits", "discountCodeDigits", note="-> discount.codeDigits (int, 3-10)"),
+        col("Discount Code Prefix", "discount.codePrefix", note="-> discount.codePrefix (default DREAM)"),
+        col("Discount Code Digits", "discount.codeDigits", note="-> discount.codeDigits (int, 3-10)"),
 
         # text.* (English UI copy)
         col("Page Title", "text.pageTitle", note="-> text.pageTitle"),

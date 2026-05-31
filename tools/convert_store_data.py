@@ -1,85 +1,115 @@
 #!/usr/bin/env python3
-"""DreamFinder Store Data Converter - mattresses pass (Phase 0 S2).
+"""DreamFinder Store Data Converter - mattresses + config/accessories (S2 + S3).
 
-Reads a completed onboarding workbook (.xlsx) and emits the mattress data files
-the live app's build path consumes:
+Reads a completed onboarding workbook (.xlsx) and emits the data files the live
+app consumes:
 
-    <output-dir>/data/mattresses.csv        (English - the live CSV contract)
-    <output-dir>/data/mattresses-es.csv     (Spanish - only when ES content exists)
+    <output-dir>/data/mattresses.csv        (English - the live CSV contract)   [S2]
+    <output-dir>/data/mattresses-es.csv     (Spanish - only when ES content)     [S2]
+    <output-dir>/data/store-config.json     (16 committed top-level keys)         [S3]
+    <output-dir>/data/accessories.json      (bilingual array, preserved order)    [S3]
 
 and, unless skipped, shells out to <output-dir>/build-data.ps1 to regenerate
-<output-dir>/data/mattresses.json from those CSVs (the existing, trusted path).
+<output-dir>/data/mattresses.json from the CSVs (the existing, trusted path).
 
 Usage (run from the repo root, or anywhere):
 
     python tools/convert_store_data.py <workbook.xlsx> [--output-dir DIR]
            [--build-json | --skip-build-json]
 
-Design (Phase 0 S2, docs/phase0-onboarding-pipeline-spec-2026-05-31.md section3/section4):
-  * Mattresses-only. store-config.json, accessories.json, manifest.json, image
-    normalization, and allowed-hosts.js are LATER phases (S3-S6) and are NOT
-    emitted here. The legacy inline-JS / CSS / footer / --output-html / WebP paths
-    have been retired - the live app fetches JSON/config, never inline constants.
-  * Header-driven and schema-independent: the Mattresses tab's EN headers ARE the
-    live mattresses.csv contract, so we read headers from the workbook and write
-    them straight to CSV in workbook order. ES columns are identified purely by a
-    trailing " (ES)" suffix. (No dependency on the test workbook_schema module;
-    the golden-bundle test guards consistency.)
-  * build-data.ps1 is run from <output-dir> (its $PSScriptRoot scopes it to the
-    output workspace) so it never touches the repo's data/ unless --output-dir is
-    the repo itself (the real onboarding case).
+Design (docs/phase0-onboarding-pipeline-spec-2026-05-31.md sections 3/4):
+  * Mattresses CSVs are header-driven (the Mattresses tab EN headers ARE the live
+    CSV contract). store-config.json / accessories.json are built from the shared
+    tools/workbook_schema.py column->path mapping (single source of truth, also
+    used by the fixture generator and the future create_template rewrite).
+  * NOT emitted here (later phases): image normalization (S4), mattresses.json
+    content (built via build-data.ps1; compared in S4), manifest.json (S5),
+    allowed-hosts.js (S6). allowedHosts is intentionally absent from store-config
+    until S6; rsaList defaults to [].
+  * build-data.ps1 runs from <output-dir> (its $PSScriptRoot scopes it to the
+    output workspace), so it never touches the repo's data/ unless --output-dir is
+    the repo itself.
 
-Dependencies: stdlib + openpyxl (already a repo dependency).
+Dependencies: stdlib + openpyxl. ASCII-only console output.
 """
 
 from __future__ import annotations
 
 import argparse
 import csv
+import json
 import os
 import shutil
 import subprocess
 import sys
 
-import openpyxl
+# The shared schema lives alongside this file in tools/.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import workbook_schema as schema  # noqa: E402
+
+import openpyxl  # noqa: E402
 
 ES_SUFFIX = " (ES)"
 
+# Store Info columns whose store-config value is a list (workbook holds them as a
+# single comma-separated cell).
+STORE_INFO_LISTS = {"languages", "allowedHosts"}
 
-def _to_cell(value) -> str:
-    """Workbook cell -> CSV string. Blank for empty; never coerce numbers
-    (values originate as text and are passed through verbatim)."""
+# Top-level store-config.json key order (committed Bel order) - readability only;
+# canonical comparison is parse-based and order-insensitive.
+STORE_CONFIG_KEY_ORDER = [
+    "storeName", "storeKey", "languages", "logo", "colors", "gasUrl",
+    "publicAssetRoot", "brands", "rsaList", "text", "text_es", "discount",
+    "voice", "voice_es", "salesNotes", "salesNotes_es",
+]
+
+# Per-accessory key order (committed Bel order) - readability only.
+ACCESSORY_KEY_ORDER = [
+    "id", "name", "category", "price", "image", "description",
+    "subType", "matchTags", "matchScores",
+]
+
+
+def _s(value) -> str:
+    """Cell -> string. Blank for None; never coerce numbers when stringifying."""
     if value is None:
         return ""
     return value if isinstance(value, str) else str(value)
 
 
-def read_mattresses_tab(path):
-    """Return (headers, rows). headers in workbook order; rows are dicts
-    header->string. Trailing rows without an id are skipped."""
-    wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
-    if "Mattresses" not in wb.sheetnames:
-        wb.close()
-        raise SystemExit(f"ERROR: workbook {path!r} has no 'Mattresses' tab "
-                         f"(found: {', '.join(wb.sheetnames)})")
-    ws = wb["Mattresses"]
+def _blank(value) -> bool:
+    return value is None or str(value).strip() == ""
 
+
+def set_path(d: dict, dotted: str, value) -> None:
+    """Set a nested value by dotted path, creating intermediate dicts."""
+    parts = dotted.split(".")
+    cur = d
+    for p in parts[:-1]:
+        cur = cur.setdefault(p, {})
+    cur[parts[-1]] = value
+
+
+def read_tab(wb, name):
+    """Return (headers, rows). Values are raw (types preserved). Rows that are
+    entirely blank are skipped. Raises if the tab is missing."""
+    if name not in wb.sheetnames:
+        raise SystemExit(f"ERROR: workbook has no {name!r} tab "
+                         f"(found: {', '.join(wb.sheetnames)})")
+    ws = wb[name]
     header_row = next(ws.iter_rows(min_row=1, max_row=1, values_only=True))
     headers = [h for h in header_row if h is not None]
-
     rows = []
     for vals in ws.iter_rows(min_row=2, values_only=True):
-        d = {h: _to_cell(vals[i] if i < len(vals) else None)
-             for i, h in enumerate(headers)}
-        if not d.get("id", "").strip():
-            continue  # skip blank/trailing rows
-        rows.append(d)
-    wb.close()
+        d = {h: (vals[i] if i < len(vals) else None) for i, h in enumerate(headers)}
+        if any(not _blank(v) for v in d.values()):
+            rows.append(d)
     return headers, rows
 
 
+# -- Mattresses (S2) ----------------------------------------------------------
+
 def write_csv(path, fieldnames, rows):
-    """Write rows (list of dicts) as CSV. utf-8, newline='' for clean quoting."""
     with open(path, "w", encoding="utf-8", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
@@ -92,34 +122,156 @@ def emit_mattress_csvs(headers, rows, data_dir):
     data/mattresses-es.csv. Returns (en_path, es_path_or_None)."""
     en_headers = [h for h in headers if not h.endswith(ES_SUFFIX)]
     es_headers = [h for h in headers if h.endswith(ES_SUFFIX)]
+    mrows = [r for r in rows if _s(r.get("id")).strip()]
 
-    # English CSV - EN columns in workbook order (== live CSV contract).
     en_path = os.path.join(data_dir, "mattresses.csv")
-    write_csv(en_path, en_headers, rows)
+    write_csv(en_path, en_headers, [{h: _s(r.get(h)) for h in en_headers} for r in mrows])
 
-    # Spanish CSV - id + ES columns (suffix stripped). Emit one row per mattress
-    # only if any ES cell anywhere is populated; otherwise omit the file entirely.
     es_path = None
     if es_headers:
         es_names = [h[:-len(ES_SUFFIX)] for h in es_headers]
-        has_es = any(row.get(h, "").strip() for row in rows for h in es_headers)
+        has_es = any(_s(r.get(h)).strip() for r in mrows for h in es_headers)
         if has_es:
             es_fieldnames = ["id"] + es_names
             es_rows = []
-            for row in rows:
-                er = {"id": row.get("id", "")}
+            for r in mrows:
+                er = {"id": _s(r.get("id"))}
                 for h, name in zip(es_headers, es_names):
-                    er[name] = row.get(h, "")
+                    er[name] = _s(r.get(h))
                 es_rows.append(er)
             es_path = os.path.join(data_dir, "mattresses-es.csv")
             write_csv(es_path, es_fieldnames, es_rows)
-
     return en_path, es_path
 
 
+# -- store-config.json (S3) ---------------------------------------------------
+
+def build_sales_notes(wb):
+    """Build (salesNotes, salesNotes_es) from the SalesNotes tab."""
+    _, rows = read_tab(wb, "SalesNotes")
+    sn = {"subBrands": {}, "brands": {}}
+    sn_es = {"subBrands": {}, "brands": {}}
+    for r in rows:
+        typ = _s(r.get("Type")).strip()
+        key = _s(r.get("Key")).strip()
+        if not typ or not key:
+            continue
+        if typ == "subBrand":
+            fmt = _s(r.get("Format")).strip()
+            if fmt == "full":
+                sn["subBrands"][key] = {
+                    "format": "full",
+                    "lead": _s(r.get("Lead")),
+                    "demo": _s(r.get("Demo")),
+                    "close": _s(r.get("Close")),
+                }
+                es = {}
+                for jk, hk in (("lead", "Lead (ES)"), ("demo", "Demo (ES)"),
+                               ("close", "Close (ES)")):
+                    if not _blank(r.get(hk)):
+                        es[jk] = _s(r.get(hk))
+                if es:
+                    sn_es["subBrands"][key] = es
+            elif fmt == "coaching":
+                sn["subBrands"][key] = {"format": "coaching", "rsaNote": _s(r.get("RSA Note"))}
+                if not _blank(r.get("RSA Note (ES)")):
+                    sn_es["subBrands"][key] = {"rsaNote": _s(r.get("RSA Note (ES)"))}
+        elif typ == "brand":
+            sn["brands"][key] = {"story": _s(r.get("Story"))}
+            if not _blank(r.get("Story (ES)")):
+                sn_es["brands"][key] = {"story": _s(r.get("Story (ES)"))}
+    return sn, sn_es
+
+
+def build_store_config(wb):
+    """Assemble store-config.json from Store Info + Brands + SalesNotes tabs."""
+    _, si_rows = read_tab(wb, "Store Info")
+    si = si_rows[0] if si_rows else {}
+
+    cfg = {}
+    for col in schema.get_columns("Store Info"):
+        key = col.key
+        if key.startswith("manifest."):
+            continue  # manifest.json is S5
+        if key == "allowedHosts":
+            continue  # S6 (absent from committed store-config until then)
+        cell = si.get(col.name)
+        if key in STORE_INFO_LISTS:
+            value = [s.strip() for s in _s(cell).split(",") if s.strip()]
+        else:
+            value = "" if cell is None else cell  # preserve numeric types
+        set_path(cfg, key, value)
+
+    # Brands tab -> brands[]. Workbook holds the logo file name; config stores the
+    # images/brands/<file> path.
+    _, brand_rows = read_tab(wb, "Brands")
+    brands = []
+    for r in brand_rows:
+        name = _s(r.get("Brand Name")).strip()
+        if not name:
+            continue
+        logo_file = _s(r.get("Logo File Name")).strip()
+        brands.append({
+            "name": name,
+            "logo": f"images/brands/{logo_file}" if logo_file else "",
+        })
+    cfg["brands"] = brands
+
+    cfg["rsaList"] = []  # runtime-populated; default empty
+
+    sn, sn_es = build_sales_notes(wb)
+    cfg["salesNotes"] = sn
+    cfg["salesNotes_es"] = sn_es
+
+    # Reorder top-level keys to the committed order (readability only).
+    return {k: cfg[k] for k in STORE_CONFIG_KEY_ORDER if k in cfg}
+
+
+# -- accessories.json (S3) ----------------------------------------------------
+
+def build_accessories(wb):
+    """Build the accessories array (preserved tab/row order)."""
+    _, rows = read_tab(wb, "Accessories")
+    out = []
+    for r in rows:
+        if _blank(r.get("ID")):
+            continue
+        acc = {}
+        for col in schema.get_columns("Accessories"):
+            key = col.key
+            cell = r.get(col.name)
+            if key == "matchTags":
+                acc["matchTags"] = [t.strip() for t in _s(cell).split(",") if t.strip()]
+            elif key.startswith("matchScores."):
+                if not _blank(cell):
+                    set_path(acc, key, cell)  # numeric preserved
+            elif key == "subType":
+                if not _blank(cell):
+                    acc["subType"] = cell
+            elif key == "price":
+                acc["price"] = cell  # numeric preserved
+            elif key == "id":
+                acc["id"] = _s(cell)
+            else:
+                # name.en / category.es / description.en / image -> verbatim
+                set_path(acc, key, "" if cell is None else cell)
+        acc.setdefault("matchTags", [])
+        acc.setdefault("matchScores", {})
+        out.append({k: acc[k] for k in ACCESSORY_KEY_ORDER if k in acc})
+    return out
+
+
+def write_json(path, obj):
+    with open(path, "w", encoding="utf-8", newline="") as f:
+        json.dump(obj, f, indent=2, ensure_ascii=False)
+        f.write("\n")
+
+
+# -- build-data.ps1 (mattresses.json) ----------------------------------------
+
 def run_build_data(output_dir):
     """Invoke <output-dir>/build-data.ps1 to regenerate mattresses.json.
-    Warn + skip (never fail the CSV emit) if PowerShell or the script is absent."""
+    Warn + skip (never fail the emit) if PowerShell or the script is absent."""
     script = os.path.join(output_dir, "build-data.ps1")
     if not os.path.exists(script):
         print(f"[build-json] skipped: {script} not found.")
@@ -136,14 +288,14 @@ def run_build_data(output_dir):
         print("  " + proc.stdout.strip().replace("\n", "\n  "))
     if proc.returncode != 0:
         print(f"[build-json] WARNING: build-data.ps1 exited {proc.returncode} "
-              f"(CSV output is still valid).")
+              f"(CSV/JSON output is still valid).")
         if proc.stderr.strip():
             print("  " + proc.stderr.strip().replace("\n", "\n  "))
 
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(
-        description="Convert an onboarding workbook into DreamFinder mattress CSVs.",
+        description="Convert an onboarding workbook into DreamFinder data files.",
         formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("workbook", help="Path to the onboarding .xlsx")
     parser.add_argument("--output-dir", default=".",
@@ -158,16 +310,28 @@ def main(argv=None) -> int:
     data_dir = os.path.join(args.output_dir, "data")
     os.makedirs(data_dir, exist_ok=True)
 
-    print(f"Reading {args.workbook} (Mattresses tab)...")
-    headers, rows = read_mattresses_tab(args.workbook)
-    print(f"  {len(rows)} mattress row(s)")
+    print(f"Reading {args.workbook}...")
+    wb = openpyxl.load_workbook(args.workbook, read_only=True, data_only=True)
+    try:
+        m_headers, m_rows = read_tab(wb, "Mattresses")
+        en_path, es_path = emit_mattress_csvs(m_headers, m_rows, data_dir)
+        print(f"  wrote {en_path} ({sum(1 for r in m_rows if _s(r.get('id')).strip())} rows)")
+        if es_path:
+            print(f"  wrote {es_path}")
+        else:
+            print("  no Spanish content - data/mattresses-es.csv omitted")
 
-    en_path, es_path = emit_mattress_csvs(headers, rows, data_dir)
-    print(f"  wrote {en_path}")
-    if es_path:
-        print(f"  wrote {es_path}")
-    else:
-        print("  no Spanish content - data/mattresses-es.csv omitted")
+        config = build_store_config(wb)
+        cfg_path = os.path.join(data_dir, "store-config.json")
+        write_json(cfg_path, config)
+        print(f"  wrote {cfg_path} ({len(config)} top-level keys)")
+
+        accessories = build_accessories(wb)
+        acc_path = os.path.join(data_dir, "accessories.json")
+        write_json(acc_path, accessories)
+        print(f"  wrote {acc_path} ({len(accessories)} items)")
+    finally:
+        wb.close()
 
     if not args.skip_build_json:
         run_build_data(args.output_dir)

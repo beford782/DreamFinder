@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Golden-bundle harness runner - phase-aware (S2 active).
+"""Golden-bundle harness runner - phase-aware (S2 + S3 active).
 
 Phase 0 plan: docs/phase0-onboarding-pipeline-spec-2026-05-31.md section4
 ("S1 harness structure" + staged activation).
@@ -7,26 +7,26 @@ Phase 0 plan: docs/phase0-onboarding-pipeline-spec-2026-05-31.md section4
 End-to-end goal (built up phase by phase):
 
     build_bel_workbook -> Bel.xlsx (temp workspace)
-        -> [converter]       -> mattresses.csv(+es)  [S2, ACTIVE]
-                              -> store-config.json, accessories.json  [S3]
-                              -> images (jpg) + mattresses.json        [S4]
-                              -> manifest.json                         [S5]
-                              -> allowed-hosts.js                      [S6]
+        -> [converter]       -> mattresses.csv(+es)               [S2, ACTIVE]
+                              -> store-config.json, accessories.json [S3, ACTIVE]
+                              -> images (jpg) + mattresses.json      [S4]
+                              -> manifest.json                       [S5]
+                              -> allowed-hosts.js                    [S6]
         -> canonical compare generated outputs vs committed data/ + manifest.json
 
-Currently wired: **S2** - generate the Bel workbook, run the (rewritten) converter
-into a temp workspace, and canonically compare the generated mattresses.csv /
-mattresses-es.csv against the committed Bel CSVs. This compare is REQUIRED in
-normal mode (a mismatch fails the run). S3-S6 are still pending and reported as
-such.
+Currently wired: **S2 + S3** - generate the Bel workbook, run the converter into a
+temp workspace, and canonically compare the generated mattresses.csv /
+mattresses-es.csv (CSV) and store-config.json / accessories.json (JSON) against
+the committed Bel files. These compares are REQUIRED in normal mode (a mismatch
+fails the run). S4-S6 are still pending and reported as such.
 
---strict: runs S2 too, but exits non-zero while S3-S6 remain unwired (so future
-CI only goes green once the full flow lands), even when S2 passes.
+--strict: runs S2+S3 too, but exits non-zero while S4-S6 remain unwired (so future
+CI only goes green once the full flow lands), even when S2+S3 pass.
 
 Never mutates repo data/ and never writes generated files inside the repo
-(everything goes to a tempfile workspace). For S2 the workspace needs no images
-or build-data.ps1 (CSV-only compare); that machinery arrives with S4. Stdlib only
-in this file; openpyxl is pulled in transitively by build_bel_workbook.
+(everything goes to a tempfile workspace). S2+S3 need no images or build-data.ps1
+(CSV/JSON-only compares); that machinery arrives with S4. Stdlib only in this
+file; openpyxl is pulled in transitively by build_bel_workbook.
 """
 
 from __future__ import annotations
@@ -47,9 +47,12 @@ from tests.golden import canonical  # noqa: E402
 
 CONVERTER = REPO_ROOT / "tools" / "convert_store_data.py"
 
+# (label, generated filename, comparison kind) for the active compares.
+CSV_COMPARES = ["mattresses.csv", "mattresses-es.csv"]
+JSON_COMPARES = ["store-config.json", "accessories.json"]
+
 # Phases not yet wired into the runner (reported as pending).
 PENDING_PHASES = [
-    ("S3", "data/store-config.json, data/accessories.json", "json"),
     ("S4", "data/mattresses.json (+ image normalization)", "json, needs build-data.ps1 + images"),
     ("S5", "manifest.json", "json"),
     ("S6", "data/allowed-hosts.js", "array vs store-config.allowedHosts"),
@@ -72,8 +75,8 @@ def generate_workbook(workspace: str) -> str | None:
 
 
 def run_converter(workspace: str, wb_path: str) -> bool:
-    """Run the converter on the workbook into the workspace (CSV only)."""
-    print(f"[S2] Running converter -> {workspace} (--skip-build-json)")
+    """Run the converter on the workbook into the workspace (CSV + JSON)."""
+    print(f"[convert] Running converter -> {workspace} (--skip-build-json)")
     proc = subprocess.run(
         [sys.executable, str(CONVERTER), wb_path,
          "--output-dir", workspace, "--skip-build-json"],
@@ -81,31 +84,33 @@ def run_converter(workspace: str, wb_path: str) -> bool:
     if proc.stdout.strip():
         print("  " + proc.stdout.strip().replace("\n", "\n  "))
     if proc.returncode != 0:
-        print(f"[S2] FAIL: converter exited {proc.returncode}")
+        print(f"[convert] FAIL: converter exited {proc.returncode}")
         if proc.stderr.strip():
             print("  " + proc.stderr.strip().replace("\n", "\n  "))
         return False
     return True
 
 
-def compare_csvs(workspace: str) -> canonical.CompareResult:
-    """Canonically compare generated mattresses CSVs vs committed Bel CSVs."""
+def compare_outputs(workspace: str) -> canonical.CompareResult:
+    """Canonically compare generated outputs vs committed Bel files:
+    S2 CSVs (mattresses) + S3 JSON (store-config, accessories)."""
     result = canonical.CompareResult()
-    pairs = [
-        ("mattresses.csv", REPO_ROOT / "data" / "mattresses.csv"),
-        ("mattresses-es.csv", REPO_ROOT / "data" / "mattresses-es.csv"),
-    ]
-    for name, committed in pairs:
-        generated = Path(workspace) / "data" / name
-        if not generated.exists():
-            result.differences.append(f"{name} - generated file missing at {generated}")
-            result.ok = False
-            continue
-        r = canonical.compare_csv_files(str(committed), str(generated),
-                                        label=name,
-                                        allowlist=canonical.DEFAULT_ALLOWLIST)
-        print(f"[S2] {name}: {r.summary().splitlines()[0]}")
-        result.merge(r)
+    data = Path(workspace) / "data"
+
+    for phase, names, fn in (("S2", CSV_COMPARES, canonical.compare_csv_files),
+                             ("S3", JSON_COMPARES, canonical.compare_json_files)):
+        for name in names:
+            committed = REPO_ROOT / "data" / name
+            generated = data / name
+            if not generated.exists():
+                result.differences.append(f"{name} - generated file missing at {generated}")
+                result.ok = False
+                print(f"[{phase}] {name}: MISSING")
+                continue
+            r = fn(str(committed), str(generated), label=name,
+                   allowlist=canonical.DEFAULT_ALLOWLIST)
+            print(f"[{phase}] {name}: {r.summary().splitlines()[0]}")
+            result.merge(r)
     return result
 
 
@@ -113,12 +118,12 @@ def main(argv=None) -> int:
     parser = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--strict", action="store_true",
-                        help="Run S2, but exit non-zero while S3-S6 remain unwired "
-                             "(for future CI once the full flow lands).")
+                        help="Run S2+S3, but exit non-zero while S4-S6 remain "
+                             "unwired (for future CI once the full flow lands).")
     args = parser.parse_args(argv)
 
     print("=" * 70)
-    print("DreamFinder golden-bundle harness (S2 active)")
+    print("DreamFinder golden-bundle harness (S2 + S3 active)")
     print("=" * 70)
 
     with tempfile.TemporaryDirectory(prefix="dreamfinder_golden_") as workspace:
@@ -132,33 +137,34 @@ def main(argv=None) -> int:
             return 1
 
         print("-" * 70)
-        # -- S2: converter -> CSV -> canonical compare (REQUIRED) --------------
-        s2_ok = run_converter(workspace, wb_path)
-        if s2_ok:
-            result = compare_csvs(workspace)
+        # -- S2 + S3: converter -> CSV/JSON -> canonical compare (REQUIRED) -----
+        ok = run_converter(workspace, wb_path)
+        if ok:
+            result = compare_outputs(workspace)
             print(result.summary())
-            s2_ok = result.ok
+            ok = result.ok
         print("-" * 70)
-        print(f"[S2] {'PASS' if s2_ok else 'FAIL'}: mattresses CSV golden compare.")
+        print(f"[S2+S3] {'PASS' if ok else 'FAIL'}: mattresses CSV + "
+              f"store-config/accessories JSON golden compare.")
 
-        # -- S3-S6: still pending ----------------------------------------------
+        # -- S4-S6: still pending ----------------------------------------------
         print("-" * 70)
         print("Pending phases (not yet wired):")
         for sid, what, kind in PENDING_PHASES:
             print(f"  {sid} -> {what}   [{kind}]")
         print("-" * 70)
 
-    if not s2_ok:
-        print("[FAIL] S2 golden compare failed.")
+    if not ok:
+        print("[FAIL] S2+S3 golden compare failed.")
         return 1
 
     if args.strict:
-        print("[STRICT] S2 passed, but S3-S6 are not wired yet - exiting non-zero "
-              "(full golden flow incomplete).")
+        print("[STRICT] S2+S3 passed, but S4-S6 are not wired yet - exiting "
+              "non-zero (full golden flow incomplete).")
         return 1
 
-    print("[PASS] S2 golden compare passed. (S3-S6 pending; run without --strict "
-          "treats those as not-yet-required.)")
+    print("[PASS] S2+S3 golden compare passed. (S4-S6 pending; run without "
+          "--strict treats those as not-yet-required.)")
     return 0
 
 
