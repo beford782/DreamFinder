@@ -47,9 +47,10 @@ import shutil
 import subprocess
 import sys
 
-# The shared schema lives alongside this file in tools/.
+# The shared schema + validation live alongside this file in tools/.
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import workbook_schema as schema  # noqa: E402
+import validation  # noqa: E402
 
 import openpyxl  # noqa: E402
 
@@ -420,6 +421,14 @@ def main(argv=None) -> int:
                         help="Do not normalize images even if --source-images is given.")
     parser.add_argument("--image-quality", type=int, default=88,
                         help="JPEG quality for normalized images (default 88).")
+    parser.add_argument("--no-validate", action="store_true",
+                        help="Skip input validation (not recommended).")
+    parser.add_argument("--validate-only", action="store_true",
+                        help="Validate the workbook and exit; write no files.")
+    parser.add_argument("--warnings-as-errors", action="store_true",
+                        help="Treat validation warnings as blocking errors.")
+    parser.add_argument("--require-gas-url", action="store_true",
+                        help="Treat a blank/placeholder gasUrl as a blocking error.")
     group = parser.add_mutually_exclusive_group()
     group.add_argument("--build-json", action="store_true",
                        help="Run build-data.ps1 to regenerate mattresses.json (default).")
@@ -427,40 +436,74 @@ def main(argv=None) -> int:
                        help="Do not invoke build-data.ps1.")
     args = parser.parse_args(argv)
 
+    do_validate = not args.no_validate
     data_dir = os.path.join(args.output_dir, "data")
-    os.makedirs(data_dir, exist_ok=True)
 
     print(f"Reading {args.workbook}...")
     wb = openpyxl.load_workbook(args.workbook, read_only=True, data_only=True)
+    report = validation.ValidationReport()
     try:
-        m_headers, m_rows = read_tab(wb, "Mattresses")
-        en_path, es_path = emit_mattress_csvs(m_headers, m_rows, data_dir)
-        print(f"  wrote {en_path} ({sum(1 for r in m_rows if _s(r.get('id')).strip())} rows)")
-        if es_path:
-            print(f"  wrote {es_path}")
-        else:
-            print("  no Spanish content - data/mattresses-es.csv omitted")
+        # Read present tabs (guarded so a missing tab is a validation error, not a
+        # crash). raw_tabs maps present tab name -> (headers, rows).
+        raw_tabs = {name: read_tab(wb, name) for name in schema.get_tab_names()
+                    if name in wb.sheetnames}
 
+        # Structure gate: if the workbook is structurally unsound we cannot safely
+        # assemble the bundle, so abort here before writing anything.
+        if do_validate:
+            report.merge(validation.validate_structure(raw_tabs))
+            if not report.ok:
+                print(report.summary())
+                print("[validate] blocking structure errors - no files written.")
+                return 1
+
+        # Assemble everything in memory (no writes yet).
+        m_headers, m_rows = raw_tabs.get("Mattresses") or read_tab(wb, "Mattresses")
         config = build_store_config(wb)
-        cfg_path = os.path.join(data_dir, "store-config.json")
-        write_json(cfg_path, config)
-        print(f"  wrote {cfg_path} ({len(config)} top-level keys)")
-
-        ah_path = os.path.join(data_dir, "allowed-hosts.js")
-        write_allowed_hosts_js(ah_path, config.get("allowedHosts", []))
-        print(f"  wrote {ah_path} ({config.get('allowedHosts', [])})")
-
         accessories = build_accessories(wb)
-        acc_path = os.path.join(data_dir, "accessories.json")
-        write_json(acc_path, accessories)
-        print(f"  wrote {acc_path} ({len(accessories)} items)")
-
         manifest = build_manifest(wb)
-        man_path = os.path.join(args.output_dir, "manifest.json")  # repo root, not data/
-        write_json(man_path, manifest)
-        print(f"  wrote {man_path} ({len(manifest)} keys)")
     finally:
         wb.close()
+
+    # Value validation on the assembled config (+ manifest).
+    if do_validate:
+        report.merge(validation.validate_store_config(
+            config, manifest, require_gas_url=args.require_gas_url))
+        print(report.summary())
+        blocking = report.blocking(warnings_as_errors=args.warnings_as_errors)
+        if args.validate_only:
+            return 0 if not blocking else 1
+        if blocking:
+            print("[validate] blocking errors - no files written.")
+            return 1
+    elif args.validate_only:
+        print("[validate] --validate-only with --no-validate: nothing to check.")
+        return 0
+
+    # Write phase (validation passed or skipped).
+    os.makedirs(data_dir, exist_ok=True)
+    en_path, es_path = emit_mattress_csvs(m_headers, m_rows, data_dir)
+    print(f"  wrote {en_path} ({sum(1 for r in m_rows if _s(r.get('id')).strip())} rows)")
+    if es_path:
+        print(f"  wrote {es_path}")
+    else:
+        print("  no Spanish content - data/mattresses-es.csv omitted")
+
+    cfg_path = os.path.join(data_dir, "store-config.json")
+    write_json(cfg_path, config)
+    print(f"  wrote {cfg_path} ({len(config)} top-level keys)")
+
+    ah_path = os.path.join(data_dir, "allowed-hosts.js")
+    write_allowed_hosts_js(ah_path, config.get("allowedHosts", []))
+    print(f"  wrote {ah_path} ({config.get('allowedHosts', [])})")
+
+    acc_path = os.path.join(data_dir, "accessories.json")
+    write_json(acc_path, accessories)
+    print(f"  wrote {acc_path} ({len(accessories)} items)")
+
+    man_path = os.path.join(args.output_dir, "manifest.json")  # repo root, not data/
+    write_json(man_path, manifest)
+    print(f"  wrote {man_path} ({len(manifest)} keys)")
 
     # Image normalization (S4) - optional; product images only.
     if args.source_images and not args.skip_image_normalization:
