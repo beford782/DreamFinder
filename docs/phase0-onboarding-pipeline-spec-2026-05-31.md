@@ -245,9 +245,14 @@ All are config/codegen changes, not scoring/touch/architecture.
      (§4). This is the deliberate fail-closed tradeoff.
    - **Web review required** — this touches a security boundary (the IIFE amendment
      + the new blocking script tag; paste raw before/after of 6619–6633).
-   - **Implementation prerequisite:** inspect the second `window.location.hostname`
-     read around `index.html:6815` and confirm it is not a duplicate/second gate
-     before changing the lock.
+   - **Implementation prerequisite — RESOLVED (audit 2026-05-31).** The second
+     `window.location.hostname` read at `index.html:6815` is `isDevelopmentMode()`
+     (`6814–6817`), an environment detector whose only caller (`renderPitchHtml`,
+     `9593`) toggles a dev-only "missing pitch content" placeholder; not an
+     authorization gate. It needs no change under M1 and must not be unified with
+     `allowedHosts`. A live retailer host is authorized but must not register as dev
+     mode, or the placeholder could leak to customers. The 6627 IIFE remains the
+     sole gate M1 touches.
 2. **Dream code → config, variable length.** Change `generateDreamCode`
    (`6643–6651`) to honor `discount.codePrefix` (default `DREAM`) **and
    `discount.codeDigits` (default 3, retailer-customizable, supports *longer*
@@ -451,8 +456,9 @@ spine; S7 is docs.
    into a generated synchronous `data/allowed-hosts.js` (see §3.4.1). Remaining
    review items before implementation: (a) confirm/accept M1's availability
    tradeoff (missing `allowed-hosts.js` blanks production; mitigated by validation
-   + golden test), and (b) inspect the second `hostname` read at `index.html:6815`
-   to confirm it is not a duplicate gate.
+   + golden test). Sub-item (b) inspect the second `hostname` read at
+   `index.html:6815` — **RESOLVED (audit 2026-05-31)**: it is `isDevelopmentMode()`,
+   not a gate, and needs no change under M1 (see §3.4.1).
 3. **Code.gs in the TODO report — RESOLVED (2026-05-31).** Emit a **checklist** of
    strings to replace, **not** a generated diff (§6).
 4. **Workbook fixture form — RESOLVED (2026-05-31).** **Script-generated** from the
