@@ -372,10 +372,43 @@ This makes future changes (engine version bumps, scoring tweaks) a re-run rather
 
 ---
 
+## Regenerating the onboarding PDFs / kit
+
+The PDFs in this folder (`DreamFinder_Onboarding_Guide.pdf`,
+`DreamFinder_Image_Upload_Guide.pdf`, and the internal
+`DreamFinder_Build_Runbook.pdf`) are generated from the source `.md` / `.txt`
+files here by `tools/md_to_pdf.py`. After editing a source doc, regenerate:
+
+```
+python tools/md_to_pdf.py        # builds all three PDFs into onboarding/
+```
+
+**Toolchain requirement:** this needs `markdown` **and** `weasyprint`, and
+WeasyPrint loads a **native GTK / Pango / Cairo runtime** at import. `pip install
+weasyprint` installs only the Python bindings, **not** those native libraries — on
+Windows it fails with `cannot load library 'libgobject-2.0-0'` unless a GTK runtime
+is installed separately. **Recommended environment: WSL / Linux**, e.g.
+
+```
+sudo apt install libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz0b
+pip install markdown weasyprint
+python tools/md_to_pdf.py
+```
+
+Then rebuild `DreamFinder_Retailer_Onboarding_Kit.zip` with exactly the guide PDF,
+the image-upload PDF, and the current blank template
+(`DreamFinder_Onboarding_Template.xlsx`) — **not** the internal runbook PDF.
+
+> The committed PDFs / zip can lag the source docs. Regenerate them before handing
+> onboarding materials to a retailer; until then, the `.md` / `.txt` sources in this
+> folder are authoritative.
+
+---
+
 ## Common gotchas
 
 - **GAS Web app URL changed silently after a redeploy.** If you create a *new* deployment instead of updating the existing one, the URL changes. Always use **Deploy → Manage deployments → pencil → New version**.
 - **Mattress images broken in the customer email.** The client converts relative URLs to absolute using the `publicAssetRoot` field in `data/store-config.json` — make sure that field points at the new retailer's Pages URL with a trailing slash (e.g., `https://acmemattress.github.io/DreamFinder/`). Operators edit the JSON, not a constant in the code.
-- **"Unauthorized domain" splash on first load.** Domain lock in `index.html` doesn't include the new retailer's Pages domain. Search for `'beford782.github.io'`, add the new domain to the `allowed` array, push.
+- **"Unauthorized domain" splash on first load.** The host isn't in the M1 allowlist. Set the retailer's Pages host in the workbook's `allowedHosts`, regenerate the bundle (which produces `data/allowed-hosts.js`), and commit + deploy that file. Do **not** edit any `allowed` array in `index.html`. After deploy, confirm `https://<host>.github.io/DreamFinder/data/allowed-hosts.js` returns **HTTP 200** — a missing file blanks the production host (localhost still passes via the fallback, so it can mask the problem).
 - **DEBUG rows reappear in the lead Sheet.** That's an old GAS deployment still serving traffic. Confirm `data/store-config.json` `gasUrl` matches the live Apps Script deployment URL exactly.
 - **Mattress images broken in Outlook desktop / iOS Mail.** This is why the converter emits **JPG only** (no WebP) — Outlook's Word render engine and iOS Mail handle WebP/PNG unreliably. If you see broken email images, check that `images/` holds the converter's JPGs (re-run Phase 2 if any legacy `.webp` lingers); don't hand-place WebP product images.
