@@ -465,10 +465,19 @@ def main(argv=None) -> int:
     finally:
         wb.close()
 
-    # Value validation on the assembled config (+ manifest).
+    # Value + catalog validation (store-config, mattresses, accessories,
+    # SalesNotes, and source-image existence when --source-images is provided).
     if do_validate:
+        langs = config.get("languages")
         report.merge(validation.validate_store_config(
             config, manifest, require_gas_url=args.require_gas_url))
+        report.merge(validation.validate_mattresses(
+            raw_tabs, source_images=args.source_images,
+            skip_images=args.skip_image_normalization, languages=langs))
+        report.merge(validation.validate_accessories(
+            raw_tabs, source_images=args.source_images,
+            skip_images=args.skip_image_normalization, languages=langs))
+        report.merge(validation.validate_sales_notes(raw_tabs, languages=langs))
         print(report.summary())
         blocking = report.blocking(warnings_as_errors=args.warnings_as_errors)
         if args.validate_only:

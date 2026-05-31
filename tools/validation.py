@@ -106,6 +106,39 @@ def _host_from_url(url: str) -> str:
     return s.split("/", 1)[0]
 
 
+def _s(v) -> str:
+    return "" if v is None else str(v).strip()
+
+
+# Live accessory categories (the real enum the app/template use - NOT a generic
+# lowercase list). matchScores are non-negative integers (Bel uses values up to
+# 10 for the featured "default" weight, so there is no 0-5 upper bound).
+ACCESSORY_CATEGORIES = {"Foundations & Support", "Pillows", "Protectors"}
+SOURCE_IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".webp")
+MATTRESS_TIERS = {"gold", "silver", "bronze"}
+SALESNOTE_TYPES = {"subBrand", "brand"}
+SALESNOTE_FORMATS = {"full", "coaching"}
+
+
+def _source_stems(src_dir: str):
+    """Lowercased stems of supported images in src_dir, or None if dir missing."""
+    if not os.path.isdir(src_dir):
+        return None
+    stems = set()
+    for fn in os.listdir(src_dir):
+        stem, ext = os.path.splitext(fn)
+        if ext.lower() in SOURCE_IMAGE_EXTS:
+            stems.add(stem.lower())
+    return stems
+
+
+def _brands_from(raw_tabs) -> set:
+    if "Brands" not in raw_tabs:
+        return set()
+    _, rows = raw_tabs["Brands"]
+    return {_s(r.get("Brand Name")) for r in rows if _s(r.get("Brand Name"))}
+
+
 # -- Structure validation (raw tabs) ------------------------------------------
 # raw_tabs maps PRESENT tab name -> (headers: list[str], rows: list[dict]).
 # A required tab absent from raw_tabs is reported as missing.
@@ -219,35 +252,222 @@ def validate_store_config(config: dict, manifest: Optional[dict] = None, *,
     return r
 
 
-# -- V1 entrypoint ------------------------------------------------------------
+# -- V2: catalog validation (raw tabs) ----------------------------------------
+
+def validate_mattresses(raw_tabs, *, source_images=None, skip_images=False,
+                        languages=None) -> ValidationReport:
+    r = ValidationReport()
+    if "Mattresses" not in raw_tabs:
+        return r  # missing tab already reported by validate_structure
+    headers, rows = raw_tabs["Mattresses"]
+    brands = _brands_from(raw_tabs)
+    es_cols = [h for h in headers if h.endswith(" (ES)")]
+    check_images = bool(source_images) and not skip_images
+    src_stems = None
+    if check_images:
+        d = os.path.join(source_images, "mattresses")
+        src_stems = _source_stems(d)
+        if src_stems is None:
+            r.add_error(f"Mattresses: source image folder not found: {d}")
+
+    seen_ids = {}
+    seen_names = {}
+    for i, row in enumerate(rows, start=1):
+        mid, name, brand = _s(row.get("id")), _s(row.get("name")), _s(row.get("brand"))
+        tier, fs = _s(row.get("tier")), _s(row.get("firmnessScore"))
+        tag = mid or name or f"row {i}"
+
+        if tier and tier not in MATTRESS_TIERS:
+            r.add_error(f"Mattresses {tag}: tier {tier!r} not gold/silver/bronze")
+        if mid:
+            if mid in seen_ids:
+                r.add_error(f"Mattresses: duplicate id {mid!r} (rows {seen_ids[mid]} & {i})")
+            else:
+                seen_ids[mid] = i
+            if not _is_slug(mid):
+                r.add_error(f"Mattresses {tag}: id {mid!r} is not slug-safe")
+        if brand and brands and brand not in brands:
+            r.add_error(f"Mattresses {tag}: brand {brand!r} is not in the Brands tab {sorted(brands)}")
+        if fs:
+            try:
+                n = int(float(fs)) if isinstance(fs, str) else int(fs)
+                if not (1 <= n <= 10):
+                    r.add_error(f"Mattresses {tag}: firmnessScore {fs!r} not in 1-10")
+            except (ValueError, TypeError):
+                r.add_error(f"Mattresses {tag}: firmnessScore {fs!r} is not an integer")
+        if name:
+            key = name.lower()
+            if key in seen_names:
+                r.add_error(f"Mattresses: duplicate name {name!r} -> image filename "
+                            f"collision (rows {seen_names[key]} & {i})")
+            else:
+                seen_names[key] = i
+            if check_images and src_stems is not None and key not in src_stems:
+                r.add_error(f"Mattresses {tag}: no source image for "
+                            f"{key}.[jpg|jpeg|png|webp] in {os.path.join(source_images, 'mattresses')}")
+        # ES policy (warnings only)
+        if languages and "es" in languages and es_cols:
+            if all(_blank(row.get(h)) for h in es_cols):
+                r.add_warning(f"Mattresses {tag}: no Spanish (ES) copy (languages includes 'es')")
+        elif languages and "es" not in languages and es_cols:
+            if any(not _blank(row.get(h)) for h in es_cols):
+                r.add_warning(f"Mattresses {tag}: Spanish (ES) copy present but languages excludes 'es'")
+    return r
+
+
+def validate_accessories(raw_tabs, *, source_images=None, skip_images=False,
+                         languages=None) -> ValidationReport:
+    r = ValidationReport()
+    if "Accessories" not in raw_tabs:
+        return r
+    headers, rows = raw_tabs["Accessories"]
+    score_headers = [h for h in headers if h.startswith("Score:")]
+    check_images = bool(source_images) and not skip_images
+    src_stems = None
+    if check_images:
+        d = os.path.join(source_images, "accessories")
+        src_stems = _source_stems(d)
+        if src_stems is None:
+            r.add_error(f"Accessories: source image folder not found: {d}")
+
+    seen_ids = {}
+    seen_basenames = {}
+    es_pairs = (("Name", "Name (ES)"), ("Category", "Category (ES)"),
+                ("Description", "Description (ES)"))
+    for i, row in enumerate(rows, start=1):
+        aid, cat, img = _s(row.get("ID")), _s(row.get("Category")), _s(row.get("Image File Name"))
+        tag = aid or _s(row.get("Name")) or f"row {i}"
+
+        if aid:
+            if aid in seen_ids:
+                r.add_error(f"Accessories: duplicate id {aid!r} (rows {seen_ids[aid]} & {i})")
+            else:
+                seen_ids[aid] = i
+            if not _is_slug(aid):
+                r.add_error(f"Accessories {tag}: id {aid!r} is not slug-safe")
+        if cat and cat not in ACCESSORY_CATEGORIES:
+            r.add_error(f"Accessories {tag}: category {cat!r} not in {sorted(ACCESSORY_CATEGORIES)}")
+        price = row.get("Price")
+        if not _blank(price):
+            try:
+                float(str(price))
+            except ValueError:
+                r.add_error(f"Accessories {tag}: price {price!r} is not numeric")
+        if _blank(img):
+            r.add_error(f"Accessories {tag}: Image File Name is empty")
+        else:
+            base = os.path.splitext(os.path.basename(img))[0].lower()
+            if base in seen_basenames:
+                r.add_warning(f"Accessories: duplicate image basename {base!r} "
+                              f"(rows {seen_basenames[base]} & {i})")
+            else:
+                seen_basenames[base] = i
+            if check_images and src_stems is not None and base not in src_stems:
+                r.add_error(f"Accessories {tag}: no source image for "
+                            f"{base}.[jpg|jpeg|png|webp] in {os.path.join(source_images, 'accessories')}")
+        for h in score_headers:
+            v = row.get(h)
+            if _blank(v):
+                continue
+            try:
+                n = int(str(v).strip()) if isinstance(v, str) else int(v)
+                if n < 0:
+                    r.add_error(f"Accessories {tag}: {h} {v!r} is negative")
+            except (ValueError, TypeError):
+                r.add_error(f"Accessories {tag}: {h} {v!r} is not an integer")
+        # ES policy (warnings only)
+        if languages and "es" in languages:
+            for en_h, es_h in es_pairs:
+                if not _blank(row.get(en_h)) and _blank(row.get(es_h)):
+                    r.add_warning(f"Accessories {tag}: {es_h} missing (languages includes 'es')")
+        elif languages and "es" not in languages:
+            for _, es_h in es_pairs:
+                if not _blank(row.get(es_h)):
+                    r.add_warning(f"Accessories {tag}: {es_h} present but languages excludes 'es'")
+    return r
+
+
+def validate_sales_notes(raw_tabs, *, languages=None) -> ValidationReport:
+    r = ValidationReport()
+    if "SalesNotes" not in raw_tabs:
+        return r
+    _, rows = raw_tabs["SalesNotes"]
+    brands = _brands_from(raw_tabs)
+    for i, row in enumerate(rows, start=1):
+        typ, key = _s(row.get("Type")), _s(row.get("Key"))
+        tag = key or f"row {i}"
+        if typ and typ not in SALESNOTE_TYPES:
+            r.add_error(f"SalesNotes {tag}: Type {typ!r} not subBrand/brand")
+        elif typ == "subBrand":
+            fmt = _s(row.get("Format"))
+            if fmt not in SALESNOTE_FORMATS:
+                r.add_error(f"SalesNotes {tag}: Format {fmt!r} must be full/coaching")
+            elif fmt == "full":
+                for f in ("Lead", "Demo", "Close"):
+                    if _blank(row.get(f)):
+                        r.add_error(f"SalesNotes {tag} (full): {f} is required")
+            elif fmt == "coaching":
+                if _blank(row.get("RSA Note")):
+                    r.add_error(f"SalesNotes {tag} (coaching): RSA Note is required")
+        elif typ == "brand":
+            if _blank(row.get("Story")):
+                r.add_error(f"SalesNotes {tag} (brand): Story is required")
+            if key and brands and key not in brands:
+                r.add_warning(f"SalesNotes brand note {key!r} is not a known brand {sorted(brands)}")
+        # subBrand-key cross-ref intentionally NOT validated (real data has
+        # pitchKey-mapped / aspirational keys that are not literal mattress
+        # subBrands). ES sales-notes intentionally NOT validated (optional,
+        # generated-later block).
+    return r
+
+
+# -- Entrypoint ---------------------------------------------------------------
 
 def validate_bundle_inputs(raw_tabs, store_config, manifest=None, *,
+                           source_images=None, skip_images=False,
                            require_gas_url: bool = False) -> ValidationReport:
-    """V1 validation: workbook structure + store-config values. Caller passes the
-    converter's parsed tabs and the assembled config/manifest (assembled only when
-    structure is sound enough to do so)."""
+    """Full input validation: workbook structure (V1), store-config values (V1),
+    and catalog checks for mattresses/accessories/SalesNotes (V2), plus source-image
+    existence when `source_images` is provided and not skipped. Caller passes the
+    converter's parsed tabs and the assembled config/manifest."""
+    langs = store_config.get("languages")
     r = ValidationReport()
     r.merge(validate_structure(raw_tabs))
     r.merge(validate_store_config(store_config, manifest, require_gas_url=require_gas_url))
+    r.merge(validate_mattresses(raw_tabs, source_images=source_images,
+                                skip_images=skip_images, languages=langs))
+    r.merge(validate_accessories(raw_tabs, source_images=source_images,
+                                 skip_images=skip_images, languages=langs))
+    r.merge(validate_sales_notes(raw_tabs, languages=langs))
     return r
 
 
 # -- Self-test (no pytest; stdlib only) ---------------------------------------
 
 def _good_tabs():
-    """A minimal structurally-valid raw_tabs (required headers + non-empty
-    required cells) for every schema tab."""
+    """A fully-valid raw_tabs (structure + catalog) for every schema tab - passes
+    with zero errors and zero warnings under _good_config (languages en+es)."""
     tabs = {}
     for tab in schema.get_tab_names():
         headers = schema.get_column_headers(tab)
         req = [c.name for c in schema.required_columns(tab)]
         row = {h: ("x" if h in req else "") for h in headers}
-        # tier must be a valid value for structural row (not enum-checked in V1,
-        # but keep it sensible); firmnessScore numeric-ish.
-        if tab == "Mattresses":
-            row["tier"] = "gold"
-            row["firmnessScore"] = "5"
         tabs[tab] = (headers, [row])
+    tabs["Brands"][1][0].update({"Brand Name": "Acme"})
+    tabs["Mattresses"][1][0].update({
+        "tier": "gold", "id": "m1", "name": "Athena", "brand": "Acme",
+        "firmnessScore": "5", "features": "hybrid", "reason_default": "Great bed",
+        "highlight (ES)": "es-copy",
+    })
+    tabs["Accessories"][1][0].update({
+        "ID": "a1", "Name": "Pillow", "Name (ES)": "Almohada",
+        "Category": "Pillows", "Category (ES)": "Almohadas", "Price": 100,
+        "Description": "Soft", "Description (ES)": "Suave",
+        "Image File Name": "a1.jpg", "Match Tags": "all",
+    })
+    tabs["SalesNotes"][1][0].update({
+        "Type": "brand", "Key": "Acme", "Story": "Family-owned since 1900",
+    })
     return tabs
 
 
@@ -360,6 +580,112 @@ def _self_test() -> int:
     m = dict(_good_manifest()); m["start_url"] = ""
     check("manifest.start_url empty -> error",
           any("manifest.start_url" in e for e in validate_store_config(_good_config(), m).errors))
+
+    # ---- V2: catalog ----
+    langs = ["en", "es"]
+
+    # duplicate mattress id
+    t = _good_tabs(); h, rows = t["Mattresses"]; t["Mattresses"] = (h, [rows[0], dict(rows[0])])
+    check("duplicate mattress id -> error",
+          any("duplicate id" in e for e in validate_mattresses(t, languages=langs).errors))
+
+    # invalid tier
+    t = _good_tabs(); t["Mattresses"][1][0]["tier"] = "platinum"
+    check("invalid tier -> error",
+          any("tier 'platinum'" in e for e in validate_mattresses(t, languages=langs).errors))
+
+    # invalid mattress id slug
+    t = _good_tabs(); t["Mattresses"][1][0]["id"] = "M 1"
+    check("invalid mattress id slug -> error",
+          any("not slug-safe" in e for e in validate_mattresses(t, languages=langs).errors))
+
+    # firmness out of range
+    t = _good_tabs(); t["Mattresses"][1][0]["firmnessScore"] = "11"
+    check("firmness out of range -> error",
+          any("firmnessScore" in e for e in validate_mattresses(t, languages=langs).errors))
+
+    # brand not in Brands tab
+    t = _good_tabs(); t["Mattresses"][1][0]["brand"] = "Nope"
+    check("brand not in Brands tab -> error",
+          any("not in the Brands tab" in e for e in validate_mattresses(t, languages=langs).errors))
+
+    # duplicate lower(name) image collision
+    t = _good_tabs(); h, rows = t["Mattresses"]
+    r2 = dict(rows[0]); r2["id"] = "m2"; r2["name"] = "athena"
+    t["Mattresses"] = (h, [rows[0], r2])
+    check("duplicate lower(name) collision -> error",
+          any("image filename collision" in e for e in validate_mattresses(t, languages=langs).errors))
+
+    # invalid accessory score (negative)
+    t = _good_tabs(); t["Accessories"][1][0]["Score: Cooling"] = "-1"
+    check("negative accessory score -> error",
+          any("Score: Cooling" in e for e in validate_accessories(t, languages=langs).errors))
+
+    # accessory score 10 is allowed (Bel uses high 'default' weights)
+    t = _good_tabs(); t["Accessories"][1][0]["Score: Default"] = 10
+    check("accessory score 10 allowed (not 0-5 capped)",
+          validate_accessories(t, languages=langs).ok)
+
+    # duplicate accessory id
+    t = _good_tabs(); h, rows = t["Accessories"]; t["Accessories"] = (h, [rows[0], dict(rows[0])])
+    check("duplicate accessory id -> error",
+          any("duplicate id" in e for e in validate_accessories(t, languages=langs).errors))
+
+    # invalid accessory category
+    t = _good_tabs(); t["Accessories"][1][0]["Category"] = "widgets"
+    check("invalid accessory category -> error",
+          any("category 'widgets'" in e for e in validate_accessories(t, languages=langs).errors))
+
+    # accessory image basename != id is accepted (no error) when image cell is valid
+    t = _good_tabs(); t["Accessories"][1][0]["Image File Name"] = "copper-ice.jpg"
+    check("accessory basename != id accepted",
+          validate_accessories(t, languages=langs).ok)
+
+    # invalid salesNote Type
+    t = _good_tabs(); t["SalesNotes"][1][0] = {"Type": "vendor", "Key": "X"}
+    check("invalid salesNote Type -> error",
+          any("Type 'vendor'" in e for e in validate_sales_notes(t).errors))
+
+    # subBrand full missing Lead/Demo/Close
+    t = _good_tabs()
+    t["SalesNotes"][1][0] = {"Type": "subBrand", "Key": "Copper", "Format": "full",
+                             "Lead": "", "Demo": "d", "Close": "c"}
+    check("salesNote full missing Lead -> error",
+          any("Lead is required" in e for e in validate_sales_notes(t).errors))
+
+    # subBrand coaching missing RSA Note
+    t = _good_tabs()
+    t["SalesNotes"][1][0] = {"Type": "subBrand", "Key": "Charcoal", "Format": "coaching",
+                             "RSA Note": ""}
+    check("salesNote coaching missing RSA Note -> error",
+          any("RSA Note is required" in e for e in validate_sales_notes(t).errors))
+
+    # brand salesNote missing Story
+    t = _good_tabs()
+    t["SalesNotes"][1][0] = {"Type": "brand", "Key": "Acme", "Story": ""}
+    check("brand salesNote missing Story -> error",
+          any("Story is required" in e for e in validate_sales_notes(t).errors))
+
+    # missing mattress source image when source-images provided
+    import tempfile
+    with tempfile.TemporaryDirectory() as d:
+        os.makedirs(os.path.join(d, "mattresses"))
+        os.makedirs(os.path.join(d, "accessories"))
+        t = _good_tabs()  # name "Athena" -> needs athena.* in d/mattresses (absent)
+        check("missing mattress source image -> error",
+              any("no source image" in e and "Mattresses" in e
+                  for e in validate_mattresses(t, source_images=d, languages=langs).errors))
+        check("missing accessory source image -> error",
+              any("no source image" in e and "Accessories" in e
+                  for e in validate_accessories(t, source_images=d, languages=langs).errors))
+
+    # ES missing copy warns when languages includes es
+    t = _good_tabs()
+    for hh in [c for c in t["Mattresses"][0] if c.endswith(" (ES)")]:
+        t["Mattresses"][1][0][hh] = ""
+    rr = validate_mattresses(t, languages=langs)
+    check("ES missing mattress copy -> warning (not error)",
+          rr.ok and any("no Spanish (ES) copy" in w for w in rr.warnings))
 
     print(f"\nSelf-test: {passed} passed, {failed} failed")
     return 0 if failed == 0 else 1
