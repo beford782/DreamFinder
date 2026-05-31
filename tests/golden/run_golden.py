@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Golden-bundle harness runner - phase-aware (S2 + S3 + S4 active).
+"""Golden-bundle harness runner - phase-aware (S2 + S3 + S4 + S5 active).
 
 Phase 0 plan: docs/phase0-onboarding-pipeline-spec-2026-05-31.md section4
 ("S1 harness structure" + staged activation).
@@ -11,21 +11,23 @@ End-to-end goal (built up phase by phase):
                               -> store-config.json, accessories.json [S3, ACTIVE]
                               -> normalized images (jpg)             [S4, ACTIVE]
         -> [build-data.ps1]  -> mattresses.json (in workspace)       [S4, ACTIVE]
-                              -> manifest.json                       [S5]
+                              -> manifest.json                       [S5, ACTIVE]
                               -> allowed-hosts.js                    [S6]
         -> canonical compare generated outputs vs committed data/ + manifest.json
 
-Currently wired: **S2 + S3 + S4**. The converter runs into a temp workspace with
---source-images <repo>/images, producing CSVs, JSON, and normalized JPGs. We then
-copy build-data.ps1 into the workspace and run it (pwsh/powershell) to regenerate
-mattresses.json, and canonically compare it to the committed file. S4 also checks
-the normalized image outputs (filename set / .jpg / opens / long-edge<=1000;
-never bytes). All active compares are REQUIRED in normal mode.
+Currently wired: **S2 + S3 + S4 + S5**. The converter runs into a temp workspace
+with --source-images <repo>/images, producing CSVs, JSON, normalized JPGs, and
+manifest.json. We then copy build-data.ps1 into the workspace and run it
+(pwsh/powershell) to regenerate mattresses.json, and canonically compare all
+outputs to the committed files. S4 also checks the normalized image outputs
+(filename set / .jpg / opens / long-edge<=1000; never bytes). S5 compares the
+generated manifest.json (workspace root). All active compares are REQUIRED in
+normal mode.
 
 If PowerShell is unavailable: normal mode loudly SKIPS the mattresses.json compare
-(still passes if S2/S3/image checks pass); --strict fails.
+(still passes if S2/S3/S5/image checks pass); --strict fails.
 
---strict: runs S2+S3+S4, but exits non-zero while S5-S6 remain unwired (and on a
+--strict: runs S2+S3+S4+S5, but exits non-zero while S6 remains unwired (and on a
 PowerShell skip), even when everything wired passes.
 
 Never mutates repo data/ or images/ (everything goes to a tempfile workspace).
@@ -61,7 +63,6 @@ JSON_COMPARES = ["store-config.json", "accessories.json"]
 
 # Phases not yet wired into the runner (reported as pending).
 PENDING_PHASES = [
-    ("S5", "manifest.json", "json"),
     ("S6", "data/allowed-hosts.js", "array vs store-config.allowedHosts"),
 ]
 
@@ -99,7 +100,7 @@ def run_converter(workspace: str, wb_path: str) -> bool:
 
 
 def compare_outputs(workspace: str) -> canonical.CompareResult:
-    """S2 CSVs (mattresses) + S3 JSON (store-config, accessories)."""
+    """S2 CSVs (mattresses) + S3 JSON (store-config, accessories) + S5 manifest."""
     result = canonical.CompareResult()
     data = Path(workspace) / "data"
     for phase, names, fn in (("S2", CSV_COMPARES, canonical.compare_csv_files),
@@ -116,6 +117,20 @@ def compare_outputs(workspace: str) -> canonical.CompareResult:
                    allowlist=canonical.DEFAULT_ALLOWLIST)
             print(f"[{phase}] {name}: {r.summary().splitlines()[0]}")
             result.merge(r)
+
+    # S5: manifest.json lives at the workspace root, not under data/.
+    committed_m = REPO_ROOT / "manifest.json"
+    generated_m = Path(workspace) / "manifest.json"
+    if not generated_m.exists():
+        result.differences.append(f"manifest.json - generated file missing at {generated_m}")
+        result.ok = False
+        print("[S5] manifest.json: MISSING")
+    else:
+        r = canonical.compare_json_files(str(committed_m), str(generated_m),
+                                         label="manifest.json",
+                                         allowlist=canonical.DEFAULT_ALLOWLIST)
+        print(f"[S5] manifest.json: {r.summary().splitlines()[0]}")
+        result.merge(r)
     return result
 
 
@@ -208,12 +223,12 @@ def main(argv=None) -> int:
     parser = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--strict", action="store_true",
-                        help="Run S2+S3+S4, but exit non-zero while S5-S6 remain "
+                        help="Run S2+S3+S4+S5, but exit non-zero while S6 remains "
                              "unwired (and on a PowerShell skip).")
     args = parser.parse_args(argv)
 
     print("=" * 70)
-    print("DreamFinder golden-bundle harness (S2 + S3 + S4 active)")
+    print("DreamFinder golden-bundle harness (S2 + S3 + S4 + S5 active)")
     print("=" * 70)
 
     with tempfile.TemporaryDirectory(prefix="dreamfinder_golden_") as workspace:
@@ -228,20 +243,21 @@ def main(argv=None) -> int:
 
         print("-" * 70)
         converted = run_converter(workspace, wb_path)
-        s23_ok = False
+        compares_ok = False
         s4_img_ok = False
         s4_json = "fail"
         if converted:
             result = compare_outputs(workspace)
             print(result.summary())
-            s23_ok = result.ok
+            compares_ok = result.ok
             print("-" * 70)
             s4_img_ok = check_s4_images(workspace)
             s4_json = run_s4_json(workspace)
 
         print("-" * 70)
-        print(f"[S2+S3] {'PASS' if s23_ok else 'FAIL'}: CSV + store-config/accessories JSON.")
-        print(f"[S4]    images {'PASS' if s4_img_ok else 'FAIL'}; "
+        print(f"[S2+S3+S5] {'PASS' if compares_ok else 'FAIL'}: CSV + "
+              f"store-config/accessories JSON + manifest.json.")
+        print(f"[S4]       images {'PASS' if s4_img_ok else 'FAIL'}; "
               f"mattresses.json compare: {s4_json.upper()}")
 
         print("-" * 70)
@@ -251,25 +267,25 @@ def main(argv=None) -> int:
         print("-" * 70)
 
     # Decide outcome.
-    active_ok = s23_ok and s4_img_ok
+    active_ok = compares_ok and s4_img_ok
     if s4_json == "fail":
         active_ok = False
     elif s4_json == "skip" and args.strict:
         active_ok = False  # strict treats a PowerShell skip as failure
 
     if not active_ok:
-        print("[FAIL] An active (S2/S3/S4) golden check failed"
+        print("[FAIL] An active (S2/S3/S4/S5) golden check failed"
               + (" (PowerShell required under --strict)." if s4_json == "skip" else "."))
         return 1
 
     if args.strict:
-        print("[STRICT] S2+S3+S4 passed, but S5-S6 are not wired yet - exiting "
+        print("[STRICT] S2+S3+S4+S5 passed, but S6 is not wired yet - exiting "
               "non-zero (full golden flow incomplete).")
         return 1
 
     note = "" if s4_json == "pass" else " (mattresses.json compare skipped - no PowerShell)"
-    print(f"[PASS] S2+S3+S4 golden checks passed{note}. (S5-S6 pending; run without "
-          "--strict treats those as not-yet-required.)")
+    print(f"[PASS] S2+S3+S4+S5 golden checks passed{note}. (S6 pending; run without "
+          "--strict treats it as not-yet-required.)")
     return 0
 
 

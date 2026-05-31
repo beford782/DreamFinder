@@ -69,6 +69,14 @@ ACCESSORY_KEY_ORDER = [
     "subType", "matchTags", "matchScores",
 ]
 
+# manifest.json (S5). Key order matches committed; display/orientation are
+# constants (kiosk app), not workbook columns. No icons key (committed has none).
+MANIFEST_KEY_ORDER = [
+    "name", "short_name", "description", "start_url",
+    "display", "orientation", "background_color", "theme_color",
+]
+MANIFEST_CONSTANTS = {"display": "standalone", "orientation": "landscape"}
+
 # Image normalization (S4). Source images are accepted in any of these formats and
 # re-encoded to JPG. WebP output is intentionally NOT produced (Outlook desktop /
 # iOS Mail render WebP unreliably in result emails - CLAUDE.md image convention).
@@ -233,6 +241,23 @@ def build_store_config(wb):
 
     # Reorder top-level keys to the committed order (readability only).
     return {k: cfg[k] for k in STORE_CONFIG_KEY_ORDER if k in cfg}
+
+
+# -- manifest.json (S5) -------------------------------------------------------
+
+def build_manifest(wb):
+    """Assemble manifest.json from the Store Info manifest.* columns + the
+    display/orientation constants. (manifest.* are skipped by build_store_config,
+    so the two outputs do not overlap.) No icons key (committed has none)."""
+    _, si_rows = read_tab(wb, "Store Info")
+    si = si_rows[0] if si_rows else {}
+    values = dict(MANIFEST_CONSTANTS)
+    for col in schema.get_columns("Store Info"):
+        if col.key.startswith("manifest."):
+            sub = col.key[len("manifest."):]
+            cell = si.get(col.name)
+            values[sub] = "" if cell is None else cell  # preserve string/type
+    return {k: values[k] for k in MANIFEST_KEY_ORDER if k in values}
 
 
 # -- accessories.json (S3) ----------------------------------------------------
@@ -415,6 +440,11 @@ def main(argv=None) -> int:
         acc_path = os.path.join(data_dir, "accessories.json")
         write_json(acc_path, accessories)
         print(f"  wrote {acc_path} ({len(accessories)} items)")
+
+        manifest = build_manifest(wb)
+        man_path = os.path.join(args.output_dir, "manifest.json")  # repo root, not data/
+        write_json(man_path, manifest)
+        print(f"  wrote {man_path} ({len(manifest)} keys)")
     finally:
         wb.close()
 
