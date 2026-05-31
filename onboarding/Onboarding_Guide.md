@@ -29,8 +29,8 @@ To set up DreamFinder for your store, we need a few things from you.
 | Store logo | PNG, transparent background | `logos/` folder in Google Drive |
 | Brand logos | PNG, one per brand | `logos/` folder in Google Drive |
 | Square app icons (192px + 512px) | PNG | `logos/` folder in Google Drive |
-| Mattress product images | PNG or JPG, one per mattress | `mattresses/` folder in Google Drive |
-| Accessory product images | PNG, JPG, or WebP | `accessories/` folder in Google Drive |
+| Mattress product images | Any common format (JPG/PNG/WebP), one per mattress | `mattresses/` folder in Google Drive |
+| Accessory product images | Any common format (JPG/PNG/WebP), one per accessory | `accessories/` folder in Google Drive |
 | Spanish store text (optional) | Spreadsheet (Store Info tab) | Same spreadsheet, Spanish columns |
 | Spanish mattress descriptions (optional) | Spreadsheet (Mattresses tab) | Same spreadsheet, Spanish columns |
 
@@ -90,7 +90,7 @@ Add one row for every mattress you want in the app. Key fields:
 - **Tier** — `gold` (premium), `silver` (mid-range), or `bronze` (value). Controls display priority.
 - **Firmness** — Rate 1 (ultra soft) to 10 (ultra firm)
 - **Feature Keywords** — These drive the quiz matching algorithm. See the Feature Keywords tab for the full list with descriptions.
-- **Image File Name** — Must exactly match the file you upload (e.g., `royal-cloud.png`)
+- **Image** — Name your mattress image file after the mattress **name**, lowercased (e.g. a mattress named `Royal Cloud` -> `royal-cloud.jpg`). Any common format; we convert to JPG. (Mattress images are matched by name — there's no image-filename column on this tab.)
 - **"Why" columns** — Short selling points shown when a mattress matches. "Why: Default" is required.
 
 **Spanish mattress text (optional):** If you'd like the mattress badge chips, highlight
@@ -98,8 +98,8 @@ lines, and "Why it matches you" reason text to appear in Spanish when customers 
 to ES, provide Spanish translations for each mattress. We'll generate these for you if
 not provided — they can always be refined later.
 
-> **Tip:** The yellow example rows show Bel Furniture's real data. Use them as a guide,
-> then delete them before submitting.
+> **Tip:** This template is **blank** — just fill in your own rows. (If you'd like a
+> fully worked example to copy from, ask us for the Bel Furniture sample workbook.)
 
 ### Step 4: Fill Out the Accessories Tab
 
@@ -137,13 +137,13 @@ DreamFinder - [Your Store Name]/
 ```
 
 **Image requirements:**
-- **Mattresses & accessories:** Up to **1000 px on the long edge**. Send the **highest-quality source you have** in any common format (WebP, JPG, PNG). We auto-convert everything to optimized WebP at build time, so don't waste time pre-shrinking.
+- **Mattresses & accessories:** Up to **1000 px on the long edge**. Send the **highest-quality source you have** in any common format (JPG, PNG, WebP). We auto-convert everything to optimized JPG at build time, so don't waste time pre-shrinking.
 - **Logo:** Min 400px wide, **PNG** with transparent background (kept as-is)
 - **Icons:** Exactly 192×192 and 512×512, square **PNG** (kept as-is)
 
-**File names must match the ID column in your spreadsheet.**
+**Name mattress image files after the mattress name (lowercased); name accessory image files to match the Image File Name in the Accessories tab.**
 
-> **About the auto-conversion:** during the build we resize images to a max of 1000 px on the long edge and re-encode as WebP at quality 82. The result is roughly 100× smaller than the original PNG with no visible loss. Customer-facing pages load nearly instantly even on slow showroom WiFi.
+> **About the auto-conversion:** during the build we resize images to a max of 1000 px on the long edge and re-encode as optimized JPG (quality 88). The result is dramatically smaller than the original with no visible loss, so customer-facing pages — and the result email — load fast even on slow showroom WiFi. (JPG specifically, because Outlook and iOS Mail render WebP unreliably in email.)
 
 ---
 

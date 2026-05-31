@@ -34,7 +34,7 @@ or VS Code Live Server. `file://` is not supported (CORS + domain lock).
 ## Deeper docs
 
 - **Project guide & development conventions** — see [`CLAUDE.md`](CLAUDE.md). Covers app architecture, scoring engine, white-label boundaries, iPad/touch rules, image format conventions, and what not to touch without checking first.
-- **New retailer onboarding** — see [`onboarding/Build_Runbook.md`](onboarding/Build_Runbook.md). Step-by-step guide for spinning up a new white-label deployment from a completed onboarding spreadsheet.
+- **New retailer onboarding** — see [`onboarding/Build_Runbook.md`](onboarding/Build_Runbook.md). A workbook → validated bundle pipeline: generate the blank template (`tools/create_template.py`), fill it, then `tools/convert_store_data.py` emits the data bundle (store-config, mattresses, accessories, manifest, normalized images, allowed-hosts). The retailer-facing template and the converter share one schema (`tools/workbook_schema.py`).
 
 ## Updating the Apps Script backend
 

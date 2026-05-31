@@ -104,8 +104,15 @@ Flag any question customization requests as requiring a config migration first.
 
 ### Domain Lock
 A domain lock at the top of the `<script>` block restricts where the app runs.
-Allowed hosts: `beford782.github.io`, `localhost`, `127.0.0.1`.
-If deploying to a new domain, add it to the `allowed` array around line 3824.
+Allowed hosts: `beford782.github.io`, plus `localhost` / `127.0.0.1` (built-in fallback).
+The allowlist is **config-driven (M1)**: the host lives in `store-config.allowedHosts`,
+the converter projects it into `data/allowed-hosts.js`
+(`window.__DF_ALLOWED_HOSTS = [...]`), and the lock IIFE reads that global with a
+`localhost`/`127.0.0.1` fallback — so **do not hand-edit any `allowed` array in
+`index.html`** to add a domain. To allow a new host, set it in `allowedHosts` (the
+workbook / `store-config.json`) and regenerate. After deploy, confirm
+`https://<host>.github.io/DreamFinder/data/allowed-hosts.js` returns **HTTP 200** — a
+missing file blanks the production host while `localhost` still works.
 
 Opening `index.html` via `file://` is **not supported** — the domain lock rejects
 empty hostname, and even if it didn't, browser CORS blocks `fetch()` of
