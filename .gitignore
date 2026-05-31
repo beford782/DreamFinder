@@ -1,3 +1,4 @@
 .claude/
-docs/
+docs/*
+!docs/phase0-onboarding-pipeline-spec-2026-05-31.md
 tools/strip-bg.py
