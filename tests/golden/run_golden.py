@@ -1,40 +1,39 @@
 #!/usr/bin/env python3
-"""Golden-bundle harness runner — S1 skeleton (expected-failing until S2).
+"""Golden-bundle harness runner - phase-aware (S2 active).
 
-Phase 0 plan: docs/phase0-onboarding-pipeline-spec-2026-05-31.md §4
+Phase 0 plan: docs/phase0-onboarding-pipeline-spec-2026-05-31.md section4
 ("S1 harness structure" + staged activation).
 
-End-to-end goal (once the converter rewrite exists):
+End-to-end goal (built up phase by phase):
 
     build_bel_workbook -> Bel.xlsx (temp workspace)
-        -> [converter, S2+]  -> store-config.json, mattresses.csv(+es),
-                                 accessories.json, manifest.json, allowed-hosts.js
-        -> [build-data.ps1]  -> mattresses.json   (in the temp workspace)
+        -> [converter]       -> mattresses.csv(+es)  [S2, ACTIVE]
+                              -> store-config.json, accessories.json  [S3]
+                              -> images (jpg) + mattresses.json        [S4]
+                              -> manifest.json                         [S5]
+                              -> allowed-hosts.js                      [S6]
         -> canonical compare generated outputs vs committed data/ + manifest.json
 
-The converter rewrite (S2+) does NOT exist yet, and the *current* converter is
-stale (it emits inline JS, not the bundle). So this runner deliberately does the
-parts that are valid today — generate the Bel workbook fixture into a temp
-workspace and verify the S1 building blocks — then **explicitly skips** the
-end-to-end golden comparison rather than passing silently. Use --strict to make
-the unavailable full flow a hard failure (for future CI once S2 lands).
+Currently wired: **S2** - generate the Bel workbook, run the (rewritten) converter
+into a temp workspace, and canonically compare the generated mattresses.csv /
+mattresses-es.csv against the committed Bel CSVs. This compare is REQUIRED in
+normal mode (a mismatch fails the run). S3-S6 are still pending and reported as
+such.
 
-It never mutates repo data/ and never writes a generated workbook inside the repo
-(everything goes to a tempfile workspace). Stdlib only in this file; openpyxl is
-pulled in transitively by build_bel_workbook.
+--strict: runs S2 too, but exits non-zero while S3-S6 remain unwired (so future
+CI only goes green once the full flow lands), even when S2 passes.
 
-Activation points (flip CONVERTER_AVAILABLE and wire golden_compare in S2+):
-    S2 -> compare data/mattresses.csv (+ -es)            [canonical.compare_csv_files]
-    S3 -> compare data/store-config.json, accessories    [canonical.compare_json_files]
-    S4 -> compare data/mattresses.json (+ images)        [json; needs build-data.ps1 + images]
-    S5 -> compare manifest.json                          [canonical.compare_json_files]
-    S6 -> compare data/allowed-hosts.js                  [array vs store-config.allowedHosts]
+Never mutates repo data/ and never writes generated files inside the repo
+(everything goes to a tempfile workspace). For S2 the workspace needs no images
+or build-data.ps1 (CSV-only compare); that machinery arrives with S4. Stdlib only
+in this file; openpyxl is pulled in transitively by build_bel_workbook.
 """
 
 from __future__ import annotations
 
 import argparse
 import os
+import subprocess
 import sys
 import tempfile
 from pathlib import Path
@@ -46,100 +45,121 @@ if str(REPO_ROOT) not in sys.path:
 from tests.fixtures import build_bel_workbook  # noqa: E402
 from tests.golden import canonical  # noqa: E402
 
+CONVERTER = REPO_ROOT / "tools" / "convert_store_data.py"
 
-# Flipped to True in S2 when the converter rewrite can emit the bundle. Until
-# then the end-to-end golden comparison cannot run and must not silently "pass".
-CONVERTER_AVAILABLE = False
+# Phases not yet wired into the runner (reported as pending).
+PENDING_PHASES = [
+    ("S3", "data/store-config.json, data/accessories.json", "json"),
+    ("S4", "data/mattresses.json (+ image normalization)", "json, needs build-data.ps1 + images"),
+    ("S5", "manifest.json", "json"),
+    ("S6", "data/allowed-hosts.js", "array vs store-config.allowedHosts"),
+]
 
 
-def prep_checks(workspace: str) -> bool:
-    """Run the parts of the flow that are valid today: generate the Bel workbook
-    fixture into the temp workspace (with its own round-trip self-check) and
-    confirm the canonical helpers are importable."""
-    ok = True
-
+def generate_workbook(workspace: str) -> str | None:
+    """Generate the Bel fixture workbook into the workspace. Returns its path,
+    or None if generation/self-check failed."""
     wb_path = os.path.join(workspace, "bel_onboarding.xlsx")
-    print(f"[S1] Generating Bel workbook fixture -> {wb_path}")
+    print(f"[prep] Generating Bel workbook fixture -> {wb_path}")
     rc = build_bel_workbook.main(["--output", wb_path])
-    exists = os.path.exists(wb_path)
-    if rc != 0:
-        print(f"[S1] FAIL: fixture generator self-check returned {rc}")
-        ok = False
-    if not exists:
-        print("[S1] FAIL: workbook was not created")
-        ok = False
-    else:
-        print(f"[S1] OK: workbook present ({os.path.getsize(wb_path)} bytes)")
-
-    # Canonical helpers sanity (the library self-tests separately; here we just
-    # confirm it imported and the curated allow-list starts empty).
-    print(f"[S1] OK: canonical helpers importable; "
+    if rc != 0 or not os.path.exists(wb_path):
+        print(f"[prep] FAIL: fixture generation rc={rc}, exists={os.path.exists(wb_path)}")
+        return None
+    print(f"[prep] OK: workbook present ({os.path.getsize(wb_path)} bytes)")
+    print(f"[prep] OK: canonical helpers importable; "
           f"DEFAULT_ALLOWLIST empty: {canonical.DEFAULT_ALLOWLIST == []}")
+    return wb_path
 
-    return ok
+
+def run_converter(workspace: str, wb_path: str) -> bool:
+    """Run the converter on the workbook into the workspace (CSV only)."""
+    print(f"[S2] Running converter -> {workspace} (--skip-build-json)")
+    proc = subprocess.run(
+        [sys.executable, str(CONVERTER), wb_path,
+         "--output-dir", workspace, "--skip-build-json"],
+        capture_output=True, text=True)
+    if proc.stdout.strip():
+        print("  " + proc.stdout.strip().replace("\n", "\n  "))
+    if proc.returncode != 0:
+        print(f"[S2] FAIL: converter exited {proc.returncode}")
+        if proc.stderr.strip():
+            print("  " + proc.stderr.strip().replace("\n", "\n  "))
+        return False
+    return True
 
 
-def golden_compare(workspace: str, strict: bool) -> int:
-    """Run (or skip) the end-to-end converter-backed comparison."""
-    if not CONVERTER_AVAILABLE:
-        msg = ("converter rewrite (S2+) not available - no generated bundle to "
-               "compare against committed data/ yet.")
-        if strict:
-            print(f"[STRICT] Golden compare unavailable: {msg}")
-            print("[STRICT] Exiting non-zero: full golden flow cannot run until S2.")
-            return 1
-        print(f"[SKIP] Golden compare skipped until S2 converter rewrite: {msg}")
-        print("       Activation points:")
-        print("         S2 -> data/mattresses.csv (+ -es)         [csv]")
-        print("         S3 -> data/store-config.json, accessories [json]")
-        print("         S4 -> data/mattresses.json (+ images)     [json, needs build-data.ps1]")
-        print("         S5 -> manifest.json                       [json]")
-        print("         S6 -> data/allowed-hosts.js               [array]")
-        return 0
-
-    # ── FUTURE (S2+) wiring — intentionally not implemented in S1 ──────────────
-    # The converter rewrite must NOT run the current stale converter. Once it
-    # exists, the flow here is roughly:
-    #
-    #   1. Generate the workbook (done above, in `workspace`).
-    #   2. Copy committed scripts + data/ + images/ into `workspace` (isolation;
-    #      build-data.ps1 is $PSScriptRoot-bound — never target repo data/).
-    #   3. Run the converter on the workbook -> bundle files in `workspace`.
-    #   4. Shell out to pwsh/powershell to run build-data.ps1 -> mattresses.json
-    #      (reuse the pwsh||powershell detection from tools/hooks/pre-commit).
-    #   5. result = canonical.CompareResult()
-    #      result.merge(canonical.compare_csv_files(<committed>, <generated>,   # S2
-    #                                               allowlist=canonical.DEFAULT_ALLOWLIST))
-    #      result.merge(canonical.compare_json_files(...))                       # S3/S4/S5
-    #      ... S6 allowed-hosts.js (array compare helper, added later) ...
-    #      print(result.summary())
-    #      return 0 if result.ok else 1
-    raise NotImplementedError("converter-backed golden compare wiring lands in S2+")
+def compare_csvs(workspace: str) -> canonical.CompareResult:
+    """Canonically compare generated mattresses CSVs vs committed Bel CSVs."""
+    result = canonical.CompareResult()
+    pairs = [
+        ("mattresses.csv", REPO_ROOT / "data" / "mattresses.csv"),
+        ("mattresses-es.csv", REPO_ROOT / "data" / "mattresses-es.csv"),
+    ]
+    for name, committed in pairs:
+        generated = Path(workspace) / "data" / name
+        if not generated.exists():
+            result.differences.append(f"{name} - generated file missing at {generated}")
+            result.ok = False
+            continue
+        r = canonical.compare_csv_files(str(committed), str(generated),
+                                        label=name,
+                                        allowlist=canonical.DEFAULT_ALLOWLIST)
+        print(f"[S2] {name}: {r.summary().splitlines()[0]}")
+        result.merge(r)
+    return result
 
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--strict", action="store_true",
-                        help="Treat the (currently unavailable) full golden flow "
-                             "as a hard failure. For future CI once S2 lands.")
+                        help="Run S2, but exit non-zero while S3-S6 remain unwired "
+                             "(for future CI once the full flow lands).")
     args = parser.parse_args(argv)
 
     print("=" * 70)
-    print("DreamFinder golden-bundle harness (S1 skeleton)")
+    print("DreamFinder golden-bundle harness (S2 active)")
     print("=" * 70)
 
     with tempfile.TemporaryDirectory(prefix="dreamfinder_golden_") as workspace:
         print(f"Temp workspace: {workspace}")
         print("-" * 70)
-        if not prep_checks(workspace):
+
+        wb_path = generate_workbook(workspace)
+        if wb_path is None:
             print("-" * 70)
-            print("[FAIL] S1 prep checks failed.")
+            print("[FAIL] prep failed.")
             return 1
+
         print("-" * 70)
-        print("[PASS] S1 prep checks.")
+        # -- S2: converter -> CSV -> canonical compare (REQUIRED) --------------
+        s2_ok = run_converter(workspace, wb_path)
+        if s2_ok:
+            result = compare_csvs(workspace)
+            print(result.summary())
+            s2_ok = result.ok
         print("-" * 70)
-        return golden_compare(workspace, args.strict)
+        print(f"[S2] {'PASS' if s2_ok else 'FAIL'}: mattresses CSV golden compare.")
+
+        # -- S3-S6: still pending ----------------------------------------------
+        print("-" * 70)
+        print("Pending phases (not yet wired):")
+        for sid, what, kind in PENDING_PHASES:
+            print(f"  {sid} -> {what}   [{kind}]")
+        print("-" * 70)
+
+    if not s2_ok:
+        print("[FAIL] S2 golden compare failed.")
+        return 1
+
+    if args.strict:
+        print("[STRICT] S2 passed, but S3-S6 are not wired yet - exiting non-zero "
+              "(full golden flow incomplete).")
+        return 1
+
+    print("[PASS] S2 golden compare passed. (S3-S6 pending; run without --strict "
+          "treats those as not-yet-required.)")
+    return 0
 
 
 if __name__ == "__main__":
