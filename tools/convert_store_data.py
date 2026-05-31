@@ -69,6 +69,14 @@ ACCESSORY_KEY_ORDER = [
     "subType", "matchTags", "matchScores",
 ]
 
+# Image normalization (S4). Source images are accepted in any of these formats and
+# re-encoded to JPG. WebP output is intentionally NOT produced (Outlook desktop /
+# iOS Mail render WebP unreliably in result emails - CLAUDE.md image convention).
+SOURCE_IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".webp")
+IMAGE_LONG_EDGE = 1000
+# TODO(deps): image normalization requires Pillow, which is not yet declared in a
+# requirements.txt / pyproject. Declare it (alongside openpyxl) in a later pass.
+
 
 def _s(value) -> str:
     """Cell -> string. Blank for None; never coerce numbers when stringifying."""
@@ -267,6 +275,75 @@ def write_json(path, obj):
         f.write("\n")
 
 
+# -- image normalization (S4) -------------------------------------------------
+
+def _index_source_images(src_dir):
+    """Map lowercased filename stem -> source path, for supported image types."""
+    idx = {}
+    for fn in os.listdir(src_dir):
+        stem, ext = os.path.splitext(fn)
+        if ext.lower() in SOURCE_IMAGE_EXTS:
+            idx[stem.lower()] = os.path.join(src_dir, fn)
+    return idx
+
+
+def _normalize_one(Image, src_path, dst_path, quality):
+    """Re-encode one source image to JPG (RGB, long-edge<=cap, given quality)."""
+    img = Image.open(src_path)
+    if img.mode in ("RGBA", "LA"):
+        bg = Image.new("RGB", img.size, (255, 255, 255))
+        bg.paste(img, mask=img.split()[-1])
+        img = bg
+    elif img.mode != "RGB":
+        img = img.convert("RGB")
+    w, h = img.size
+    if max(w, h) > IMAGE_LONG_EDGE:
+        if w >= h:
+            img = img.resize((IMAGE_LONG_EDGE, int(h * IMAGE_LONG_EDGE / w)), Image.LANCZOS)
+        else:
+            img = img.resize((int(w * IMAGE_LONG_EDGE / h), IMAGE_LONG_EDGE), Image.LANCZOS)
+    img.save(dst_path, "JPEG", quality=quality, optimize=True)
+
+
+def normalize_images(source_root, output_dir, mattress_stems, accessory_stems, quality):
+    """Normalize product images to JPG into <output-dir>/images/{mattresses,
+    accessories}/. Requires Pillow (lazy import). Output stems:
+      * mattresses  -> lower(name)         (matches build-data.ps1's resolution)
+      * accessories -> basename(image cell) (matches accessories.json; NOT id)
+    Source images are matched case-insensitively by stem. A missing source image
+    is a hard error (bad onboarding asset). Brand/store/PWA images are NOT touched."""
+    try:
+        from PIL import Image
+    except ImportError:
+        raise SystemExit(
+            "ERROR: image normalization (--source-images) requires Pillow.\n"
+            "       Install it with: pip install Pillow\n"
+            "       (Or omit --source-images / pass --skip-image-normalization to "
+            "emit CSV/JSON only.)")
+
+    total = 0
+    for subdir, stems in (("mattresses", mattress_stems),
+                          ("accessories", accessory_stems)):
+        if not stems:
+            continue
+        src_dir = os.path.join(source_root, subdir)
+        if not os.path.isdir(src_dir):
+            raise SystemExit(f"ERROR: source image folder not found: {src_dir}")
+        idx = _index_source_images(src_dir)
+        out_dir = os.path.join(output_dir, "images", subdir)
+        os.makedirs(out_dir, exist_ok=True)
+        for stem in stems:
+            src = idx.get(stem.lower())
+            if not src:
+                raise SystemExit(
+                    f"ERROR: no source image for {subdir}/{stem} "
+                    f"(looked for {stem}.[jpg|jpeg|png|webp] in {src_dir})")
+            _normalize_one(Image, src, os.path.join(out_dir, stem + ".jpg"), quality)
+            total += 1
+        print(f"  normalized {len(stems)} {subdir} image(s) -> {out_dir}")
+    return total
+
+
 # -- build-data.ps1 (mattresses.json) ----------------------------------------
 
 def run_build_data(output_dir):
@@ -300,6 +377,14 @@ def main(argv=None) -> int:
     parser.add_argument("workbook", help="Path to the onboarding .xlsx")
     parser.add_argument("--output-dir", default=".",
                         help="Where to write data/ (default: current directory)")
+    parser.add_argument("--source-images", default=None,
+                        help="Folder with mattresses/ and accessories/ subdirs of raw "
+                             "images; when set, normalize them to JPG into "
+                             "<output-dir>/images/. Omit to skip image normalization.")
+    parser.add_argument("--skip-image-normalization", action="store_true",
+                        help="Do not normalize images even if --source-images is given.")
+    parser.add_argument("--image-quality", type=int, default=88,
+                        help="JPEG quality for normalized images (default 88).")
     group = parser.add_mutually_exclusive_group()
     group.add_argument("--build-json", action="store_true",
                        help="Run build-data.ps1 to regenerate mattresses.json (default).")
@@ -332,6 +417,24 @@ def main(argv=None) -> int:
         print(f"  wrote {acc_path} ({len(accessories)} items)")
     finally:
         wb.close()
+
+    # Image normalization (S4) - optional; product images only.
+    if args.source_images and not args.skip_image_normalization:
+        mattress_stems = [
+            _s(r.get("name")).strip().lower()
+            for r in m_rows
+            if _s(r.get("id")).strip() and _s(r.get("name")).strip()
+        ]
+        accessory_stems = [
+            os.path.splitext(os.path.basename(a["image"]))[0]
+            for a in accessories if a.get("image")
+        ]
+        print(f"Normalizing images from {args.source_images} "
+              f"(quality {args.image_quality})...")
+        normalize_images(args.source_images, args.output_dir,
+                         mattress_stems, accessory_stems, args.image_quality)
+    elif args.source_images and args.skip_image_normalization:
+        print("[images] skipped (--skip-image-normalization).")
 
     if not args.skip_build_json:
         run_build_data(args.output_dir)
