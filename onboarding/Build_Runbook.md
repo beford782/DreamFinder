@@ -87,6 +87,27 @@ The converter emits the full data bundle under the repo:
 - **Not** product images and **not** normalized: brand logos, the store logo, and the
   PWA icons (`icon-192.png` / `icon-512.png`). Drop those in manually (Phase 4).
 
+**Validation (runs by default).** The converter validates the workbook *before*
+writing anything and the generated bundle *after*, and **aborts without writing on
+any blocking error**. To validate a workbook on its own (writes nothing):
+
+```
+python tools/validate_workbook.py incoming/Acme_Store_Data.xlsx --source-images incoming/images
+```
+
+As a final readiness gate, treat warnings as blocking and require the GAS URL:
+
+```
+python tools/validate_workbook.py incoming/Acme_Store_Data.xlsx --source-images incoming/images \
+  --warnings-as-errors --require-gas-url
+```
+
+Converter flags: `--validate-only` (validate, write nothing), `--no-validate`
+(emergency/debug only), `--warnings-as-errors`, `--require-gas-url`. Validation
+covers workbook structure, Store Info / config, catalog rows (mattresses,
+accessories, SalesNotes), source product images, and the generated bundle files.
+It does **not** replace human review of copy and design.
+
 **Verify the toolchain, then smoke-test the bundle locally:**
 
 ```

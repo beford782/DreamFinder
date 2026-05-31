@@ -54,6 +54,7 @@ from tests.fixtures import build_bel_workbook  # noqa: E402
 from tests.golden import canonical  # noqa: E402
 
 CONVERTER = REPO_ROOT / "tools" / "convert_store_data.py"
+VALIDATE_WORKBOOK = REPO_ROOT / "tools" / "validate_workbook.py"
 SOURCE_IMAGES = REPO_ROOT / "images"
 IMAGE_LONG_EDGE = 1000
 
@@ -73,6 +74,20 @@ def parse_allowed_hosts(path) -> list:
     if not m:
         raise ValueError(f"no __DF_ALLOWED_HOSTS assignment in {path}")
     return json.loads(m.group(1))
+
+
+def validate_bel(wb_path: str) -> bool:
+    """Explicitly assert the Bel workbook validates clean (no errors AND no
+    warnings, via --warnings-as-errors) through the standalone validator."""
+    proc = subprocess.run(
+        [sys.executable, str(VALIDATE_WORKBOOK), wb_path,
+         "--source-images", str(SOURCE_IMAGES), "--warnings-as-errors"],
+        capture_output=True, text=True)
+    if proc.returncode != 0:
+        out = (proc.stdout + proc.stderr).strip()
+        if out:
+            print("  " + out.replace("\n", "\n  "))
+    return proc.returncode == 0
 
 
 def generate_workbook(workspace: str) -> str | None:
@@ -276,6 +291,11 @@ def main(argv=None) -> int:
             return 1
 
         print("-" * 70)
+        # Explicit validation assertion: Bel must validate clean (errors + warnings).
+        val_ok = validate_bel(wb_path)
+        print(f"[V] Bel workbook validation: {'PASS' if val_ok else 'FAIL'}")
+
+        print("-" * 70)
         converted = run_converter(workspace, wb_path)
         compares_ok = False
         s4_img_ok = False
@@ -304,15 +324,19 @@ def main(argv=None) -> int:
         print("-" * 70)
 
     # Decide outcome. S2-S6 are all wired; nothing is "pending" anymore.
-    active_ok = compares_ok and s4_img_ok
+    active_ok = val_ok and compares_ok and s4_img_ok
     if s4_json == "fail":
         active_ok = False
     elif s4_json == "skip" and args.strict:
         active_ok = False  # strict treats a PowerShell skip as failure
 
     if not active_ok:
-        print("[FAIL] A golden check failed"
-              + (" (PowerShell required under --strict)." if s4_json == "skip" else "."))
+        reason = ""
+        if not val_ok:
+            reason = " (Bel workbook validation failed)"
+        elif s4_json == "skip":
+            reason = " (PowerShell required under --strict)"
+        print(f"[FAIL] A golden check failed{reason}.")
         return 1
 
     note = "" if s4_json == "pass" else " (mattresses.json compare skipped - no PowerShell)"
