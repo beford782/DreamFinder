@@ -27,6 +27,7 @@ from __future__ import annotations
 import argparse
 import os
 import sys
+import tempfile
 
 # Shared schema lives alongside this file in tools/.
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -271,25 +272,49 @@ def self_check(path):
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(
         description="Generate the blank DreamFinder onboarding workbook from the shared schema.")
-    parser.add_argument("--output", default=DEFAULT_OUTPUT,
-                        help="Path to write the .xlsx (default: the committed onboarding template).")
+    parser.add_argument("--output", default=None,
+                        help="Path to write the .xlsx. Default: the committed onboarding "
+                             "template - EXCEPT a bare --self-check (no --output), which "
+                             "verifies a throwaway temp file and never touches the "
+                             "committed template.")
     parser.add_argument("--self-check", action="store_true",
-                        help="Reopen the workbook and assert tabs/headers match the schema.")
+                        help="Reopen the generated workbook and assert tabs/headers match "
+                             "the schema.")
     args = parser.parse_args(argv)
 
-    wb = build_workbook()
-    os.makedirs(os.path.dirname(os.path.abspath(args.output)), exist_ok=True)
-    wb.save(args.output)
-    print(f"Template saved to {args.output}")
-    print(f"  data tabs: {', '.join(schema.get_tab_names())}")
-    print("  helper tabs: Instructions, Feature Keywords")
+    # A bare `--self-check` (no explicit --output) builds into a temp file so
+    # verification never dirties the committed onboarding template (.xlsx output
+    # is non-deterministic). Any explicit --output is written and kept.
+    temp_mode = args.self_check and args.output is None
+    out_path = tempfile.mkstemp(prefix="df_template_", suffix=".xlsx")[1] if temp_mode \
+        else (args.output or DEFAULT_OUTPUT)
 
-    if args.self_check:
-        print("Self-check:")
-        ok = self_check(args.output)
-        print("Self-check:", "PASS" if ok else "FAIL")
-        return 0 if ok else 1
-    return 0
+    wb = build_workbook()
+    try:
+        if not temp_mode:
+            os.makedirs(os.path.dirname(os.path.abspath(out_path)), exist_ok=True)
+        wb.save(out_path)
+
+        if temp_mode:
+            print("Self-check (temp build; committed template not modified):")
+        else:
+            print(f"Template saved to {out_path}")
+            print(f"  data tabs: {', '.join(schema.get_tab_names())}")
+            print("  helper tabs: Instructions, Feature Keywords")
+            if args.self_check:
+                print("Self-check:")
+
+        if args.self_check:
+            ok = self_check(out_path)
+            print("Self-check:", "PASS" if ok else "FAIL")
+            return 0 if ok else 1
+        return 0
+    finally:
+        if temp_mode:
+            try:
+                os.remove(out_path)
+            except OSError:
+                pass
 
 
 if __name__ == "__main__":
