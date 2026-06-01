@@ -117,7 +117,7 @@ Add bases/foundations, pillows, and protectors. Key fields:
 Add one row for each mattress brand you carry. These appear in the "Our Brands" section at the bottom of the app.
 
 - **Brand Name** — The display name (e.g., "Serta", "Sealy")
-- **Logo File Name** — Must match a file you upload to the `logos/` folder (e.g., `serta-logo.png`)
+- **Logo File Name** — The exact file name of the brand's logo you provide in the `logos/` folder (e.g., `serta-logo.png` or `serta.jpg`). We copy it into the app automatically — transparent PNGs look best on the dark footer. Leave blank to show the brand name as text only.
 
 ### Step 6: Upload Images to the Shared Google Drive Folder
 
@@ -126,15 +126,17 @@ You'll receive a shared folder with this structure:
 ```
 DreamFinder - [Your Store Name]/
   logos/
-    store-logo.png
-    store-icon-192.png
-    store-icon-512.png
-    [brand]-logo.png  (one per brand, e.g. serta-logo.png)
+    [brand]-logo.png   (one per brand, e.g. serta-logo.png — shown in "Our Brands")
   mattresses/
-    [id].png  (one per mattress)
+    [name].jpg         (one per mattress, named after the mattress NAME, lowercased)
   accessories/
-    [id].jpg  (one per accessory)
+    [image-file-name]  (one per accessory, matching its Image File Name)
 ```
+
+> **Note:** Your store name currently appears as styled **text** in the app (set on
+> the Store Info tab), so a `store-logo.png` image isn't used yet. Installable-app
+> icons (`store-icon-192/512.png`) are a planned enhancement and aren't displayed
+> yet either — you're welcome to send them now for future use, but they're optional.
 
 **Image requirements:**
 - **Mattresses & accessories:** Up to **1000 px on the long edge**. Send the **highest-quality source you have** in any common format (JPG, PNG, WebP). We auto-convert everything to optimized JPG at build time, so don't waste time pre-shrinking.

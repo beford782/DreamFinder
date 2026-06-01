@@ -134,6 +134,20 @@ def _source_stems(src_dir: str):
     return stems
 
 
+def _source_names(src_dir: str):
+    """Lowercased full filenames of supported images in src_dir, or None if the
+    dir is missing. Brand logos are matched by exact filename (not stem) because
+    the workbook's Logo File Name is copied verbatim into store-config, so the
+    source extension must match what ships (e.g. a transparent .png logo)."""
+    if not os.path.isdir(src_dir):
+        return None
+    names = set()
+    for fn in os.listdir(src_dir):
+        if os.path.splitext(fn)[1].lower() in SOURCE_IMAGE_EXTS:
+            names.add(fn.lower())
+    return names
+
+
 def _brands_from(raw_tabs) -> set:
     if "Brands" not in raw_tabs:
         return set()
@@ -389,6 +403,43 @@ def validate_accessories(raw_tabs, *, source_images=None, skip_images=False,
     return r
 
 
+def validate_brands(raw_tabs, *, source_images=None, skip_images=False) -> ValidationReport:
+    """V2: Brands tab. When a brand sets a Logo File Name and --source-images is
+    provided, require a matching source logo in <source-images>/brands/ (matched by
+    exact filename, case-insensitive - brand logos are copied verbatim, preserving
+    format/transparency). A blank Logo File Name is allowed: the app then shows the
+    brand name only."""
+    r = ValidationReport()
+    if "Brands" not in raw_tabs:
+        return r  # missing tab already reported by validate_structure
+    _, rows = raw_tabs["Brands"]
+    check_images = bool(source_images) and not skip_images
+    src_names = None
+    if check_images:
+        d = os.path.join(source_images, "brands")
+        src_names = _source_names(d)
+        if src_names is None:
+            r.add_error(f"Brands: source logo folder not found: {d}")
+
+    seen = {}
+    for i, row in enumerate(rows, start=1):
+        name = _s(row.get("Brand Name"))
+        logo = _s(row.get("Logo File Name"))
+        tag = name or f"row {i}"
+        if not logo:
+            continue  # optional - app renders the brand name without a logo
+        key = logo.lower()
+        if key in seen:
+            r.add_warning(f"Brands: duplicate Logo File Name {logo!r} "
+                          f"(rows {seen[key]} & {i})")
+        else:
+            seen[key] = i
+        if check_images and src_names is not None and key not in src_names:
+            r.add_error(f"Brands {tag}: no source logo {logo!r} in "
+                        f"{os.path.join(source_images, 'brands')}")
+    return r
+
+
 def validate_sales_notes(raw_tabs, *, languages=None) -> ValidationReport:
     r = ValidationReport()
     if "SalesNotes" not in raw_tabs:
@@ -515,6 +566,16 @@ def validate_generated_outputs(output_dir: str, *, build_json: bool = True,
             if k not in man:
                 r.add_error(f"manifest.json: missing key {k!r}")
 
+    # brand logos referenced by store-config must exist on disk. Only checked when
+    # the brands image folder was emitted (mirrors the mattress-image guard below):
+    # a no-image build has nothing to verify.
+    if config is not None and os.path.isdir(os.path.join(output_dir, "images", "brands")):
+        for b in (config.get("brands") or []):
+            logo = b.get("logo")
+            if logo and not os.path.exists(os.path.join(output_dir, logo)):
+                r.add_error(f"store-config brand {b.get('name')!r}: logo file "
+                            f"{logo!r} not found on disk")
+
     # mattresses.json: structural sanity (only when build-json actually produced it)
     if build_json:
         mj = load_json(os.path.join(data, "mattresses.json"), "mattresses.json")
@@ -556,6 +617,8 @@ def validate_bundle_inputs(raw_tabs, store_config, manifest=None, *,
                                 skip_images=skip_images, languages=langs))
     r.merge(validate_accessories(raw_tabs, source_images=source_images,
                                  skip_images=skip_images, languages=langs))
+    r.merge(validate_brands(raw_tabs, source_images=source_images,
+                            skip_images=skip_images))
     r.merge(validate_sales_notes(raw_tabs, languages=langs))
     return r
 
@@ -797,6 +860,21 @@ def _self_test() -> int:
               any("no source image" in e and "Accessories" in e
                   for e in validate_accessories(t, source_images=d, languages=langs).errors))
 
+        # Brands: logo source existence (brands/ subdir of --source-images)
+        os.makedirs(os.path.join(d, "brands"))
+        tb = _good_tabs(); tb["Brands"][1][0]["Logo File Name"] = "acme.png"
+        check("missing brand source logo -> error",
+              any("no source logo" in e and "Brands" in e
+                  for e in validate_brands(tb, source_images=d).errors))
+        open(os.path.join(d, "brands", "acme.png"), "w").close()
+        check("present brand source logo -> ok",
+              validate_brands(tb, source_images=d).ok)
+        check("blank brand logo -> ok (no source needed)",
+              validate_brands(_good_tabs(), source_images=d).ok)
+        check("brands source folder missing -> error",
+              any("source logo folder not found" in e
+                  for e in validate_brands(tb, source_images=os.path.join(d, "nope")).errors))
+
     # ES missing copy warns when languages includes es
     t = _good_tabs()
     for hh in [c for c in t["Mattresses"][0] if c.endswith(" (ES)")]:
@@ -904,6 +982,21 @@ def _self_test() -> int:
         _write(os.path.join(d, "data", "accessories.json"), json.dumps({"not": "array"}))
         check("post-emit accessories.json wrong shape -> error",
               any("top-level is not a JSON array" in e
+                  for e in validate_generated_outputs(d, build_json=False).errors))
+
+    with tempfile.TemporaryDirectory() as d:
+        _write_good_output(d)
+        cfgp = os.path.join(d, "data", "store-config.json")
+        cfg = json.load(open(cfgp, encoding="utf-8"))
+        cfg["brands"] = [{"name": "Acme", "logo": "images/brands/acme.jpg"}]
+        _write(cfgp, json.dumps(cfg))
+        bdir = os.path.join(d, "images", "brands"); os.makedirs(bdir, exist_ok=True)
+        _write(os.path.join(bdir, "acme.jpg"), "x")
+        check("post-emit brand logo present -> ok",
+              validate_generated_outputs(d, build_json=False, languages=["en", "es"]).ok)
+        os.remove(os.path.join(bdir, "acme.jpg"))
+        check("post-emit brand logo missing -> error",
+              any("not found on disk" in e
                   for e in validate_generated_outputs(d, build_json=False).errors))
 
     print(f"\nSelf-test: {passed} passed, {failed} failed")

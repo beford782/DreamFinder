@@ -34,8 +34,8 @@ def main(argv=None) -> int:
         formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("workbook", help="Path to the onboarding .xlsx")
     parser.add_argument("--source-images", default=None,
-                        help="Folder with mattresses/ and accessories/ subdirs; enables "
-                             "source-image existence checks.")
+                        help="Folder with mattresses/, accessories/, and brands/ subdirs; "
+                             "enables source-image (and brand-logo) existence checks.")
     parser.add_argument("--skip-image-normalization", action="store_true",
                         help="Skip source-image existence checks.")
     parser.add_argument("--warnings-as-errors", action="store_true",

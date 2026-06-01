@@ -9,7 +9,8 @@ app consumes:
     <output-dir>/data/store-config.json     (17 committed top-level keys)         [S3/S6]
     <output-dir>/data/accessories.json      (bilingual array, preserved order)    [S3]
     <output-dir>/data/allowed-hosts.js      (M1 domain-lock allowlist)            [S6]
-    <output-dir>/images/...                 (normalized JPG, with --source-images) [S4]
+    <output-dir>/images/mattresses,accessories (normalized JPG, --source-images)  [S4]
+    <output-dir>/images/brands/...          (brand logos copied verbatim, --source-images)
     <output-dir>/manifest.json              (PWA manifest)                        [S5]
 
 and, unless skipped, shells out to <output-dir>/build-data.ps1 to regenerate
@@ -347,7 +348,8 @@ def normalize_images(source_root, output_dir, mattress_stems, accessory_stems, q
       * mattresses  -> lower(name)         (matches build-data.ps1's resolution)
       * accessories -> basename(image cell) (matches accessories.json; NOT id)
     Source images are matched case-insensitively by stem. A missing source image
-    is a hard error (bad onboarding asset). Brand/store/PWA images are NOT touched."""
+    is a hard error (bad onboarding asset). Brand logos are handled separately by
+    copy_brand_logos (verbatim copy); the store logo and PWA icons are NOT touched."""
     try:
         from PIL import Image
     except ImportError:
@@ -378,6 +380,33 @@ def normalize_images(source_root, output_dir, mattress_stems, accessory_stems, q
             total += 1
         print(f"  normalized {len(stems)} {subdir} image(s) -> {out_dir}")
     return total
+
+
+def copy_brand_logos(source_root, output_dir, logo_files):
+    """Copy brand logos verbatim from <source_root>/brands/ into
+    <output_dir>/images/brands/. `logo_files` are the verbatim Logo File Name
+    values (already the basename of brands[].logo). Unlike product images, brand
+    logos are NOT re-encoded: the committed bytes are preserved and a transparent
+    .png logo stays transparent on the dark footer. Sources are matched by exact
+    filename (case-insensitive); a missing source is a hard error."""
+    if not logo_files:
+        return 0
+    src_dir = os.path.join(source_root, "brands")
+    if not os.path.isdir(src_dir):
+        raise SystemExit(f"ERROR: source logo folder not found: {src_dir}")
+    by_name = {fn.lower(): os.path.join(src_dir, fn)
+               for fn in os.listdir(src_dir)
+               if os.path.isfile(os.path.join(src_dir, fn))}
+    out_dir = os.path.join(output_dir, "images", "brands")
+    os.makedirs(out_dir, exist_ok=True)
+    for f in logo_files:
+        src = by_name.get(f.lower())
+        if not src:
+            raise SystemExit(
+                f"ERROR: no source logo for brands/{f} (looked for {f} in {src_dir})")
+        shutil.copy2(src, os.path.join(out_dir, f))
+    print(f"  copied {len(logo_files)} brand logo(s) -> {out_dir}")
+    return len(logo_files)
 
 
 # -- build-data.ps1 (mattresses.json) ----------------------------------------
@@ -480,6 +509,9 @@ def main(argv=None) -> int:
         report.merge(validation.validate_accessories(
             raw_tabs, source_images=args.source_images,
             skip_images=args.skip_image_normalization, languages=langs))
+        report.merge(validation.validate_brands(
+            raw_tabs, source_images=args.source_images,
+            skip_images=args.skip_image_normalization))
         report.merge(validation.validate_sales_notes(raw_tabs, languages=langs))
         print(report.summary())
         blocking = report.blocking(warnings_as_errors=args.warnings_as_errors)
@@ -532,6 +564,11 @@ def main(argv=None) -> int:
               f"(quality {args.image_quality})...")
         normalize_images(args.source_images, args.output_dir,
                          mattress_stems, accessory_stems, args.image_quality)
+        brand_logo_files = [
+            os.path.basename(b["logo"]) for b in config.get("brands", [])
+            if b.get("logo")
+        ]
+        copy_brand_logos(args.source_images, args.output_dir, brand_logo_files)
     elif args.source_images and args.skip_image_normalization:
         print("[images] skipped (--skip-image-normalization).")
 

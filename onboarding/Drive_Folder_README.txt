@@ -8,11 +8,17 @@ the workbook. Send any common image format - everything is converted to JPG.
 FOLDER STRUCTURE
 ----------------
   logos/
-      store-logo.png        Your store logo (transparent background, min 400px wide)
-      store-icon-192.png    Square PWA app icon, exactly 192 x 192 px
-      store-icon-512.png    Square PWA app icon, exactly 512 x 512 px
-      [brand]-logo.png      One logo per brand you carry (e.g. serta-logo.png)
-                            These appear in the "Our Brands" footer section
+      [brand]-logo.png      One logo per brand you carry (e.g. serta-logo.png).
+                            These appear in the "Our Brands" footer section.
+                            Transparent PNG is ideal; name it to match the Brands
+                            tab "Logo File Name" column.
+
+      Optional, not used yet:
+      store-logo.png        The app currently shows your store NAME as styled text,
+                            so a store-logo image is not displayed yet.
+      store-icon-192.png    Installable-app (PWA) icons are a planned enhancement and
+      store-icon-512.png    are not wired into the app yet. Send them now for future
+                            use if you like, but they are optional.
 
   mattresses/
       <name>.(jpg|png|webp) One file per mattress, named to match the mattress
