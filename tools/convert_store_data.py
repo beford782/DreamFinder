@@ -593,6 +593,15 @@ def main(argv=None) -> int:
         print("[validate] --validate-only with --no-validate: nothing to check.")
         return 0
 
+    # M2 backstop: refuse to write a bundle that would strip manifest.icons because
+    # icons cannot be generated this run. On a validated run this is already caught by
+    # validate_app_icon above (we never reach here); this guards the --no-validate path
+    # and fails BEFORE any file is written.
+    if icon_source and not (args.source_images and not args.skip_image_normalization):
+        print("ERROR: App Icon File is set but PWA icons cannot be generated - re-run "
+              "with --source-images and without --skip-image-normalization.")
+        return 1
+
     # Write phase (validation passed or skipped).
     os.makedirs(data_dir, exist_ok=True)
     en_path, es_path = emit_mattress_csvs(m_headers, m_rows, data_dir)

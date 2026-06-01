@@ -469,6 +469,15 @@ def validate_app_icon(raw_tabs, *, source_images=None, skip_images=False) -> Val
     icon = _s(rows[0].get("App Icon File"))
     if not icon:
         return r  # optional - no PWA icons for this store
+    # M2: icons are generated only when --source-images is provided AND image
+    # normalization is not skipped. If the workbook requests an app icon but the run
+    # cannot generate it, block: writing the bundle anyway would emit manifest.json
+    # WITHOUT its icons array, silently stripping a deployed PWA icon set.
+    if not source_images or skip_images:
+        r.add_error(f"Store Info: App Icon File {icon!r} is set but PWA icons cannot "
+                    f"be generated - re-run with --source-images and without "
+                    f"--skip-image-normalization (otherwise manifest.json is written "
+                    f"without its icons).")
     if not icon.lower().endswith(".png"):
         r.add_error(f"Store Info: App Icon File {icon!r} must be a .png")
     if bool(source_images) and not skip_images:
@@ -618,11 +627,17 @@ def validate_generated_outputs(output_dir: str, *, build_json: bool = True,
                 r.add_error(f"manifest.json: missing key {k!r}")
         # When the manifest declares icons, each referenced file must exist at the
         # output root (icon src is relative to the manifest URL).
-        if isinstance(man.get("icons"), list):
+        if isinstance(man.get("icons"), list) and man["icons"]:
             for ic in man["icons"]:
                 src = ic.get("src") if isinstance(ic, dict) else None
                 if src and not os.path.exists(os.path.join(output_dir, src)):
                     r.add_error(f"manifest.json: icon {src!r} not found on disk")
+            # M3: icon generation always emits apple-touch-icon.png alongside the
+            # manifest icons (index.html references it via <link rel=apple-touch-icon>),
+            # but it is not listed in manifest.icons, so verify it explicitly here.
+            if not os.path.exists(os.path.join(output_dir, "apple-touch-icon.png")):
+                r.add_error("manifest.json declares icons but apple-touch-icon.png is "
+                            "missing at the output root (index.html references it)")
 
     # brand logos referenced by store-config must exist on disk. Only checked when
     # the brands image folder was emitted (mirrors the mattress-image guard below):
@@ -963,6 +978,17 @@ def _self_test() -> int:
         tj = _good_tabs(); tj["Store Info"][1][0]["App Icon File"] = "icon.jpg"
         check("app icon: non-png -> error",
               any("must be a .png" in e for e in validate_app_icon(tj).errors))
+        # M2: App Icon File set but the run cannot generate icons -> blocking error.
+        check("app icon: set but no --source-images -> error",
+              any("cannot be generated" in e for e in validate_app_icon(ti).errors))
+        check("app icon: set with --skip-image-normalization -> error",
+              any("cannot be generated" in e
+                  for e in validate_app_icon(ti, source_images=d, skip_images=True).errors))
+        # ...and a valid run (source images, not skipped) does NOT trip the M2 gate.
+        _put_icon(512, 512)
+        check("app icon: source provided, not skipped -> no M2 error",
+              not any("cannot be generated" in e
+                      for e in validate_app_icon(ti, source_images=d).errors))
 
     # ES missing copy warns when languages includes es
     t = _good_tabs()
@@ -1096,8 +1122,15 @@ def _self_test() -> int:
         _write(os.path.join(d, "manifest.json"), json.dumps(man))
         _write(os.path.join(d, "icon-192.png"), "x")
         _write(os.path.join(d, "icon-512.png"), "x")
+        _write(os.path.join(d, "apple-touch-icon.png"), "x")
         check("post-emit manifest icons present -> ok",
               validate_generated_outputs(d, build_json=False, languages=["en", "es"]).ok)
+        # M3: apple-touch-icon.png must exist when the manifest declares icons.
+        os.remove(os.path.join(d, "apple-touch-icon.png"))
+        check("post-emit apple-touch-icon missing -> error",
+              any("apple-touch-icon.png" in e
+                  for e in validate_generated_outputs(d, build_json=False).errors))
+        _write(os.path.join(d, "apple-touch-icon.png"), "x")  # restore
         os.remove(os.path.join(d, "icon-512.png"))
         check("post-emit manifest icon missing -> error",
               any("icon 'icon-512.png' not found" in e
