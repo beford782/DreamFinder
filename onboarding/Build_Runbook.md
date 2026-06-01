@@ -259,9 +259,11 @@ The **store logo** is currently a **text wordmark** driven by `logo.main` / `log
 1. Drop one **square PNG, ≥ 512×512** into the `logos/` image source folder.
 2. Put its filename in the **App Icon File** column on the Store Info tab.
 
-When `App Icon File` is set (and you run the converter with `--source-images`), the pipeline generates `icon-192.png` and `icon-512.png` at the repo root and adds an `icons` array to `manifest.json`. If `App Icon File` is **blank**, no icons are generated and `manifest.json` has no `icons` key — the app works fine without it. **Bel is intentionally not enabled** (its App Icon File is blank).
+When `App Icon File` is set (and you run the converter with `--source-images`), the pipeline generates `icon-192.png`, `icon-512.png`, and `apple-touch-icon.png` (180×180) at the repo root and adds an `icons` array to `manifest.json`. If `App Icon File` is **blank**, no icons are generated and `manifest.json` has no `icons` key — the app works fine without it.
 
-> Not yet automated: the iOS `apple-touch-icon` `<link>` in `index.html` (home-screen install icon for iPad). That is a small follow-on bundled with first enabling an icon for a deployment, so the link never points at a missing file. The inline SVG favicon is unchanged.
+`index.html` includes a static `<link rel="apple-touch-icon" href="apple-touch-icon.png">` so an installed iPad home-screen shortcut shows the app icon. A deployment that does not provide an app icon simply 404s that one link (benign — the inline SVG favicon is unchanged).
+
+> **Bel is enabled.** Its source icon is `images/logos/app-icon.png` (the gold-moon crescent on `#0f1f33`), `App Icon File` = `app-icon.png`, and `manifest.json` + the three root icons are committed.
 
 ---
 

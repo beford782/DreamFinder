@@ -86,12 +86,20 @@ def nested_get(obj: Any, dotted: str) -> Any:
 # List-valued config fields rendered as a single comma-separated cell.
 _STORE_INFO_LISTS = {"languages", "allowedHosts"}
 
+# Bel's PWA app-icon source filename. It is a build input (which PNG to generate
+# icons from), not stored in the output bundle, so the fixture supplies it. Emitted
+# only when the committed source exists, keeping the fixture round-trippable.
+_BEL_APP_ICON = "app-icon.png"
+
 
 def store_info_value(key: str, config: dict, manifest: dict) -> Any:
     """Resolve one Store Info column. Every Store Info schema key is now the
     column's output path: `manifest.*` keys read manifest.json; list fields
     (languages/allowedHosts) are joined; everything else is a dotted path read
     straight from store-config."""
+    if key == "manifest.iconSource":
+        src = REPO_ROOT / "images" / "logos" / _BEL_APP_ICON
+        return _BEL_APP_ICON if src.is_file() else ""
     if key.startswith("manifest."):
         return manifest.get(key[len("manifest."):])
     if key in _STORE_INFO_LISTS:

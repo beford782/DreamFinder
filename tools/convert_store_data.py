@@ -11,7 +11,8 @@ app consumes:
     <output-dir>/data/allowed-hosts.js      (M1 domain-lock allowlist)            [S6]
     <output-dir>/images/mattresses,accessories (normalized JPG, --source-images)  [S4]
     <output-dir>/images/brands/...          (brand logos copied verbatim, --source-images)
-    <output-dir>/icon-192.png, icon-512.png (PWA icons, only when App Icon File is set)
+    <output-dir>/icon-192.png, icon-512.png, apple-touch-icon.png
+                                            (PWA icons, only when App Icon File is set)
     <output-dir>/manifest.json              (PWA manifest)                        [S5]
 
 and, unless skipped, shells out to <output-dir>/build-data.ps1 to regenerate
@@ -94,6 +95,9 @@ MANIFEST_ICONS = [
     {"src": f"icon-{s}.png", "sizes": f"{s}x{s}", "type": "image/png"}
     for s in APP_ICON_SIZES
 ]
+# Apple touch icon (iOS Add-to-Home-Screen). Generated from the same source as the
+# manifest icons, but referenced via an index.html <link>, not manifest.icons.
+APPLE_TOUCH_ICON = ("apple-touch-icon.png", 180)
 
 # Image normalization (S4). Source images are accepted in any of these formats and
 # re-encoded to JPG. WebP output is intentionally NOT produced (Outlook desktop /
@@ -461,10 +465,11 @@ def generate_app_icons(source_root, output_dir, icon_source):
         raise SystemExit(f"ERROR: app icon source {icon_source} must be "
                          f">= {max(APP_ICON_SIZES)}px (got {w}x{h})")
     generated = []
-    for size in APP_ICON_SIZES:
-        out = os.path.join(output_dir, f"icon-{size}.png")
+    targets = [(f"icon-{s}.png", s) for s in APP_ICON_SIZES] + [APPLE_TOUCH_ICON]
+    for name, size in targets:
+        out = os.path.join(output_dir, name)
         img.resize((size, size), Image.LANCZOS).save(out, "PNG", optimize=True)
-        generated.append(f"icon-{size}.png")
+        generated.append(name)
     print(f"  generated {len(generated)} PWA icon(s) -> {output_dir}")
     return generated
 
