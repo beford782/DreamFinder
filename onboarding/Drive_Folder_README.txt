@@ -13,12 +13,15 @@ FOLDER STRUCTURE
                             Transparent PNG is ideal; name it to match the Brands
                             tab "Logo File Name" column.
 
-      Optional, not used yet:
-      store-logo.png        The app currently shows your store NAME as styled text,
-                            so a store-logo image is not displayed yet.
-      store-icon-192.png    Installable-app (PWA) icons are a planned enhancement and
-      store-icon-512.png    are not wired into the app yet. Send them now for future
-                            use if you like, but they are optional.
+      app-icon.png          Optional. One SQUARE PNG, at least 512 x 512 px. If you
+                            provide it (and enter its file name in the Store Info
+                            "App Icon File" column), we generate the installable-app
+                            (PWA) home-screen icons from it. Leave it out and the app
+                            still works - it just has no custom install icon.
+
+      store-logo.png        Optional, not used yet. The app currently shows your store
+                            NAME as styled text, so a store-logo image is not displayed.
+                            You may send one for future use.
 
   mattresses/
       <name>.(jpg|png|webp) One file per mattress, named to match the mattress

@@ -148,6 +148,20 @@ def _source_names(src_dir: str):
     return names
 
 
+def _png_dimensions(path: str):
+    """Return (width, height) of a PNG by reading its IHDR header, or None if the
+    file is not a valid PNG. Stdlib only - keeps validation.py Pillow-free so it
+    runs in --validate-only without the imaging dependency."""
+    try:
+        with open(path, "rb") as f:
+            header = f.read(24)
+    except OSError:
+        return None
+    if len(header) < 24 or header[:8] != b"\x89PNG\r\n\x1a\n" or header[12:16] != b"IHDR":
+        return None
+    return int.from_bytes(header[16:20], "big"), int.from_bytes(header[20:24], "big")
+
+
 def _brands_from(raw_tabs) -> set:
     if "Brands" not in raw_tabs:
         return set()
@@ -440,6 +454,43 @@ def validate_brands(raw_tabs, *, source_images=None, skip_images=False) -> Valid
     return r
 
 
+def validate_app_icon(raw_tabs, *, source_images=None, skip_images=False) -> ValidationReport:
+    """V2: optional PWA app icon (Store Info "App Icon File"). Blank = no icons
+    (allowed - the converter emits no manifest.icons). When set, the file must be a
+    .png; and when --source-images is provided it must exist at <source-images>/
+    logos/<file> and be a square PNG >= 512px (read via stdlib PNG header, no
+    Pillow). Errors block the build before any icons are generated."""
+    r = ValidationReport()
+    if "Store Info" not in raw_tabs:
+        return r
+    _, rows = raw_tabs["Store Info"]
+    if not rows:
+        return r
+    icon = _s(rows[0].get("App Icon File"))
+    if not icon:
+        return r  # optional - no PWA icons for this store
+    if not icon.lower().endswith(".png"):
+        r.add_error(f"Store Info: App Icon File {icon!r} must be a .png")
+    if bool(source_images) and not skip_images:
+        src = os.path.join(source_images, "logos", icon)
+        if not os.path.isfile(src):
+            r.add_error(f"Store Info: App Icon File {icon!r} not found in "
+                        f"{os.path.join(source_images, 'logos')}")
+        else:
+            dims = _png_dimensions(src)
+            if dims is None:
+                r.add_error(f"Store Info: App Icon File {icon!r} is not a readable PNG")
+            else:
+                w, h = dims
+                if w != h:
+                    r.add_error(f"Store Info: App Icon File {icon!r} must be square "
+                                f"(got {w}x{h})")
+                elif w < 512:
+                    r.add_error(f"Store Info: App Icon File {icon!r} must be >= 512px "
+                                f"(got {w}x{h})")
+    return r
+
+
 def validate_sales_notes(raw_tabs, *, languages=None) -> ValidationReport:
     r = ValidationReport()
     if "SalesNotes" not in raw_tabs:
@@ -565,6 +616,13 @@ def validate_generated_outputs(output_dir: str, *, build_json: bool = True,
                   "display", "orientation", "background_color", "theme_color"):
             if k not in man:
                 r.add_error(f"manifest.json: missing key {k!r}")
+        # When the manifest declares icons, each referenced file must exist at the
+        # output root (icon src is relative to the manifest URL).
+        if isinstance(man.get("icons"), list):
+            for ic in man["icons"]:
+                src = ic.get("src") if isinstance(ic, dict) else None
+                if src and not os.path.exists(os.path.join(output_dir, src)):
+                    r.add_error(f"manifest.json: icon {src!r} not found on disk")
 
     # brand logos referenced by store-config must exist on disk. Only checked when
     # the brands image folder was emitted (mirrors the mattress-image guard below):
@@ -619,6 +677,8 @@ def validate_bundle_inputs(raw_tabs, store_config, manifest=None, *,
                                  skip_images=skip_images, languages=langs))
     r.merge(validate_brands(raw_tabs, source_images=source_images,
                             skip_images=skip_images))
+    r.merge(validate_app_icon(raw_tabs, source_images=source_images,
+                              skip_images=skip_images))
     r.merge(validate_sales_notes(raw_tabs, languages=langs))
     return r
 
@@ -875,6 +935,35 @@ def _self_test() -> int:
               any("source logo folder not found" in e
                   for e in validate_brands(tb, source_images=os.path.join(d, "nope")).errors))
 
+        # App icon (Store Info "App Icon File") - optional PWA icon source in logos/
+        os.makedirs(os.path.join(d, "logos"))
+
+        def _png(w, h):
+            return (b"\x89PNG\r\n\x1a\n" + (13).to_bytes(4, "big") + b"IHDR"
+                    + w.to_bytes(4, "big") + h.to_bytes(4, "big") + b"\x08\x06\x00\x00\x00")
+
+        def _put_icon(w, h, name="app-icon.png"):
+            with open(os.path.join(d, "logos", name), "wb") as f:
+                f.write(_png(w, h))
+
+        ti = _good_tabs(); ti["Store Info"][1][0]["App Icon File"] = "app-icon.png"
+        check("app icon: blank -> ok (no source needed)",
+              validate_app_icon(_good_tabs(), source_images=d).ok)
+        check("app icon: missing source -> error",
+              any("not found" in e and "App Icon File" in e
+                  for e in validate_app_icon(ti, source_images=d).errors))
+        _put_icon(512, 512)
+        check("app icon: square >=512 png -> ok", validate_app_icon(ti, source_images=d).ok)
+        _put_icon(400, 400)
+        check("app icon: under 512px -> error",
+              any(">= 512px" in e for e in validate_app_icon(ti, source_images=d).errors))
+        _put_icon(512, 256)
+        check("app icon: non-square -> error",
+              any("must be square" in e for e in validate_app_icon(ti, source_images=d).errors))
+        tj = _good_tabs(); tj["Store Info"][1][0]["App Icon File"] = "icon.jpg"
+        check("app icon: non-png -> error",
+              any("must be a .png" in e for e in validate_app_icon(tj).errors))
+
     # ES missing copy warns when languages includes es
     t = _good_tabs()
     for hh in [c for c in t["Mattresses"][0] if c.endswith(" (ES)")]:
@@ -997,6 +1086,21 @@ def _self_test() -> int:
         os.remove(os.path.join(bdir, "acme.jpg"))
         check("post-emit brand logo missing -> error",
               any("not found on disk" in e
+                  for e in validate_generated_outputs(d, build_json=False).errors))
+
+    with tempfile.TemporaryDirectory() as d:
+        _write_good_output(d)
+        man = json.load(open(os.path.join(d, "manifest.json"), encoding="utf-8"))
+        man["icons"] = [{"src": "icon-192.png", "sizes": "192x192", "type": "image/png"},
+                        {"src": "icon-512.png", "sizes": "512x512", "type": "image/png"}]
+        _write(os.path.join(d, "manifest.json"), json.dumps(man))
+        _write(os.path.join(d, "icon-192.png"), "x")
+        _write(os.path.join(d, "icon-512.png"), "x")
+        check("post-emit manifest icons present -> ok",
+              validate_generated_outputs(d, build_json=False, languages=["en", "es"]).ok)
+        os.remove(os.path.join(d, "icon-512.png"))
+        check("post-emit manifest icon missing -> error",
+              any("icon 'icon-512.png' not found" in e
                   for e in validate_generated_outputs(d, build_json=False).errors))
 
     print(f"\nSelf-test: {passed} passed, {failed} failed")

@@ -127,6 +127,7 @@ You'll receive a shared folder with this structure:
 DreamFinder - [Your Store Name]/
   logos/
     [brand]-logo.png   (one per brand, e.g. serta-logo.png — shown in "Our Brands")
+    app-icon.png       (optional — one square PNG ≥512px for the installable app icon)
   mattresses/
     [name].jpg         (one per mattress, named after the mattress NAME, lowercased)
   accessories/
@@ -134,14 +135,16 @@ DreamFinder - [Your Store Name]/
 ```
 
 > **Note:** Your store name currently appears as styled **text** in the app (set on
-> the Store Info tab), so a `store-logo.png` image isn't used yet. Installable-app
-> icons (`store-icon-192/512.png`) are a planned enhancement and aren't displayed
-> yet either — you're welcome to send them now for future use, but they're optional.
+> the Store Info tab), so a `store-logo.png` image isn't used yet — you may send one
+> for future use. The **app icon is optional**: drop one square PNG (≥512px) in
+> `logos/` and enter its file name in the Store Info **App Icon File** column, and
+> we generate the installable home-screen icons from it. Skip it and the app still
+> works — it just has no custom install icon.
 
 **Image requirements:**
 - **Mattresses & accessories:** Up to **1000 px on the long edge**. Send the **highest-quality source you have** in any common format (JPG, PNG, WebP). We auto-convert everything to optimized JPG at build time, so don't waste time pre-shrinking.
-- **Logo:** Min 400px wide, **PNG** with transparent background (kept as-is)
-- **Icons:** Exactly 192×192 and 512×512, square **PNG** (kept as-is)
+- **Brand logos:** Min 400px wide, **PNG** with transparent background (kept as-is)
+- **App icon (optional):** One **square PNG, ≥ 512×512** — we generate the 192 and 512 px app icons from it.
 
 **Name mattress image files after the mattress name (lowercased); name accessory image files to match the Image File Name in the Accessories tab.**
 

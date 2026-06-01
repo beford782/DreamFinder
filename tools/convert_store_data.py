@@ -11,6 +11,7 @@ app consumes:
     <output-dir>/data/allowed-hosts.js      (M1 domain-lock allowlist)            [S6]
     <output-dir>/images/mattresses,accessories (normalized JPG, --source-images)  [S4]
     <output-dir>/images/brands/...          (brand logos copied verbatim, --source-images)
+    <output-dir>/icon-192.png, icon-512.png (PWA icons, only when App Icon File is set)
     <output-dir>/manifest.json              (PWA manifest)                        [S5]
 
 and, unless skipped, shells out to <output-dir>/build-data.ps1 to regenerate
@@ -76,12 +77,23 @@ ACCESSORY_KEY_ORDER = [
 ]
 
 # manifest.json (S5). Key order matches committed; display/orientation are
-# constants (kiosk app), not workbook columns. No icons key (committed has none).
+# constants (kiosk app), not workbook columns. The optional "icons" key is appended
+# only when PWA icon generation succeeds (App Icon File set + --source-images); when
+# it is blank the manifest has no icons key (committed Bel has none).
 MANIFEST_KEY_ORDER = [
     "name", "short_name", "description", "start_url",
-    "display", "orientation", "background_color", "theme_color",
+    "display", "orientation", "background_color", "theme_color", "icons",
 ]
 MANIFEST_CONSTANTS = {"display": "standalone", "orientation": "landscape"}
+
+# PWA icons (C-core). Generated at the output root from one square PNG source in
+# <source-images>/logos/. "purpose" is intentionally omitted: declaring "maskable"
+# on a non-safe-zone icon causes Android to crop it.
+APP_ICON_SIZES = (192, 512)
+MANIFEST_ICONS = [
+    {"src": f"icon-{s}.png", "sizes": f"{s}x{s}", "type": "image/png"}
+    for s in APP_ICON_SIZES
+]
 
 # Image normalization (S4). Source images are accepted in any of these formats and
 # re-encoded to JPG. WebP output is intentionally NOT produced (Outlook desktop /
@@ -264,6 +276,19 @@ def build_manifest(wb):
     return {k: values[k] for k in MANIFEST_KEY_ORDER if k in values}
 
 
+def read_manifest_icon_source(wb):
+    """Read the optional App Icon File (Store Info -> manifest.iconSource). Returns
+    '' when blank/absent. This is a build directive (which source PNG to generate
+    PWA icons from), NOT a manifest field - it is never written into manifest.json
+    (it is not in MANIFEST_KEY_ORDER) nor store-config (manifest.* is skipped)."""
+    _, si_rows = read_tab(wb, "Store Info")
+    si = si_rows[0] if si_rows else {}
+    for col in schema.get_columns("Store Info"):
+        if col.key == "manifest.iconSource":
+            return _s(si.get(col.name))
+    return ""
+
+
 # -- accessories.json (S3) ----------------------------------------------------
 
 def build_accessories(wb):
@@ -409,6 +434,41 @@ def copy_brand_logos(source_root, output_dir, logo_files):
     return len(logo_files)
 
 
+def generate_app_icons(source_root, output_dir, icon_source):
+    """Generate root-level PWA icons (icon-<size>.png) from one square PNG source
+    at <source_root>/logos/<icon_source>. Returns the list of generated filenames
+    (e.g. ['icon-192.png', 'icon-512.png']), or [] when icon_source is blank.
+    Requires Pillow. The source must be a square PNG >= 512px (validated up front by
+    validation.validate_app_icon; re-checked here defensively before any write)."""
+    if not icon_source:
+        return []
+    try:
+        from PIL import Image
+    except ImportError:
+        raise SystemExit(
+            "ERROR: PWA icon generation (App Icon File) requires Pillow.\n"
+            "       Install it with: pip install Pillow")
+    src = os.path.join(source_root, "logos", icon_source)
+    if not os.path.isfile(src):
+        raise SystemExit(f"ERROR: app icon source not found: {src}")
+    img = Image.open(src)
+    if img.mode != "RGBA":
+        img = img.convert("RGBA")
+    w, h = img.size
+    if w != h:
+        raise SystemExit(f"ERROR: app icon source {icon_source} must be square (got {w}x{h})")
+    if w < max(APP_ICON_SIZES):
+        raise SystemExit(f"ERROR: app icon source {icon_source} must be "
+                         f">= {max(APP_ICON_SIZES)}px (got {w}x{h})")
+    generated = []
+    for size in APP_ICON_SIZES:
+        out = os.path.join(output_dir, f"icon-{size}.png")
+        img.resize((size, size), Image.LANCZOS).save(out, "PNG", optimize=True)
+        generated.append(f"icon-{size}.png")
+    print(f"  generated {len(generated)} PWA icon(s) -> {output_dir}")
+    return generated
+
+
 # -- build-data.ps1 (mattresses.json) ----------------------------------------
 
 def run_build_data(output_dir):
@@ -494,6 +554,7 @@ def main(argv=None) -> int:
         config = build_store_config(wb)
         accessories = build_accessories(wb)
         manifest = build_manifest(wb)
+        icon_source = read_manifest_icon_source(wb)
     finally:
         wb.close()
 
@@ -510,6 +571,9 @@ def main(argv=None) -> int:
             raw_tabs, source_images=args.source_images,
             skip_images=args.skip_image_normalization, languages=langs))
         report.merge(validation.validate_brands(
+            raw_tabs, source_images=args.source_images,
+            skip_images=args.skip_image_normalization))
+        report.merge(validation.validate_app_icon(
             raw_tabs, source_images=args.source_images,
             skip_images=args.skip_image_normalization))
         report.merge(validation.validate_sales_notes(raw_tabs, languages=langs))
@@ -545,11 +609,9 @@ def main(argv=None) -> int:
     write_json(acc_path, accessories)
     print(f"  wrote {acc_path} ({len(accessories)} items)")
 
-    man_path = os.path.join(args.output_dir, "manifest.json")  # repo root, not data/
-    write_json(man_path, manifest)
-    print(f"  wrote {man_path} ({len(manifest)} keys)")
-
-    # Image normalization (S4) - optional; product images only.
+    # Image normalization (S4) - optional; products + brand logos + PWA icons. Runs
+    # BEFORE the manifest write so manifest.icons is added only after the icon files
+    # actually exist on disk.
     if args.source_images and not args.skip_image_normalization:
         mattress_stems = [
             _s(r.get("name")).strip().lower()
@@ -569,8 +631,15 @@ def main(argv=None) -> int:
             if b.get("logo")
         ]
         copy_brand_logos(args.source_images, args.output_dir, brand_logo_files)
+        generated_icons = generate_app_icons(args.source_images, args.output_dir, icon_source)
+        if generated_icons:
+            manifest["icons"] = MANIFEST_ICONS
     elif args.source_images and args.skip_image_normalization:
         print("[images] skipped (--skip-image-normalization).")
+
+    man_path = os.path.join(args.output_dir, "manifest.json")  # repo root, not data/
+    write_json(man_path, manifest)
+    print(f"  wrote {man_path} ({len(manifest)} keys)")
 
     built = False
     if not args.skip_build_json:

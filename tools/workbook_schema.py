@@ -168,6 +168,9 @@ STORE_INFO = Tab(
         col("Manifest Start URL", "manifest.start_url", note="-> manifest.json start_url (e.g. /DreamFinder/)"),
         col("Manifest Theme Color", "manifest.theme_color", note="-> manifest.json theme_color"),
         col("Manifest Background Color", "manifest.background_color", note="-> manifest.json background_color"),
+        col("App Icon File", "manifest.iconSource",
+            note="optional; PWA icons. Square PNG >=512 in source-images/logos/. "
+                 "Converter generates root icon-192/512.png + manifest.icons. Blank = no icons."),
     ),
 )
 
