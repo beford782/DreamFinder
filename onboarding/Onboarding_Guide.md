@@ -28,7 +28,7 @@ To set up DreamFinder for your store, we need a few things from you.
 | Your mattress brands | Spreadsheet (Brands tab) | Google Sheets or Excel file |
 | Store logo | PNG, transparent background | `logos/` folder in Google Drive |
 | Brand logos | PNG, one per brand | `logos/` folder in Google Drive |
-| Square app icons (192px + 512px) | PNG | `logos/` folder in Google Drive |
+| Square app icon (one PNG, ≥512px) — optional | PNG | `logos/` folder in Google Drive |
 | Mattress product images | Any common format (JPG/PNG/WebP), one per mattress | `mattresses/` folder in Google Drive |
 | Accessory product images | Any common format (JPG/PNG/WebP), one per accessory | `accessories/` folder in Google Drive |
 | Spanish store text (optional) | Spreadsheet (Store Info tab) | Same spreadsheet, Spanish columns |
@@ -108,6 +108,7 @@ Customers see your accessories as a "Sleep System" (foundation + pillow + protec
 Add bases/foundations, pillows, and protectors. Key fields:
 
 - **Category** — Must be: `Foundations & Support`, `Pillows`, or `Protectors`
+- **Image File Name** — the **full relative app path** to the accessory's image, written as `images/accessories/<filename>.jpg` (e.g. `images/accessories/copper-ice-regular.jpg`). ⚠️ Enter the **full path, not a bare filename** — the app uses this value exactly as written, so a bare `copper-ice-regular.jpg` will 404 on the live site. Upload the matching source image (named `<filename>.jpg`, any common format) into the `accessories/` folder.
 - **Sub-Type** (for Foundations only) — `adjustable` (gets the hero treatment), `foundation`, `low_profile`, or `bunkie`
 - **Match Scores (0-5)** — Controls how strongly each accessory is recommended based on quiz answers. Leave blank if unsure — we can help fill these in.
 - **Match Tags** — Used by the Sleep System hero logic. For adjustable bases, include relevant tags like `snoring`, `back_pain`, `reflux` so the customer sees a personalized benefit card when their quiz matches.
@@ -131,7 +132,8 @@ DreamFinder - [Your Store Name]/
   mattresses/
     [name].jpg         (one per mattress, named after the mattress NAME, lowercased)
   accessories/
-    [image-file-name]  (one per accessory, matching its Image File Name)
+    [filename].jpg     (one per accessory; the BASENAME of its Image File Name —
+                        e.g. cell `images/accessories/copper-ice.jpg` -> file `copper-ice.jpg`)
 ```
 
 > **Note:** Your store name currently appears as styled **text** in the app (set on
@@ -160,9 +162,9 @@ DreamFinder - [Your Store Name]/
 - [ ] Brands tab filled out with brand names and logo file names
 - [ ] Store logo uploaded to `logos/`
 - [ ] Brand logos uploaded to `logos/` (one per brand)
-- [ ] Both PWA icons (192 + 512) uploaded to `logos/`
-- [ ] One image per mattress in `mattresses/`, file names matching IDs
-- [ ] One image per accessory in `accessories/`, file names matching IDs
+- [ ] One square app icon (≥512px PNG) uploaded to `logos/` — optional; we generate the 192/512 sizes from it
+- [ ] One image per mattress in `mattresses/`, named after the mattress **name** lowercased (e.g. `Royal Cloud` → `royal-cloud.jpg`)
+- [ ] One image per accessory in `accessories/`, named to match the **basename** of its Accessories-tab Image File Name
 - [ ] Yellow example rows deleted from spreadsheet
 - [ ] Spanish store text provided (or noted as "generate for us")
 - [ ] Spanish mattress text provided (or noted as "generate for us")

@@ -285,7 +285,7 @@ significant debugging to get right.
 
 ## Key App Flows (Don't Break These)
 
-- **Quiz → Results**: 9 questions → scoring engine → Gold/Silver/Bronze tier tabs → top pick badge
+- **Quiz → Results**: 12 questions (solo sleepers see 11 — `partner_disturbance` has a `skipIf` for solo) → scoring engine → Gold/Silver/Bronze tier tabs → top pick badge
 - **Mattress drawer**: Opens on card tap. Prev/next navigation between results. Firmness bar, match reasons, features.
 - **Accessories / Sleep System**: Framed as "Build Your Sleep System" (not add-ons).
   Conditional adjustable base hero (shown when quiz flags snoring, reflux, or back pain)
