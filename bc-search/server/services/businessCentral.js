@@ -1,14 +1,40 @@
-const axios = require('axios');
+const httpntlm = require('httpntlm');
 const config = require('../config');
 
 // ---------------------------------------------------------------------------
-// Basic Auth header (on-premises: username + web service access key)
+// NTLM request helper (on-premises BC uses Windows/NTLM authentication)
 // ---------------------------------------------------------------------------
-function authHeader() {
-  const credentials = Buffer.from(
-    `${config.bc.username}:${config.bc.webServiceKey}`
-  ).toString('base64');
-  return `Basic ${credentials}`;
+function ntlmGet(url) {
+  const username = config.bc.username;
+  const parts = username.split('\\');
+  const domain = parts.length > 1 ? parts[0] : '';
+  const user = parts.length > 1 ? parts[1] : username;
+
+  return new Promise((resolve, reject) => {
+    httpntlm.get({
+      url,
+      username: user,
+      password: config.bc.webServiceKey,
+      domain: domain,
+      headers: { 'Accept': 'application/json' }
+    }, (err, res) => {
+      if (err) return reject(err);
+      if (res.statusCode === 401) {
+        return reject({ response: { status: 401, statusText: 'Unauthorized' } });
+      }
+      if (res.statusCode === 404) {
+        return reject({ response: { status: 404, statusText: 'Not Found' } });
+      }
+      if (res.statusCode >= 400) {
+        return reject({ response: { status: res.statusCode, statusText: res.statusMessage || 'Error' } });
+      }
+      try {
+        resolve(JSON.parse(res.body));
+      } catch (e) {
+        reject(new Error('Invalid JSON response from BC: ' + res.body.substring(0, 200)));
+      }
+    });
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -22,30 +48,20 @@ function baseUrl() {
 // ---------------------------------------------------------------------------
 // OData query helper
 // ---------------------------------------------------------------------------
-
-/**
- * Execute an OData query against a Business Central entity.
- *
- * @param {Object} opts
- * @param {string} opts.entity      - e.g. "Item", "Customer", "Sales_Invoice_Line"
- * @param {string} [opts.select]    - $select fields  (comma-separated)
- * @param {string} [opts.filter]    - $filter expression
- * @param {string} [opts.orderby]   - $orderby expression
- * @param {number} [opts.top]       - $top limit
- * @param {string} [opts.expand]    - $expand navigation properties
- * @param {boolean}[opts.count]     - include $count
- * @returns {Promise<Object>}       - { records: Object[], totalCount: number|null }
- */
 async function query(opts) {
   let url = `${baseUrl()}/${opts.entity}`;
 
-  const params = {};
-  if (opts.select)  params['$select']  = opts.select;
-  if (opts.filter)  params['$filter']  = opts.filter;
-  if (opts.orderby) params['$orderby'] = opts.orderby;
-  if (opts.top)     params['$top']     = opts.top;
-  if (opts.expand)  params['$expand']  = opts.expand;
-  if (opts.count)   params['$count']   = 'true';
+  const params = [];
+  if (opts.select)  params.push(`$select=${encodeURIComponent(opts.select)}`);
+  if (opts.filter)  params.push(`$filter=${encodeURIComponent(opts.filter)}`);
+  if (opts.orderby) params.push(`$orderby=${encodeURIComponent(opts.orderby)}`);
+  if (opts.top)     params.push(`$top=${opts.top}`);
+  if (opts.expand)  params.push(`$expand=${encodeURIComponent(opts.expand)}`);
+  if (opts.count)   params.push('$count=true');
+
+  if (params.length > 0) {
+    url += '?' + params.join('&');
+  }
 
   let allRecords = [];
   let nextLink = null;
@@ -54,19 +70,7 @@ async function query(opts) {
 
   do {
     const requestUrl = isFirst ? url : nextLink;
-    const requestParams = isFirst ? params : {};
-
-    const { data } = await axios.get(requestUrl, {
-      params: requestParams,
-      headers: {
-        Authorization: authHeader(),
-        Accept: 'application/json'
-      },
-      // On-prem may use self-signed certs — allow configuring this
-      ...(process.env.BC_ALLOW_SELF_SIGNED === 'true' && {
-        httpsAgent: new (require('https').Agent)({ rejectUnauthorized: false })
-      })
-    });
+    const data = await ntlmGet(requestUrl);
 
     if (data['@odata.count'] !== undefined) {
       totalCount = data['@odata.count'];
@@ -78,7 +82,6 @@ async function query(opts) {
     nextLink = data['@odata.nextLink'] || null;
     isFirst = false;
 
-    // Safety: stop after 5000 records to avoid runaway pagination
     if (allRecords.length >= 5000) break;
   } while (nextLink);
 
@@ -87,27 +90,16 @@ async function query(opts) {
 
 /**
  * Execute multiple OData queries in parallel.
- * @param {Object[]} queries - array of query option objects
- * @returns {Promise<Object[]>} - array of result objects
  */
 async function queryMultiple(queries) {
   return Promise.all(queries.map(q => query(q)));
 }
 
 /**
- * List all available companies (useful for initial setup / connection test).
+ * List all available companies.
  */
 async function listCompanies() {
-  const { data } = await axios.get(`${config.bc.serverUrl}/Company`, {
-    headers: {
-      Authorization: authHeader(),
-      Accept: 'application/json'
-    },
-    ...(process.env.BC_ALLOW_SELF_SIGNED === 'true' && {
-      httpsAgent: new (require('https').Agent)({ rejectUnauthorized: false })
-    })
-  });
-
+  const data = await ntlmGet(`${config.bc.serverUrl}/Company`);
   return data.value || [];
 }
 
