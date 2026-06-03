@@ -116,6 +116,11 @@ def _s(v) -> str:
 # lowercase list). matchScores are non-negative integers (Bel uses values up to
 # 10 for the featured "default" weight, so there is no 0-5 upper bound).
 ACCESSORY_CATEGORIES = {"Foundations & Support", "Pillows", "Protectors"}
+# G1: the Accessories "Image File Name" cell must be the FULL relative path the live
+# app renders verbatim (index.html uses accessories.json `image` as-is). A bare
+# filename (or a non-jpg / extra-path value) builds clean but 404s on the deployed
+# host - the live image is always normalized to <prefix><file>.jpg (TFM migration lesson).
+ACCESSORY_IMAGE_PREFIX = "images/accessories/"
 SOURCE_IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".webp")
 MATTRESS_TIERS = {"gold", "silver", "bronze"}
 SALESNOTE_TYPES = {"subBrand", "brand"}
@@ -386,7 +391,19 @@ def validate_accessories(raw_tabs, *, source_images=None, skip_images=False,
         if _blank(img):
             r.add_error(f"Accessories {tag}: Image File Name is empty")
         else:
-            base = os.path.splitext(os.path.basename(img))[0].lower()
+            img_s = str(img).strip()
+            # G1: the cell must be the full relative path images/accessories/<file>.jpg.
+            # index.html renders accessories.json `image` verbatim, so a bare filename,
+            # a non-jpg extension, or an extra sub-path builds clean but 404s on the
+            # live host. The normalized live file is always <prefix><basename>.jpg.
+            rest = (img_s[len(ACCESSORY_IMAGE_PREFIX):]
+                    if img_s.startswith(ACCESSORY_IMAGE_PREFIX) else None)
+            if rest is None or not rest or "/" in rest or not rest.lower().endswith(".jpg"):
+                r.add_error(f"Accessories {tag}: Image File Name {img!r} must be a full "
+                            f"relative path of the form '{ACCESSORY_IMAGE_PREFIX}<file>.jpg' "
+                            f"- a bare filename builds clean but 404s live (index.html "
+                            f"renders it verbatim)")
+            base = os.path.splitext(os.path.basename(img_s))[0].lower()
             if base in seen_basenames:
                 r.add_warning(f"Accessories: duplicate image basename {base!r} "
                               f"(rows {seen_basenames[base]} & {i})")
@@ -719,7 +736,7 @@ def _good_tabs():
         "ID": "a1", "Name": "Pillow", "Name (ES)": "Almohada",
         "Category": "Pillows", "Category (ES)": "Almohadas", "Price": 100,
         "Description": "Soft", "Description (ES)": "Suave",
-        "Image File Name": "a1.jpg", "Match Tags": "all",
+        "Image File Name": "images/accessories/a1.jpg", "Match Tags": "all",
     })
     tabs["SalesNotes"][1][0].update({
         "Type": "brand", "Key": "Acme", "Story": "Family-owned since 1900",
@@ -892,10 +909,32 @@ def _self_test() -> int:
     check("invalid accessory category -> error",
           any("category 'widgets'" in e for e in validate_accessories(t, languages=langs).errors))
 
-    # accessory image basename != id is accepted (no error) when image cell is valid
-    t = _good_tabs(); t["Accessories"][1][0]["Image File Name"] = "copper-ice.jpg"
-    check("accessory basename != id accepted",
+    # accessory image basename != id is accepted when the cell is a full
+    # images/accessories/<file>.jpg path
+    t = _good_tabs(); t["Accessories"][1][0]["Image File Name"] = "images/accessories/copper-ice.jpg"
+    check("accessory full path, basename != id accepted",
           validate_accessories(t, languages=langs).ok)
+
+    # G1: bare accessory image filename (no images/accessories/ prefix) -> error
+    t = _good_tabs(); t["Accessories"][1][0]["Image File Name"] = "copper-ice.jpg"
+    check("G1 bare accessory image path -> error",
+          any("must be a full" in e and "images/accessories/" in e
+              for e in validate_accessories(t, languages=langs).errors))
+
+    # G1: full path but non-jpg extension -> error (live file is normalized to .jpg)
+    t = _good_tabs(); t["Accessories"][1][0]["Image File Name"] = "images/accessories/copper-ice.png"
+    check("G1 accessory full path, wrong extension -> error",
+          any("must be a full" in e for e in validate_accessories(t, languages=langs).errors))
+
+    # G1: wrong directory prefix -> error
+    t = _good_tabs(); t["Accessories"][1][0]["Image File Name"] = "images/mattresses/copper-ice.jpg"
+    check("G1 accessory wrong directory prefix -> error",
+          any("must be a full" in e for e in validate_accessories(t, languages=langs).errors))
+
+    # G1: extra sub-path under images/accessories/ -> error
+    t = _good_tabs(); t["Accessories"][1][0]["Image File Name"] = "images/accessories/sub/copper-ice.jpg"
+    check("G1 accessory extra sub-path -> error",
+          any("must be a full" in e for e in validate_accessories(t, languages=langs).errors))
 
     # invalid salesNote Type
     t = _good_tabs(); t["SalesNotes"][1][0] = {"Type": "vendor", "Key": "X"}

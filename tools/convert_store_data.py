@@ -495,15 +495,62 @@ def run_build_data(output_dir):
     if proc.stdout.strip():
         print("  " + proc.stdout.strip().replace("\n", "\n  "))
     if proc.returncode != 0:
-        print(f"[build-json] WARNING: build-data.ps1 exited {proc.returncode} "
-              f"(CSV/JSON output is still valid).")
+        print(f"[build-json] WARNING: build-data.ps1 exited {proc.returncode}.")
         if proc.stderr.strip():
             print("  " + proc.stderr.strip().replace("\n", "\n  "))
         return False
     return os.path.exists(os.path.join(output_dir, "data", "mattresses.json"))
 
 
+def build_json_blocking(skip_build_json: bool, built: bool) -> bool:
+    """G2: a deploy-ready conversion MUST (re)generate data/mattresses.json from the
+    freshly written CSVs. Unless the operator explicitly opts out with
+    --skip-build-json, a skipped or failed build-data.ps1 (built=False) is a blocking
+    failure: otherwise the bundle keeps whatever data/mattresses.json already sat in
+    --output-dir - e.g. the cloned template's (another retailer's) data - a silent
+    stale / cross-retailer leak that the app would serve verbatim. Returns True when
+    the converter must abort."""
+    return (not skip_build_json) and (not built)
+
+
+def _self_test() -> int:
+    """Unit-test G2's deploy-ready mattresses.json gate (build_json_blocking).
+    Pure logic - no workbook, images, or PowerShell required."""
+    passed = failed = 0
+
+    def check(name, cond):
+        nonlocal passed, failed
+        if cond:
+            passed += 1
+            print(f"  [ok]   {name}")
+        else:
+            failed += 1
+            print(f"  [FAIL] {name}")
+
+    print("convert_store_data.py self-test (G2 build-json gate):")
+    # Deploy-ready (no --skip-build-json): build MUST have run.
+    check("G2 skipped/failed build is blocking by default",
+          build_json_blocking(skip_build_json=False, built=False) is True)
+    check("G2 stale mattresses.json cannot silently pass deploy-ready conversion",
+          build_json_blocking(skip_build_json=False, built=False) is True)
+    check("G2 successful build is not blocking",
+          build_json_blocking(skip_build_json=False, built=True) is False)
+    # --skip-build-json escape hatch (temp/audit): never blocks on the build.
+    check("G2 --skip-build-json allowed even when build did not run",
+          build_json_blocking(skip_build_json=True, built=False) is False)
+    check("G2 --skip-build-json with built is not blocking",
+          build_json_blocking(skip_build_json=True, built=True) is False)
+
+    print(f"\nSelf-test: {passed} passed, {failed} failed")
+    return 0 if failed == 0 else 1
+
+
 def main(argv=None) -> int:
+    if argv is None:
+        argv = sys.argv[1:]
+    if "--self-test" in argv:
+        return _self_test()
+
     parser = argparse.ArgumentParser(
         description="Convert an onboarding workbook into DreamFinder data files.",
         formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -660,6 +707,18 @@ def main(argv=None) -> int:
         built = run_build_data(args.output_dir)
     else:
         print("[build-json] skipped (--skip-build-json).")
+
+    # G2: refuse to emit a deploy-ready bundle whose data/mattresses.json was not
+    # regenerated from the new CSVs. Without this gate a missing pwsh/powershell (or a
+    # build-data.ps1 error) would leave the cloned template's mattresses.json in place
+    # - the app reads mattresses.json, not the CSV, so it would silently serve the
+    # wrong retailer's lineup. --skip-build-json is the explicit temp/audit escape.
+    if build_json_blocking(args.skip_build_json, built):
+        print("ERROR: build-data.ps1 did not (re)generate data/mattresses.json - the "
+              "bundle's mattresses.json may be STALE (e.g. the cloned template's data). "
+              "Refusing to produce a deploy-ready bundle. Install pwsh/powershell and "
+              "re-run, or pass --skip-build-json for temp/audit-only output.")
+        return 1
 
     # Post-emit validation: verify the bundle we just wrote (V3). Generated files
     # are NOT deleted on failure (useful for debugging a post-emit problem).
