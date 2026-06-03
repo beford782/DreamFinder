@@ -2,46 +2,21 @@ const axios = require('axios');
 const config = require('../config');
 
 // ---------------------------------------------------------------------------
-// Token cache
+// Basic Auth header (on-premises: username + web service access key)
 // ---------------------------------------------------------------------------
-let tokenCache = { accessToken: null, expiresAt: 0 };
-
-/**
- * Acquire an OAuth2 access token using the client-credentials flow.
- * Caches the token and refreshes 60 s before expiry.
- */
-async function getAccessToken() {
-  if (tokenCache.accessToken && Date.now() < tokenCache.expiresAt - 60000) {
-    return tokenCache.accessToken;
-  }
-
-  const url = `https://login.microsoftonline.com/${config.bc.tenantId}/oauth2/v2.0/token`;
-
-  const params = new URLSearchParams({
-    grant_type: 'client_credentials',
-    client_id: config.bc.clientId,
-    client_secret: config.bc.clientSecret,
-    scope: 'https://api.businesscentral.dynamics.com/.default'
-  });
-
-  const { data } = await axios.post(url, params.toString(), {
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-  });
-
-  tokenCache = {
-    accessToken: data.access_token,
-    expiresAt: Date.now() + data.expires_in * 1000
-  };
-
-  return tokenCache.accessToken;
+function authHeader() {
+  const credentials = Buffer.from(
+    `${config.bc.username}:${config.bc.webServiceKey}`
+  ).toString('base64');
+  return `Basic ${credentials}`;
 }
 
 // ---------------------------------------------------------------------------
 // Base URL builder
 // ---------------------------------------------------------------------------
 function baseUrl() {
-  const { tenantId, environment, companyId } = config.bc;
-  return `https://api.businesscentral.dynamics.com/v2.0/${tenantId}/${environment}/api/v2.0/companies(${companyId})`;
+  const companyFilter = encodeURIComponent(config.bc.companyName);
+  return `${config.bc.serverUrl}/Company('${companyFilter}')`;
 }
 
 // ---------------------------------------------------------------------------
@@ -52,18 +27,16 @@ function baseUrl() {
  * Execute an OData query against a Business Central entity.
  *
  * @param {Object} opts
- * @param {string} opts.entity      - e.g. "items", "customers", "salesInvoiceLines"
+ * @param {string} opts.entity      - e.g. "Item", "Customer", "Sales_Invoice_Line"
  * @param {string} [opts.select]    - $select fields  (comma-separated)
  * @param {string} [opts.filter]    - $filter expression
  * @param {string} [opts.orderby]   - $orderby expression
  * @param {number} [opts.top]       - $top limit
  * @param {string} [opts.expand]    - $expand navigation properties
  * @param {boolean}[opts.count]     - include $count
- * @returns {Promise<Object[]>}     - array of entity records
+ * @returns {Promise<Object>}       - { records: Object[], totalCount: number|null }
  */
 async function query(opts) {
-  const token = await getAccessToken();
-
   let url = `${baseUrl()}/${opts.entity}`;
 
   const params = {};
@@ -86,9 +59,13 @@ async function query(opts) {
     const { data } = await axios.get(requestUrl, {
       params: requestParams,
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: authHeader(),
         Accept: 'application/json'
-      }
+      },
+      // On-prem may use self-signed certs — allow configuring this
+      ...(process.env.BC_ALLOW_SELF_SIGNED === 'true' && {
+        httpsAgent: new (require('https').Agent)({ rejectUnauthorized: false })
+      })
     });
 
     if (data['@odata.count'] !== undefined) {
@@ -118,18 +95,17 @@ async function queryMultiple(queries) {
 }
 
 /**
- * List all available companies (useful for initial setup).
+ * List all available companies (useful for initial setup / connection test).
  */
 async function listCompanies() {
-  const token = await getAccessToken();
-  const { tenantId, environment } = config.bc;
-  const url = `https://api.businesscentral.dynamics.com/v2.0/${tenantId}/${environment}/api/v2.0/companies`;
-
-  const { data } = await axios.get(url, {
+  const { data } = await axios.get(`${config.bc.serverUrl}/Company`, {
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: authHeader(),
       Accept: 'application/json'
-    }
+    },
+    ...(process.env.BC_ALLOW_SELF_SIGNED === 'true' && {
+      httpsAgent: new (require('https').Agent)({ rejectUnauthorized: false })
+    })
   });
 
   return data.value || [];

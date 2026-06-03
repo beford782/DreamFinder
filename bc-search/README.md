@@ -27,55 +27,50 @@ npm start
 
 - **Node.js** 18+ installed
 - **Anthropic API key** (for Claude) — get one at https://console.anthropic.com
-- **Dynamics 365 Business Central** instance with API access
-- **Azure AD app registration** (see below)
+- **Business Central on-premises** instance with OData services enabled
+- **BC user account** with a Web Service Access Key
 
 ---
 
-## Azure AD Setup (Business Central API Access)
+## Setup (On-Premises Business Central)
 
-Follow these steps to get your BC API credentials:
+### Step 1: Get Your Anthropic API Key
 
-### Step 1: Register an App in Azure AD
+1. Go to console.anthropic.com → API Keys → Create Key
+2. Copy the key (starts with `sk-ant-...`)
 
-1. Go to [Azure Portal](https://portal.azure.com) → **Azure Active Directory** → **App registrations**
-2. Click **New registration**
-3. Name: `BC AI Search` (or any name you prefer)
-4. Supported account types: **Single tenant**
-5. Redirect URI: leave blank (not needed for client credentials)
-6. Click **Register**
-7. Note the **Application (client) ID** → this is your `BC_CLIENT_ID`
-8. Note the **Directory (tenant) ID** → this is your `BC_TENANT_ID`
+### Step 2: Find Your BC OData URL
 
-### Step 2: Create a Client Secret
+Your BC server exposes OData at a URL like:
 
-1. In your app registration, go to **Certificates & secrets**
-2. Click **New client secret**
-3. Description: `BC Search`
-4. Expiration: choose your preference (recommended: 12 months)
-5. Click **Add**
-6. **Copy the secret Value immediately** (it won't be shown again) → this is your `BC_CLIENT_SECRET`
+```
+https://your-server:7048/BC/ODataV4
+```
 
-### Step 3: Grant API Permissions
+The format is: `https://{server}:{port}/{instance}/ODataV4`
 
-1. Go to **API permissions** → **Add a permission**
-2. Select **Dynamics 365 Business Central**
-3. Select **Application permissions**
-4. Check **API.ReadWrite.All**
-5. Click **Add permissions**
-6. Click **Grant admin consent for [your tenant]** (requires admin role)
+- **server** — your BC server hostname or IP
+- **port** — typically 7048 (OData port)
+- **instance** — your BC instance name (e.g. `BC`, `BC250`, `NAV`, etc.)
 
-### Step 4: Find Your Environment & Company
+Ask your BC admin (Jack/Greg at Enhanced Systems) if you're unsure.
 
-**Environment name:**
-- Open Business Central → Settings (gear icon) → **About**
-- Look for "Environment" — typically `production` or `sandbox`
-- This is your `BC_ENVIRONMENT`
+### Step 3: Get Your Web Service Access Key
 
-**Company ID:**
-- Option A: After setting up the other credentials, run `npm start` and click **Test Connection** — it will list all companies with their IDs
-- Option B: In Business Central, open the URL bar — the company ID is in the URL: `.../companies({GUID})/...`
-- This is your `BC_COMPANY_ID`
+If you already have one, great. If not:
+
+1. Open Business Central
+2. Go to your **User Settings** or search for "User Setup"
+3. Find **Web Service Access Key**
+4. If empty, generate a new one
+5. Copy the key
+
+Your **username** is typically in `DOMAIN\username` format.
+
+### Step 4: Find Your Company Name
+
+In Business Central, look at the top bar — it shows your company name. Or:
+- Run the app and click **Test Connection** — it will list all companies
 
 ### Step 5: Configure .env
 
@@ -87,13 +82,36 @@ Fill in all values:
 
 ```
 ANTHROPIC_API_KEY=sk-ant-your-key-here
-BC_TENANT_ID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-BC_CLIENT_ID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-BC_CLIENT_SECRET=your-secret-value
-BC_ENVIRONMENT=production
-BC_COMPANY_ID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+BC_SERVER_URL=https://your-server:7048/BC/ODataV4
+BC_USERNAME=DOMAIN\yourusername
+BC_WEB_SERVICE_KEY=your-web-service-access-key
+BC_COMPANY_NAME=Your Company Name
 PORT=3000
 ```
+
+**Optional:** If your BC server uses a self-signed SSL certificate, add:
+```
+BC_ALLOW_SELF_SIGNED=true
+```
+
+### Step 6: Run
+
+```bash
+npm start
+```
+
+Open http://localhost:3000 and click **Test Connection** to verify everything works.
+
+---
+
+## What to Ask Your BC Admin
+
+If you need help from your admin (Enhanced Systems), ask them for:
+
+1. **The OData URL** — the base URL to reach BC's OData v4 endpoint
+2. **Confirm OData is enabled** — OData services must be turned on in BC server configuration
+3. **Your username and Web Service Access Key** — or confirmation that your existing key is valid
+4. **Company name** — the exact company name as it appears in BC
 
 ---
 
@@ -107,7 +125,7 @@ Express server receives it
 Claude AI interprets the question and generates
 Business Central OData API query plan
     ↓
-Server executes the BC API queries
+Server executes the BC OData queries
     ↓
 Claude summarizes the results
     ↓
@@ -126,7 +144,7 @@ bc-search/
 │   │   └── auth.js           # GET /api/auth/test
 │   └── services/
 │       ├── claude.js          # Claude API (query planning + summarization)
-│       └── businessCentral.js # BC OData client (OAuth2 + queries)
+│       └── businessCentral.js # BC OData client (Basic Auth + queries)
 ├── public/
 │   ├── index.html            # Frontend
 │   ├── css/styles.css        # Dark navy/gold theme
@@ -177,9 +195,11 @@ bc-search/
 | Problem | Solution |
 |---|---|
 | "Missing required environment variables" | Ensure `.env` exists and all values are filled in |
-| "BC authentication failed" | Double-check `BC_CLIENT_ID`, `BC_CLIENT_SECRET`, `BC_TENANT_ID` |
-| "Access denied" | Ensure admin consent is granted for API permissions in Azure AD |
-| "Entity not found" | Your BC environment may not expose all standard API entities |
+| "Invalid credentials" | Double-check `BC_USERNAME` and `BC_WEB_SERVICE_KEY` |
+| "OData endpoint not found" | Check `BC_SERVER_URL` — should end with `/ODataV4` |
+| "Connection refused" | BC server may be down or port is wrong |
+| "SSL certificate error" | Add `BC_ALLOW_SELF_SIGNED=true` to `.env` |
+| "Entity not found" | The entity may need to be published as a web service in BC |
 | "Claude API authentication failed" | Check your `ANTHROPIC_API_KEY` |
 | No data returned | Try a broader question; check that your BC has data for the time period |
 

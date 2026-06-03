@@ -2,11 +2,10 @@ require('dotenv').config();
 
 const required = [
   'ANTHROPIC_API_KEY',
-  'BC_TENANT_ID',
-  'BC_CLIENT_ID',
-  'BC_CLIENT_SECRET',
-  'BC_ENVIRONMENT',
-  'BC_COMPANY_ID'
+  'BC_SERVER_URL',
+  'BC_USERNAME',
+  'BC_WEB_SERVICE_KEY',
+  'BC_COMPANY_NAME'
 ];
 
 const missing = required.filter(key => !process.env[key]);
@@ -19,11 +18,10 @@ if (missing.length > 0) {
 module.exports = {
   anthropicApiKey: process.env.ANTHROPIC_API_KEY,
   bc: {
-    tenantId: process.env.BC_TENANT_ID,
-    clientId: process.env.BC_CLIENT_ID,
-    clientSecret: process.env.BC_CLIENT_SECRET,
-    environment: process.env.BC_ENVIRONMENT,
-    companyId: process.env.BC_COMPANY_ID
+    serverUrl: process.env.BC_SERVER_URL.replace(/\/+$/, ''),
+    username: process.env.BC_USERNAME,
+    webServiceKey: process.env.BC_WEB_SERVICE_KEY,
+    companyName: process.env.BC_COMPANY_NAME
   },
   port: parseInt(process.env.PORT, 10) || 3000
 };
