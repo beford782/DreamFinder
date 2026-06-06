@@ -1,19 +1,15 @@
-const { NtlmClient } = require('axios-ntlm');
+const axios = require('axios');
 const config = require('../config');
 
 // ---------------------------------------------------------------------------
-// NTLM client (Windows Authentication with domain credentials)
+// Basic Auth header (username + password/web service key)
 // ---------------------------------------------------------------------------
-const username = config.bc.username;
-const parts = username.split('\\');
-const domain = parts.length > 1 ? parts[0] : '';
-const user = parts.length > 1 ? parts[1] : username;
-
-const client = NtlmClient({
-  username: user,
-  password: config.bc.password,
-  domain: domain
-});
+function authHeader() {
+  const credentials = Buffer.from(
+    `${config.bc.username}:${config.bc.password}`
+  ).toString('base64');
+  return `Basic ${credentials}`;
+}
 
 // ---------------------------------------------------------------------------
 // Base URL builder
@@ -46,9 +42,12 @@ async function query(opts) {
     const requestUrl = isFirst ? url : nextLink;
     const requestParams = isFirst ? params : {};
 
-    const { data } = await client.get(requestUrl, {
+    const { data } = await axios.get(requestUrl, {
       params: requestParams,
-      headers: { Accept: 'application/json' }
+      headers: {
+        Authorization: authHeader(),
+        Accept: 'application/json'
+      }
     });
 
     if (data['@odata.count'] !== undefined) {
@@ -78,8 +77,11 @@ async function queryMultiple(queries) {
  * List all available companies.
  */
 async function listCompanies() {
-  const { data } = await client.get(`${config.bc.serverUrl}/Company`, {
-    headers: { Accept: 'application/json' }
+  const { data } = await axios.get(`${config.bc.serverUrl}/Company`, {
+    headers: {
+      Authorization: authHeader(),
+      Accept: 'application/json'
+    }
   });
 
   return data.value || [];
