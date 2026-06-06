@@ -4,7 +4,7 @@ const required = [
   'ANTHROPIC_API_KEY',
   'BC_SERVER_URL',
   'BC_USERNAME',
-  'BC_WEB_SERVICE_KEY',
+  'BC_PASSWORD',
   'BC_COMPANY_NAME'
 ];
 
@@ -20,7 +20,7 @@ module.exports = {
   bc: {
     serverUrl: process.env.BC_SERVER_URL.replace(/\/+$/, ''),
     username: process.env.BC_USERNAME,
-    webServiceKey: process.env.BC_WEB_SERVICE_KEY,
+    password: process.env.BC_PASSWORD,
     companyName: process.env.BC_COMPANY_NAME
   },
   port: parseInt(process.env.PORT, 10) || 3000
