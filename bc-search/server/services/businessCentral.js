@@ -1,40 +1,14 @@
-const httpntlm = require('httpntlm');
+const axios = require('axios');
 const config = require('../config');
 
 // ---------------------------------------------------------------------------
-// NTLM request helper (on-premises BC uses Windows/NTLM authentication)
+// Basic Auth header (username + web service access key)
 // ---------------------------------------------------------------------------
-function ntlmGet(url) {
-  const username = config.bc.username;
-  const parts = username.split('\\');
-  const domain = parts.length > 1 ? parts[0] : '';
-  const user = parts.length > 1 ? parts[1] : username;
-
-  return new Promise((resolve, reject) => {
-    httpntlm.get({
-      url,
-      username: user,
-      password: config.bc.webServiceKey,
-      domain: domain,
-      headers: { 'Accept': 'application/json' }
-    }, (err, res) => {
-      if (err) return reject(err);
-      if (res.statusCode === 401) {
-        return reject({ response: { status: 401, statusText: 'Unauthorized' } });
-      }
-      if (res.statusCode === 404) {
-        return reject({ response: { status: 404, statusText: 'Not Found' } });
-      }
-      if (res.statusCode >= 400) {
-        return reject({ response: { status: res.statusCode, statusText: res.statusMessage || 'Error' } });
-      }
-      try {
-        resolve(JSON.parse(res.body));
-      } catch (e) {
-        reject(new Error('Invalid JSON response from BC: ' + res.body.substring(0, 200)));
-      }
-    });
-  });
+function authHeader() {
+  const credentials = Buffer.from(
+    `${config.bc.username}:${config.bc.webServiceKey}`
+  ).toString('base64');
+  return `Basic ${credentials}`;
 }
 
 // ---------------------------------------------------------------------------
@@ -51,17 +25,13 @@ function baseUrl() {
 async function query(opts) {
   let url = `${baseUrl()}/${opts.entity}`;
 
-  const params = [];
-  if (opts.select)  params.push(`$select=${encodeURIComponent(opts.select)}`);
-  if (opts.filter)  params.push(`$filter=${encodeURIComponent(opts.filter)}`);
-  if (opts.orderby) params.push(`$orderby=${encodeURIComponent(opts.orderby)}`);
-  if (opts.top)     params.push(`$top=${opts.top}`);
-  if (opts.expand)  params.push(`$expand=${encodeURIComponent(opts.expand)}`);
-  if (opts.count)   params.push('$count=true');
-
-  if (params.length > 0) {
-    url += '?' + params.join('&');
-  }
+  const params = {};
+  if (opts.select)  params['$select']  = opts.select;
+  if (opts.filter)  params['$filter']  = opts.filter;
+  if (opts.orderby) params['$orderby'] = opts.orderby;
+  if (opts.top)     params['$top']     = opts.top;
+  if (opts.expand)  params['$expand']  = opts.expand;
+  if (opts.count)   params['$count']   = 'true';
 
   let allRecords = [];
   let nextLink = null;
@@ -70,7 +40,15 @@ async function query(opts) {
 
   do {
     const requestUrl = isFirst ? url : nextLink;
-    const data = await ntlmGet(requestUrl);
+    const requestParams = isFirst ? params : {};
+
+    const { data } = await axios.get(requestUrl, {
+      params: requestParams,
+      headers: {
+        Authorization: authHeader(),
+        Accept: 'application/json'
+      }
+    });
 
     if (data['@odata.count'] !== undefined) {
       totalCount = data['@odata.count'];
@@ -99,7 +77,13 @@ async function queryMultiple(queries) {
  * List all available companies.
  */
 async function listCompanies() {
-  const data = await ntlmGet(`${config.bc.serverUrl}/Company`);
+  const { data } = await axios.get(`${config.bc.serverUrl}/Company`, {
+    headers: {
+      Authorization: authHeader(),
+      Accept: 'application/json'
+    }
+  });
+
   return data.value || [];
 }
 
